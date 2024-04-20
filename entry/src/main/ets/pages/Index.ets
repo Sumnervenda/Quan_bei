@@ -57,7 +57,7 @@ struct Index {
                 .strokeWidth(1)
                 .color('#ff004699')
 
-            }.width('100%')
+            }.width('80%')
           }.tabBar(this.TabBuilder(1,$r('app.media.money_active'),$r('app.media.money_normal'),'理财'))//理财按钮
 
           TabContent() {
