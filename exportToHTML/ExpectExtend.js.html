@@ -1,0 +1,107 @@
+<html>
+<head>
+<title>ExpectExtend.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #808080;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #aa7dfc;}
+.s3 { color: #e2da90;}
+.s4 { color: #faa23d;}
+.s5 { color: #db7e9b;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+ExpectExtend.js</font>
+</center></td></tr></table>
+<pre><span class="s0">/* 
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd. 
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ */</span>
+
+<span class="s1">import assertNull from </span><span class="s2">'./assertNull'</span><span class="s3">;</span>
+<span class="s1">import assertClose from </span><span class="s2">'./assertClose'</span><span class="s3">;</span>
+<span class="s1">import assertContain from </span><span class="s2">'./assertContain'</span><span class="s3">;</span>
+<span class="s1">import assertLess from </span><span class="s2">'./assertLess'</span><span class="s3">;</span>
+<span class="s1">import assertLarger from </span><span class="s2">'./assertLarger'</span><span class="s3">;</span>
+<span class="s1">import assertFail from </span><span class="s2">'./assertFail'</span><span class="s3">;</span>
+<span class="s1">import assertUndefined from </span><span class="s2">'./assertUndefined'</span><span class="s3">;</span>
+<span class="s1">import assertFalse from </span><span class="s2">'./assertFalse'</span><span class="s3">;</span>
+<span class="s1">import assertInstanceOf from </span><span class="s2">'./assertInstanceOf'</span><span class="s3">;</span>
+<span class="s1">import assertThrowError from </span><span class="s2">'./assertThrowError'</span><span class="s3">;</span>
+<span class="s1">import assertLargerOrEqual from </span><span class="s2">'./assertLargerOrEqual'</span>
+<span class="s1">import assertLessOrEqual from </span><span class="s2">'./assertLessOrEqual'</span>
+<span class="s1">import assertNaN from </span><span class="s2">'./assertNaN'</span>
+<span class="s1">import assertNegUnlimited from </span><span class="s2">'./assertNegUnlimited'</span>
+<span class="s1">import assertPosUnlimited from </span><span class="s2">'./assertPosUnlimited'</span>
+<span class="s1">import assertDeepEquals from </span><span class="s2">'./deepEquals/assertDeepEquals'</span>
+<span class="s1">import assertPromiseIsPending from </span><span class="s2">'./assertPromiseIsPending'</span><span class="s3">;</span>
+<span class="s1">import assertPromiseIsRejected from </span><span class="s2">'./assertPromiseIsRejected'</span><span class="s3">;</span>
+<span class="s1">import assertPromiseIsRejectedWith from </span><span class="s2">'./assertPromiseIsRejectedWith'</span><span class="s3">;</span>
+<span class="s1">import assertPromiseIsRejectedWithError from </span><span class="s2">'./assertPromiseIsRejectedWithError'</span><span class="s3">;</span>
+<span class="s1">import assertPromiseIsResolved from </span><span class="s2">'./assertPromiseIsResolved'</span><span class="s3">;</span>
+<span class="s1">import assertPromiseIsResolvedWith from </span><span class="s2">'./assertPromiseIsResolvedWith'</span><span class="s3">;</span>
+<span class="s1">class ExpectExtend </span><span class="s4">{</span>
+    <span class="s1">constructor</span><span class="s5">(</span><span class="s1">attr</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">id </span><span class="s3">= </span><span class="s1">attr</span><span class="s3">.</span><span class="s1">id</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">matchers </span><span class="s3">= </span><span class="s4">{}</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">extendsMatchers</span><span class="s5">() </span><span class="s4">{</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">matchers</span><span class="s3">.</span><span class="s1">assertNull </span><span class="s3">= </span><span class="s1">assertNull</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">matchers</span><span class="s3">.</span><span class="s1">assertClose </span><span class="s3">= </span><span class="s1">assertClose</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">matchers</span><span class="s3">.</span><span class="s1">assertContain </span><span class="s3">= </span><span class="s1">assertContain</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">matchers</span><span class="s3">.</span><span class="s1">assertLess </span><span class="s3">= </span><span class="s1">assertLess</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">matchers</span><span class="s3">.</span><span class="s1">assertLarger </span><span class="s3">= </span><span class="s1">assertLarger</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">matchers</span><span class="s3">.</span><span class="s1">assertFail </span><span class="s3">= </span><span class="s1">assertFail</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">matchers</span><span class="s3">.</span><span class="s1">assertUndefined </span><span class="s3">= </span><span class="s1">assertUndefined</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">matchers</span><span class="s3">.</span><span class="s1">assertFalse </span><span class="s3">= </span><span class="s1">assertFalse</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">matchers</span><span class="s3">.</span><span class="s1">assertInstanceOf </span><span class="s3">= </span><span class="s1">assertInstanceOf</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">matchers</span><span class="s3">.</span><span class="s1">assertThrowError </span><span class="s3">= </span><span class="s1">assertThrowError</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">matchers</span><span class="s3">.</span><span class="s1">assertLargerOrEqual </span><span class="s3">= </span><span class="s1">assertLargerOrEqual</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">matchers</span><span class="s3">.</span><span class="s1">assertLessOrEqual </span><span class="s3">= </span><span class="s1">assertLessOrEqual</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">matchers</span><span class="s3">.</span><span class="s1">assertNaN </span><span class="s3">= </span><span class="s1">assertNaN</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">matchers</span><span class="s3">.</span><span class="s1">assertNegUnlimited </span><span class="s3">= </span><span class="s1">assertNegUnlimited</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">matchers</span><span class="s3">.</span><span class="s1">assertPosUnlimited </span><span class="s3">= </span><span class="s1">assertPosUnlimited</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">matchers</span><span class="s3">.</span><span class="s1">assertDeepEquals </span><span class="s3">= </span><span class="s1">assertDeepEquals</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">matchers</span><span class="s3">.</span><span class="s1">assertPromiseIsPending </span><span class="s3">= </span><span class="s1">assertPromiseIsPending</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">matchers</span><span class="s3">.</span><span class="s1">assertPromiseIsRejected </span><span class="s3">= </span><span class="s1">assertPromiseIsRejected</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">matchers</span><span class="s3">.</span><span class="s1">assertPromiseIsRejectedWith </span><span class="s3">= </span><span class="s1">assertPromiseIsRejectedWith</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">matchers</span><span class="s3">.</span><span class="s1">assertPromiseIsRejectedWithError </span><span class="s3">= </span><span class="s1">assertPromiseIsRejectedWithError</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">matchers</span><span class="s3">.</span><span class="s1">assertPromiseIsResolved </span><span class="s3">= </span><span class="s1">assertPromiseIsResolved</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">matchers</span><span class="s3">.</span><span class="s1">assertPromiseIsResolvedWith </span><span class="s3">= </span><span class="s1">assertPromiseIsResolvedWith</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">init</span><span class="s5">(</span><span class="s1">coreContext</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext </span><span class="s3">= </span><span class="s1">coreContext</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">extendsMatchers</span><span class="s5">()</span><span class="s3">;</span>
+        <span class="s1">const expectService </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s2">'expect'</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">expectService</span><span class="s3">.</span><span class="s1">addMatchers</span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">matchers</span><span class="s5">)</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">apis</span><span class="s5">() </span><span class="s4">{</span>
+        <span class="s1">return </span><span class="s4">{</span>
+            <span class="s2">'expect'</span><span class="s3">: </span><span class="s1">function </span><span class="s5">(</span><span class="s1">actualValue</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">return this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s2">'expect'</span><span class="s5">)</span><span class="s3">.</span><span class="s1">expect</span><span class="s5">(</span><span class="s1">actualValue</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span><span class="s3">;</span>
+    <span class="s4">}</span>
+<span class="s4">}</span>
+
+<span class="s1">export default ExpectExtend</span><span class="s3">;</span>
+</pre>
+</body>
+</html>

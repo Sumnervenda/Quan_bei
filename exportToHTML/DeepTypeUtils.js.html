@@ -1,0 +1,160 @@
+<html>
+<head>
+<title>DeepTypeUtils.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #808080;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #faa23d;}
+.s3 { color: #db7e9b;}
+.s4 { color: #e2da90;}
+.s5 { color: #aa7dfc;}
+.s6 { color: #b3e54c;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+DeepTypeUtils.js</font>
+</center></td></tr></table>
+<pre><span class="s0">/* 
+ * Copyright (c) 2022 Huawei Device Co., Ltd. 
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ */</span>
+
+<span class="s1">class DeepTypeUtils </span><span class="s2">{</span>
+    <span class="s1">static getType_</span><span class="s3">(</span><span class="s1">value</span><span class="s3">) </span><span class="s2">{</span>
+       <span class="s1">return Object</span><span class="s4">.</span><span class="s1">prototype</span><span class="s4">.</span><span class="s1">toString</span><span class="s4">.</span><span class="s1">apply</span><span class="s3">(</span><span class="s1">value</span><span class="s3">)</span><span class="s4">;</span>
+   <span class="s2">}</span>
+    <span class="s1">static isA_</span><span class="s3">(</span><span class="s1">typeName</span><span class="s4">, </span><span class="s1">value</span><span class="s3">) </span><span class="s2">{</span>
+        <span class="s1">return this</span><span class="s4">.</span><span class="s1">getType_</span><span class="s3">(</span><span class="s1">value</span><span class="s3">) </span><span class="s4">=== </span><span class="s5">'[object ' </span><span class="s4">+ </span><span class="s1">typeName </span><span class="s4">+ </span><span class="s5">']'</span><span class="s4">;</span>
+    <span class="s2">}</span>
+    <span class="s1">static isAsymmetricEqualityTester_</span><span class="s3">(</span><span class="s1">obj</span><span class="s3">) </span><span class="s2">{</span>
+        <span class="s1">return obj </span><span class="s4">? </span><span class="s1">this</span><span class="s4">.</span><span class="s1">isA_</span><span class="s3">(</span><span class="s5">'Function'</span><span class="s4">, </span><span class="s1">obj</span><span class="s4">.</span><span class="s1">asymmetricMatch</span><span class="s3">) </span><span class="s4">: </span><span class="s1">false</span><span class="s4">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">/** 
+     * 是否是function 
+     * @param value 
+     */</span>
+    <span class="s1">static isFunction_</span><span class="s3">(</span><span class="s1">value</span><span class="s3">) </span><span class="s2">{</span>
+        <span class="s1">return this</span><span class="s4">.</span><span class="s1">isA_</span><span class="s3">(</span><span class="s5">'Function'</span><span class="s4">, </span><span class="s1">value</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">/** 
+     * 是否是undefined 
+     * @param obj 
+     */</span>
+    <span class="s1">static isUndefined</span><span class="s3">(</span><span class="s1">obj</span><span class="s3">) </span><span class="s2">{</span>
+        <span class="s1">return obj </span><span class="s4">=== </span><span class="s1">void </span><span class="s6">0</span><span class="s4">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">/** 
+     * 是否是Node 
+     * @param obj 
+     */</span>
+    <span class="s1">static isDomNode</span><span class="s3">(</span><span class="s1">obj</span><span class="s3">) </span><span class="s2">{</span>
+        <span class="s1">return obj </span><span class="s4">!== </span><span class="s1">null </span><span class="s4">&amp;&amp;</span>
+              <span class="s1">typeof obj </span><span class="s4">=== </span><span class="s5">'object' </span><span class="s4">&amp;&amp;</span>
+              <span class="s1">typeof obj</span><span class="s4">.</span><span class="s1">nodeType </span><span class="s4">=== </span><span class="s5">'number' </span><span class="s4">&amp;&amp;</span>
+              <span class="s1">typeof obj</span><span class="s4">.</span><span class="s1">nodeName </span><span class="s4">=== </span><span class="s5">'string'</span><span class="s4">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">/** 
+     * 是否是promise对象 
+     * @param obj 
+     */</span>
+    <span class="s1">static isPromise </span><span class="s3">(</span><span class="s1">obj</span><span class="s3">) </span><span class="s2">{</span>
+        <span class="s1">return </span><span class="s4">!!</span><span class="s1">obj </span><span class="s4">&amp;&amp; </span><span class="s1">obj</span><span class="s4">.</span><span class="s1">constructor </span><span class="s4">=== </span><span class="s1">Promise</span><span class="s4">;</span>
+  <span class="s2">}</span><span class="s4">;</span>
+    <span class="s0">/** 
+     *  是否是map对象 
+     * @param obj 
+     */</span>
+    <span class="s1">static isMap</span><span class="s3">(</span><span class="s1">obj</span><span class="s3">) </span><span class="s2">{</span>
+        <span class="s1">return </span><span class="s3">(</span>
+            <span class="s1">obj </span><span class="s4">!== </span><span class="s1">null </span><span class="s4">&amp;&amp;</span>
+            <span class="s1">typeof obj </span><span class="s4">!== </span><span class="s5">'undefined' </span><span class="s4">&amp;&amp;</span>
+            <span class="s1">obj</span><span class="s4">.</span><span class="s1">constructor </span><span class="s4">=== </span><span class="s1">Map</span>
+        <span class="s3">)</span><span class="s4">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">/** 
+     * 是否是set对象 
+     * @param obj 对象 
+     */</span>
+    <span class="s1">static isSet</span><span class="s3">(</span><span class="s1">obj</span><span class="s3">) </span><span class="s2">{</span>
+        <span class="s1">return </span><span class="s3">(</span>
+            <span class="s1">obj </span><span class="s4">!== </span><span class="s1">null </span><span class="s4">&amp;&amp;</span>
+            <span class="s1">typeof obj </span><span class="s4">!== </span><span class="s5">'undefined' </span><span class="s4">&amp;&amp;</span>
+            <span class="s1">obj</span><span class="s4">.</span><span class="s1">constructor </span><span class="s4">=== </span><span class="s1">Set</span>
+        <span class="s3">)</span><span class="s4">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">/** 
+     * 对象是否有key属性 
+     * @param obj 对象 
+     * @param key 对象属性名称 
+     */</span>
+    <span class="s1">static has</span><span class="s3">(</span><span class="s1">obj</span><span class="s4">, </span><span class="s1">key</span><span class="s3">) </span><span class="s2">{</span>
+        <span class="s1">return Object</span><span class="s4">.</span><span class="s1">prototype</span><span class="s4">.</span><span class="s1">hasOwnProperty</span><span class="s4">.</span><span class="s1">call</span><span class="s3">(</span><span class="s1">obj</span><span class="s4">, </span><span class="s1">key</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">/** 
+     * 获取对象的自有属性 
+     * @param obj 对象 
+     * @param isArray 是否是数组,[object Array] 
+     */</span>
+    <span class="s1">static keys</span><span class="s3">(</span><span class="s1">obj</span><span class="s4">, </span><span class="s1">isArray</span><span class="s3">) </span><span class="s2">{</span>
+     <span class="s1">const extraKeys </span><span class="s4">= </span><span class="s3">[]</span><span class="s4">;</span>
+        <span class="s0">// 获取对象所有属性</span>
+     <span class="s1">const  allKeys </span><span class="s4">= </span><span class="s1">this</span><span class="s4">.</span><span class="s1">getAllKeys</span><span class="s3">(</span><span class="s1">obj</span><span class="s3">)</span><span class="s4">;</span>
+        <span class="s1">if </span><span class="s3">(</span><span class="s4">!</span><span class="s1">isArray</span><span class="s3">) </span><span class="s2">{</span>
+            <span class="s1">return allKeys</span><span class="s4">;</span>
+        <span class="s2">}</span>
+        <span class="s1">if </span><span class="s3">(</span><span class="s1">allKeys</span><span class="s4">.</span><span class="s1">length </span><span class="s4">=== </span><span class="s6">0</span><span class="s3">) </span><span class="s2">{</span>
+            <span class="s1">return allKeys</span><span class="s4">;</span>
+        <span class="s2">}</span>
+        <span class="s1">for </span><span class="s3">(</span><span class="s1">const k of allKeys</span><span class="s3">) </span><span class="s2">{</span>
+            <span class="s1">if </span><span class="s3">(</span><span class="s1">typeof k </span><span class="s4">=== </span><span class="s5">'symbol' </span><span class="s4">|| !</span><span class="s5">/^[0-9]+$/</span><span class="s4">.</span><span class="s1">test</span><span class="s3">(</span><span class="s1">k</span><span class="s3">)) </span><span class="s2">{</span>
+                <span class="s1">extraKeys</span><span class="s4">.</span><span class="s1">push</span><span class="s3">(</span><span class="s1">k</span><span class="s3">)</span><span class="s4">;</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+        <span class="s1">return extraKeys</span><span class="s4">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">/** 
+     * 获取obj对象的所有属性 
+     * @param obj obj对象 
+     */</span>
+    <span class="s1">static getAllKeys</span><span class="s3">(</span><span class="s1">obj</span><span class="s3">) </span><span class="s2">{</span>
+        <span class="s1">const keys </span><span class="s4">= </span><span class="s3">[]</span><span class="s4">;</span>
+        <span class="s1">for </span><span class="s3">(</span><span class="s1">let key in obj</span><span class="s3">) </span><span class="s2">{</span>
+            <span class="s1">if</span><span class="s3">(</span><span class="s1">this</span><span class="s4">.</span><span class="s1">has</span><span class="s3">(</span><span class="s1">obj</span><span class="s4">, </span><span class="s1">key</span><span class="s3">)) </span><span class="s2">{</span>
+                <span class="s1">keys</span><span class="s4">.</span><span class="s1">push</span><span class="s3">(</span><span class="s1">key</span><span class="s3">)</span><span class="s4">;</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+        <span class="s1">const symbols </span><span class="s4">= </span><span class="s1">Object</span><span class="s4">.</span><span class="s1">getOwnPropertySymbols</span><span class="s3">(</span><span class="s1">obj</span><span class="s3">)</span><span class="s4">;</span>
+        <span class="s1">for </span><span class="s3">(</span><span class="s1">const sym of symbols</span><span class="s3">) </span><span class="s2">{</span>
+            <span class="s1">if </span><span class="s3">(</span><span class="s1">obj</span><span class="s4">.</span><span class="s1">propertyIsEnumerable</span><span class="s3">(</span><span class="s1">sym</span><span class="s3">)) </span><span class="s2">{</span>
+                <span class="s1">keys</span><span class="s4">.</span><span class="s1">push</span><span class="s3">(</span><span class="s1">sym</span><span class="s3">)</span><span class="s4">;</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+        <span class="s1">return keys</span><span class="s4">;</span>
+    <span class="s2">}</span>
+
+<span class="s2">}</span>
+<span class="s1">export default DeepTypeUtils</span><span class="s4">;</span></pre>
+</body>
+</html>

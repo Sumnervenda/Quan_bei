@@ -1,0 +1,69 @@
+<html>
+<head>
+<title>OpenHarmonyTestRunner.ts</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #a9b7c6;}
+.s1 { color: #aa7dfc;}
+.s2 { color: #e2da90;}
+.s3 { color: #db7e9b;}
+.s4 { color: #faa23d;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+OpenHarmonyTestRunner.ts</font>
+</center></td></tr></table>
+<pre><span class="s0">import hilog from </span><span class="s1">'@ohos.hilog'</span><span class="s2">;</span>
+<span class="s0">import TestRunner from </span><span class="s1">'@ohos.application.testRunner'</span><span class="s2">;</span>
+<span class="s0">import AbilityDelegatorRegistry from </span><span class="s1">'@ohos.app.ability.abilityDelegatorRegistry'</span><span class="s2">;</span>
+
+<span class="s0">var abilityDelegator </span><span class="s2">= </span><span class="s0">undefined</span>
+<span class="s0">var abilityDelegatorArguments </span><span class="s2">= </span><span class="s0">undefined</span>
+
+<span class="s0">async function onAbilityCreateCallback</span><span class="s3">() </span><span class="s4">{</span>
+    <span class="s0">hilog</span><span class="s2">.</span><span class="s0">info</span><span class="s3">(0x0000</span><span class="s2">, </span><span class="s1">'testTag'</span><span class="s2">, </span><span class="s1">'%{public}s'</span><span class="s2">, </span><span class="s1">'onAbilityCreateCallback'</span><span class="s3">)</span><span class="s2">;</span>
+<span class="s4">}</span>
+
+<span class="s0">async function addAbilityMonitorCallback</span><span class="s3">(</span><span class="s0">err</span><span class="s2">: </span><span class="s0">any</span><span class="s3">) </span><span class="s4">{</span>
+    <span class="s0">hilog</span><span class="s2">.</span><span class="s0">info</span><span class="s3">(0x0000</span><span class="s2">, </span><span class="s1">'testTag'</span><span class="s2">, </span><span class="s1">'addAbilityMonitorCallback : %{public}s'</span><span class="s2">, </span><span class="s0">JSON</span><span class="s2">.</span><span class="s0">stringify</span><span class="s3">(</span><span class="s0">err</span><span class="s3">) </span><span class="s2">?? </span><span class="s1">''</span><span class="s3">)</span><span class="s2">;</span>
+<span class="s4">}</span>
+
+<span class="s0">export default class OpenHarmonyTestRunner implements TestRunner </span><span class="s4">{</span>
+    <span class="s0">constructor</span><span class="s3">() </span><span class="s4">{</span>
+    <span class="s4">}</span>
+
+    <span class="s0">onPrepare</span><span class="s3">() </span><span class="s4">{</span>
+        <span class="s0">hilog</span><span class="s2">.</span><span class="s0">info</span><span class="s3">(0x0000</span><span class="s2">, </span><span class="s1">'testTag'</span><span class="s2">, </span><span class="s1">'%{public}s'</span><span class="s2">, </span><span class="s1">'OpenHarmonyTestRunner OnPrepare '</span><span class="s3">)</span><span class="s2">;</span>
+    <span class="s4">}</span>
+
+    <span class="s0">async onRun</span><span class="s3">() </span><span class="s4">{</span>
+        <span class="s0">hilog</span><span class="s2">.</span><span class="s0">info</span><span class="s3">(0x0000</span><span class="s2">, </span><span class="s1">'testTag'</span><span class="s2">, </span><span class="s1">'%{public}s'</span><span class="s2">, </span><span class="s1">'OpenHarmonyTestRunner onRun run'</span><span class="s3">)</span><span class="s2">;</span>
+        <span class="s0">abilityDelegatorArguments </span><span class="s2">= </span><span class="s0">AbilityDelegatorRegistry</span><span class="s2">.</span><span class="s0">getArguments</span><span class="s3">()</span>
+        <span class="s0">abilityDelegator </span><span class="s2">= </span><span class="s0">AbilityDelegatorRegistry</span><span class="s2">.</span><span class="s0">getAbilityDelegator</span><span class="s3">()</span>
+        <span class="s0">var testAbilityName </span><span class="s2">= </span><span class="s0">abilityDelegatorArguments</span><span class="s2">.</span><span class="s0">bundleName </span><span class="s2">+ </span><span class="s1">'.TestAbility'</span>
+        <span class="s0">let lMonitor </span><span class="s2">= </span><span class="s4">{</span>
+            <span class="s0">abilityName</span><span class="s2">: </span><span class="s0">testAbilityName</span><span class="s2">,</span>
+            <span class="s0">onAbilityCreate</span><span class="s2">: </span><span class="s0">onAbilityCreateCallback</span><span class="s2">,</span>
+        <span class="s4">}</span><span class="s2">;</span>
+        <span class="s0">abilityDelegator</span><span class="s2">.</span><span class="s0">addAbilityMonitor</span><span class="s3">(</span><span class="s0">lMonitor</span><span class="s2">, </span><span class="s0">addAbilityMonitorCallback</span><span class="s3">)</span>
+        <span class="s0">var cmd </span><span class="s2">= </span><span class="s1">'aa start -d 0 -a TestAbility' </span><span class="s2">+ </span><span class="s1">' -b ' </span><span class="s2">+ </span><span class="s0">abilityDelegatorArguments</span><span class="s2">.</span><span class="s0">bundleName</span>
+        <span class="s0">var debug </span><span class="s2">= </span><span class="s0">abilityDelegatorArguments</span><span class="s2">.</span><span class="s0">parameters</span><span class="s3">[</span><span class="s1">'-D'</span><span class="s3">]</span>
+        <span class="s0">if </span><span class="s3">(</span><span class="s0">debug </span><span class="s2">== </span><span class="s1">'true'</span><span class="s3">)</span>
+        <span class="s4">{</span>
+            <span class="s0">cmd </span><span class="s2">+= </span><span class="s1">' -D'</span>
+        <span class="s4">}</span>
+        <span class="s0">hilog</span><span class="s2">.</span><span class="s0">info</span><span class="s3">(0x0000</span><span class="s2">, </span><span class="s1">'testTag'</span><span class="s2">, </span><span class="s1">'cmd : %{public}s'</span><span class="s2">, </span><span class="s0">cmd</span><span class="s3">)</span><span class="s2">;</span>
+        <span class="s0">abilityDelegator</span><span class="s2">.</span><span class="s0">executeShellCommand</span><span class="s3">(</span><span class="s0">cmd</span><span class="s2">,</span>
+            <span class="s3">(</span><span class="s0">err</span><span class="s2">: </span><span class="s0">any</span><span class="s2">, </span><span class="s0">d</span><span class="s2">: </span><span class="s0">any</span><span class="s3">) </span><span class="s2">=&gt; </span><span class="s4">{</span>
+                <span class="s0">hilog</span><span class="s2">.</span><span class="s0">info</span><span class="s3">(0x0000</span><span class="s2">, </span><span class="s1">'testTag'</span><span class="s2">, </span><span class="s1">'executeShellCommand : err : %{public}s'</span><span class="s2">, </span><span class="s0">JSON</span><span class="s2">.</span><span class="s0">stringify</span><span class="s3">(</span><span class="s0">err</span><span class="s3">) </span><span class="s2">?? </span><span class="s1">''</span><span class="s3">)</span><span class="s2">;</span>
+                <span class="s0">hilog</span><span class="s2">.</span><span class="s0">info</span><span class="s3">(0x0000</span><span class="s2">, </span><span class="s1">'testTag'</span><span class="s2">, </span><span class="s1">'executeShellCommand : data : %{public}s'</span><span class="s2">, </span><span class="s0">d</span><span class="s2">.</span><span class="s0">stdResult </span><span class="s2">?? </span><span class="s1">''</span><span class="s3">)</span><span class="s2">;</span>
+                <span class="s0">hilog</span><span class="s2">.</span><span class="s0">info</span><span class="s3">(0x0000</span><span class="s2">, </span><span class="s1">'testTag'</span><span class="s2">, </span><span class="s1">'executeShellCommand : data : %{public}s'</span><span class="s2">, </span><span class="s0">d</span><span class="s2">.</span><span class="s0">exitCode </span><span class="s2">?? </span><span class="s1">''</span><span class="s3">)</span><span class="s2">;</span>
+            <span class="s4">}</span><span class="s3">)</span>
+        <span class="s0">hilog</span><span class="s2">.</span><span class="s0">info</span><span class="s3">(0x0000</span><span class="s2">, </span><span class="s1">'testTag'</span><span class="s2">, </span><span class="s1">'%{public}s'</span><span class="s2">, </span><span class="s1">'OpenHarmonyTestRunner onRun end'</span><span class="s3">)</span><span class="s2">;</span>
+    <span class="s4">}</span>
+<span class="s4">}</span></pre>
+</body>
+</html>

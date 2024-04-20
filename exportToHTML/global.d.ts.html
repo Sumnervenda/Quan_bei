@@ -1,0 +1,193 @@
+<html>
+<head>
+<title>global.d.ts</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #808080;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #faa23d;}
+.s3 { color: #db7e9b;}
+.s4 { color: #e2da90;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+global.d.ts</font>
+</center></td></tr></table>
+<pre><span class="s0">/* 
+ * Copyright (c) 2021 Huawei Device Co., Ltd. 
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ */</span>
+<span class="s0">/// &lt;reference path=&quot;../../../component/common.d.ts&quot; /&gt;</span>
+<span class="s0">// import { TouchObject, KeyEvent, MouseEvent } from 'SpecialEvent';</span>
+<span class="s0">/** 
+ * Defines the console info. 
+ * @syscap SystemCapability.ArkUI.ArkUI.Full 
+ * @since 7 
+ */</span>
+<span class="s0">/** 
+ * Defines the console info. 
+ * @syscap SystemCapability.ArkUI.ArkUI.Full 
+ * @form 
+ * @since 9 
+ */</span>
+<span class="s1">declare class console </span><span class="s2">{</span>
+    <span class="s0">/** 
+     * Prints &quot;debug&quot; logs. 
+     * @param message Text to print. 
+     * @since 7 
+     */</span>
+    <span class="s0">/** 
+     * Prints &quot;debug&quot; logs. 
+     * @param message Text to print. 
+     * @form 
+     * @since 9 
+     */</span>
+    <span class="s1">static debug</span><span class="s3">(</span><span class="s1">message</span><span class="s4">: </span><span class="s1">string</span><span class="s4">, ...</span><span class="s1">arguments</span><span class="s4">: </span><span class="s1">any</span><span class="s3">[])</span><span class="s4">: </span><span class="s1">void</span><span class="s4">;</span>
+    <span class="s0">/** 
+     * Prints &quot;log&quot; logs. 
+     * @param message Text to print. 
+     * @since 7 
+     */</span>
+    <span class="s0">/** 
+     * Prints &quot;log&quot; logs. 
+     * @param message Text to print. 
+     * @form 
+     * @since 9 
+     */</span>
+    <span class="s1">static log</span><span class="s3">(</span><span class="s1">message</span><span class="s4">: </span><span class="s1">string</span><span class="s4">, ...</span><span class="s1">arguments</span><span class="s4">: </span><span class="s1">any</span><span class="s3">[])</span><span class="s4">: </span><span class="s1">void</span><span class="s4">;</span>
+    <span class="s0">/** 
+     * Prints &quot;info&quot; logs. 
+     * @param message Text to print. 
+     * @since 7 
+     */</span>
+    <span class="s0">/** 
+     * Prints &quot;info&quot; logs. 
+     * @param message Text to print. 
+     * @form 
+     * @since 9 
+     */</span>
+    <span class="s1">static info</span><span class="s3">(</span><span class="s1">message</span><span class="s4">: </span><span class="s1">string</span><span class="s4">, ...</span><span class="s1">arguments</span><span class="s4">: </span><span class="s1">any</span><span class="s3">[])</span><span class="s4">: </span><span class="s1">void</span><span class="s4">;</span>
+    <span class="s0">/** 
+     * Prints &quot;warn&quot; logs. 
+     * @param message Text to print. 
+     * @since 7 
+     */</span>
+    <span class="s0">/** 
+     * Prints &quot;warn&quot; logs. 
+     * @param message Text to print. 
+     * @form 
+     * @since 9 
+     */</span>
+    <span class="s1">static warn</span><span class="s3">(</span><span class="s1">message</span><span class="s4">: </span><span class="s1">string</span><span class="s4">, ...</span><span class="s1">arguments</span><span class="s4">: </span><span class="s1">any</span><span class="s3">[])</span><span class="s4">: </span><span class="s1">void</span><span class="s4">;</span>
+    <span class="s0">/** 
+     * Prints &quot;error&quot; logs. 
+     * @param message Text to print. 
+     * @since 7 
+     */</span>
+    <span class="s0">/** 
+     * Prints &quot;error&quot; logs. 
+     * @param message Text to print. 
+     * @form 
+     * @since 9 
+     */</span>
+    <span class="s1">static error</span><span class="s3">(</span><span class="s1">message</span><span class="s4">: </span><span class="s1">string</span><span class="s4">, ...</span><span class="s1">arguments</span><span class="s4">: </span><span class="s1">any</span><span class="s3">[])</span><span class="s4">: </span><span class="s1">void</span><span class="s4">;</span>
+<span class="s2">}</span>
+<span class="s0">/** 
+ * Sets the interval for repeatedly calling a function. 
+ * @syscap SystemCapability.ArkUI.ArkUI.Full 
+ * @param handler Indicates the function to be called after the timer goes off. For devices of &quot;tv&quot;, &quot;phone, tablet&quot;, and &quot;wearable&quot; types, this parameter can be a function or string. For devices of &quot;lite wearable&quot; and &quot;smartVision&quot; types, this parameter must be a function. 
+ * @param delay Indicates the interval between each two calls, in milliseconds. The function will be called after this delay. 
+ * @param arguments Indicates additional arguments to pass to &quot;handler&quot; when the timer goes off. 
+ * @returns Returns the timer ID. 
+ * @since 7 
+ */</span>
+<span class="s1">declare function setInterval</span><span class="s3">(</span><span class="s1">handler</span><span class="s4">: </span><span class="s1">Function </span><span class="s4">| </span><span class="s1">string</span><span class="s4">, </span><span class="s1">delay</span><span class="s4">: </span><span class="s1">number</span><span class="s4">, ...</span><span class="s1">arguments</span><span class="s4">: </span><span class="s1">any</span><span class="s3">[])</span><span class="s4">: </span><span class="s1">number</span><span class="s4">;</span>
+<span class="s0">/** 
+ * Sets a timer after which a function will be executed. 
+ * @syscap SystemCapability.ArkUI.ArkUI.Full 
+ * @param handler Indicates the function to be called after the timer goes off. For devices of &quot;tv&quot;, &quot;phone, tablet&quot;, and &quot;wearable&quot; types, this parameter can be a function or string. For devices of &quot;lite wearable&quot; and &quot;smartVision&quot; types, this parameter must be a function. 
+ * @param delay Indicates the delay (in milliseconds) after which the function will be called. If this parameter is left empty, default value &quot;0&quot; will be used, which means that the function will be called immediately or as soon as possible. 
+ * @param arguments Indicates additional arguments to pass to &quot;handler&quot; when the timer goes off. 
+ * @returns Returns the timer ID. 
+ * @since 7 
+ */</span>
+<span class="s1">declare function setTimeout</span><span class="s3">(</span><span class="s1">handler</span><span class="s4">: </span><span class="s1">Function </span><span class="s4">| </span><span class="s1">string</span><span class="s4">, </span><span class="s1">delay</span><span class="s4">?: </span><span class="s1">number</span><span class="s4">, ...</span><span class="s1">arguments</span><span class="s4">: </span><span class="s1">any</span><span class="s3">[])</span><span class="s4">: </span><span class="s1">number</span><span class="s4">;</span>
+<span class="s0">/** 
+ * Cancel the interval set by &quot; setInterval()&quot;. 
+ * @syscap SystemCapability.ArkUI.ArkUI.Full 
+ * @param intervalID Indicates the timer ID returned by &quot;setInterval()&quot;. 
+ * @since 7 
+ */</span>
+<span class="s1">declare function clearInterval</span><span class="s3">(</span><span class="s1">intervalID</span><span class="s4">?: </span><span class="s1">number</span><span class="s3">)</span><span class="s4">: </span><span class="s1">void</span><span class="s4">;</span>
+<span class="s0">/** 
+ * Cancel the timer set by &quot;setTimeout()&quot;. 
+ * @syscap SystemCapability.ArkUI.ArkUI.Full 
+ * @param timeoutID Indicates the timer ID returned by &quot;setTimeout()&quot;. 
+ * @since 7 
+ */</span>
+<span class="s1">declare function clearTimeout</span><span class="s3">(</span><span class="s1">timeoutID</span><span class="s4">?: </span><span class="s1">number</span><span class="s3">)</span><span class="s4">: </span><span class="s1">void</span><span class="s4">;</span>
+<span class="s0">/** 
+ * Defining syscap function. 
+ * @syscap SystemCapability.ArkUI.ArkUI.Full 
+ * @since 8 
+ */</span>
+<span class="s1">declare function canIUse</span><span class="s3">(</span><span class="s1">syscap</span><span class="s4">: </span><span class="s1">string</span><span class="s3">)</span><span class="s4">: </span><span class="s1">boolean</span><span class="s4">;</span>
+<span class="s0">/** 
+ * Obtains all attributes of the component with the specified ID. 
+ * @param id ID of the component whose attributes are to be obtained. 
+ * @since 9 
+ * @test 
+ */</span>
+<span class="s1">declare function getInspectorByKey</span><span class="s3">(</span><span class="s1">id</span><span class="s4">: </span><span class="s1">string</span><span class="s3">)</span><span class="s4">: </span><span class="s1">string</span><span class="s4">;</span>
+<span class="s0">/** 
+ * Get components tree. 
+ * @since 9 
+ * @test 
+ */</span>
+<span class="s1">declare function getInspectorTree</span><span class="s3">()</span><span class="s4">: </span><span class="s1">Object</span><span class="s4">;</span>
+<span class="s0">/** 
+ * Sends an event to the component with the specified ID. 
+ * @param id ID of the component for which the event is to be sent. 
+ * @param action Type of the event to be sent. The options are as follows: Click event: 10 LongClick: 11. 
+ * @param params Event parameters. If there is no parameter, pass an empty string &quot;&quot;. 
+ * @since 9 
+ * @test 
+ */</span>
+<span class="s1">declare function sendEventByKey</span><span class="s3">(</span><span class="s1">id</span><span class="s4">: </span><span class="s1">string</span><span class="s4">, </span><span class="s1">action</span><span class="s4">: </span><span class="s1">number</span><span class="s4">, </span><span class="s1">params</span><span class="s4">: </span><span class="s1">string</span><span class="s3">)</span><span class="s4">: </span><span class="s1">boolean</span><span class="s4">;</span>
+<span class="s0">/** 
+ * Send touch event. 
+ * @param event TouchObject to be sent. 
+ * @since 9 
+ * @test 
+ */</span>
+<span class="s1">declare function sendTouchEvent</span><span class="s3">(</span><span class="s1">event</span><span class="s4">: </span><span class="s1">TouchObject</span><span class="s3">)</span><span class="s4">: </span><span class="s1">boolean</span><span class="s4">;</span>
+<span class="s0">/** 
+ * Send key event. 
+ * @param event KeyEvent to be sent. 
+ * @since 9 
+ * @test 
+ */</span>
+<span class="s1">declare function sendKeyEvent</span><span class="s3">(</span><span class="s1">event</span><span class="s4">: </span><span class="s1">KeyEvent</span><span class="s3">)</span><span class="s4">: </span><span class="s1">boolean</span><span class="s4">;</span>
+<span class="s0">/** 
+ * Send mouse event. 
+ * @param event MouseEvent to be sent. 
+ * @since 9 
+ * @test 
+ */</span>
+<span class="s1">declare function sendMouseEvent</span><span class="s3">(</span><span class="s1">event</span><span class="s4">: </span><span class="s1">MouseEvent</span><span class="s3">)</span><span class="s4">: </span><span class="s1">boolean</span><span class="s4">;</span>
+</pre>
+</body>
+</html>

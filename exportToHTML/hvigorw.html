@@ -1,0 +1,72 @@
+<html>
+<head>
+<title>hvigorw</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #a9b7c6; font-weight: bold;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #808080;}
+.s3 { color: #cc7832;}
+.s4 { color: #a9b7c6;}
+.s5 { color: #6a8759;}
+.s6 { color: #c57633;}
+.s7 { color: #6897bb;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+hvigorw</font>
+</center></td></tr></table>
+<pre><span class="s0">#!/bin/bash</span>
+
+<span class="s2"># ----------------------------------------------------------------------------</span>
+<span class="s2">#  Hvigor startup script, version 1.0.0</span>
+<span class="s2"># </span>
+<span class="s2">#  Required ENV vars:</span>
+<span class="s2">#  ------------------</span>
+<span class="s2">#    NODE_HOME - location of a Node home dir</span>
+<span class="s2">#    or </span>
+<span class="s2">#    Add /usr/local/nodejs/bin to the PATH environment variable</span>
+<span class="s2"># ----------------------------------------------------------------------------</span>
+
+<span class="s1">HVIGOR_APP_HOME=</span><span class="s3">$</span><span class="s1">(dirname </span><span class="s3">$</span><span class="s1">(readlink -f </span><span class="s4">$0</span><span class="s1">))</span>
+<span class="s1">HVIGOR_WRAPPER_SCRIPT=</span><span class="s3">$</span><span class="s1">{HVIGOR_APP_HOME}/hvigor/hvigor-wrapper.js</span>
+<span class="s1">warn() {</span>
+	<span class="s1">echo </span><span class="s5">&quot;&quot;</span>
+	<span class="s1">echo -e </span><span class="s5">&quot;\033[1;33m</span><span class="s6">`</span><span class="s1">date </span><span class="s5">'+[%Y-%m-%d %H:%M:%S]'</span><span class="s6">`</span><span class="s4">$@</span><span class="s5">\033[0m&quot;</span>
+<span class="s1">}</span>
+
+<span class="s1">error() {</span>
+	<span class="s1">echo </span><span class="s5">&quot;&quot;</span>
+	<span class="s1">echo -e </span><span class="s5">&quot;\033[1;31m</span><span class="s6">`</span><span class="s1">date </span><span class="s5">'+[%Y-%m-%d %H:%M:%S]'</span><span class="s6">`</span><span class="s4">$@</span><span class="s5">\033[0m&quot;</span>
+<span class="s1">}</span>
+
+<span class="s1">fail() {</span>
+	<span class="s1">error </span><span class="s5">&quot;</span><span class="s4">$@</span><span class="s5">&quot;</span>
+	<span class="s1">exit </span><span class="s7">1</span>
+<span class="s1">}</span>
+
+<span class="s2"># Determine node to start hvigor wrapper script</span>
+<span class="s3">if </span><span class="s1">[ -n </span><span class="s5">&quot;</span><span class="s3">$</span><span class="s1">{NODE_HOME}</span><span class="s5">&quot; </span><span class="s1">];</span><span class="s3">then</span>
+   <span class="s1">EXECUTABLE_NODE=</span><span class="s5">&quot;</span><span class="s3">$</span><span class="s1">{NODE_HOME}</span><span class="s5">/bin/node&quot;</span>
+   <span class="s3">if </span><span class="s1">[ </span><span class="s3">! </span><span class="s1">-x </span><span class="s5">&quot;</span><span class="s4">$EXECUTABLE_NODE</span><span class="s5">&quot; </span><span class="s1">];</span><span class="s3">then</span>
+       <span class="s1">fail </span><span class="s5">&quot;ERROR: NODE_HOME is set to an invalid directory,check </span><span class="s4">$NODE_HOME</span><span class="s5">\n\nPlease set NODE_HOME in your environment to the location where your nodejs installed&quot;</span>
+   <span class="s3">fi</span>
+<span class="s3">else</span>
+   <span class="s1">EXECUTABLE_NODE=</span><span class="s5">&quot;node&quot;</span>
+   <span class="s1">which </span><span class="s3">$</span><span class="s1">{EXECUTABLE_NODE} </span><span class="s3">&gt; </span><span class="s1">/dev/null </span><span class="s7">2</span><span class="s1">&gt;&amp;</span><span class="s7">1 </span><span class="s3">|| </span><span class="s1">fail </span><span class="s5">&quot;ERROR: NODE_HOME is not set and not 'node' command found in your path&quot;</span>
+<span class="s3">fi</span>
+
+<span class="s2"># Check hvigor wrapper script</span>
+<span class="s3">if </span><span class="s1">[ </span><span class="s3">! </span><span class="s1">-r </span><span class="s5">&quot;</span><span class="s4">$HVIGOR_WRAPPER_SCRIPT</span><span class="s5">&quot; </span><span class="s1">];</span><span class="s3">then</span>
+	<span class="s1">fail </span><span class="s5">&quot;ERROR: Couldn't find hvigor/hvigor-wrapper.js in </span><span class="s3">$</span><span class="s1">{HVIGOR_APP_HOME}</span><span class="s5">&quot;</span>
+<span class="s3">fi</span>
+
+<span class="s2"># start hvigor-wrapper script</span>
+<span class="s1">exec </span><span class="s5">&quot;</span><span class="s3">$</span><span class="s1">{EXECUTABLE_NODE}</span><span class="s5">&quot; </span><span class="s1">\ 
+  </span><span class="s5">&quot;</span><span class="s3">$</span><span class="s1">{HVIGOR_WRAPPER_SCRIPT}</span><span class="s5">&quot; &quot;</span><span class="s4">$@</span><span class="s5">&quot;</span>
+</pre>
+</body>
+</html>

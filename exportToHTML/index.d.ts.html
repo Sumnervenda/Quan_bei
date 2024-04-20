@@ -1,0 +1,157 @@
+<html>
+<head>
+<title>index.d.ts</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #808080;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #e2da90;}
+.s3 { color: #b3e54c;}
+.s4 { color: #faa23d;}
+.s5 { color: #db7e9b;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+index.d.ts</font>
+</center></td></tr></table>
+<pre><span class="s0">/* 
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd. 
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;) 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ */</span>
+
+<span class="s1">export const DEFAULT </span><span class="s2">= </span><span class="s3">0B0000</span>
+
+<span class="s1">export const when</span><span class="s2">: </span><span class="s1">when</span><span class="s2">;</span>
+
+<span class="s1">export enum TestType </span><span class="s4">{</span>
+    <span class="s1">FUNCTION </span><span class="s2">= </span><span class="s3">0B1</span><span class="s2">,</span>
+    <span class="s1">PERFORMANCE </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">1</span><span class="s2">,</span>
+    <span class="s1">POWER </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">2</span><span class="s2">,</span>
+    <span class="s1">RELIABILITY </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">3</span><span class="s2">,</span>
+    <span class="s1">SECURITY </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">4</span><span class="s2">,</span>
+    <span class="s1">GLOBAL </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">5</span><span class="s2">,</span>
+    <span class="s1">COMPATIBILITY </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">6</span><span class="s2">,</span>
+    <span class="s1">USER </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">7</span><span class="s2">,</span>
+    <span class="s1">STANDARD </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">8</span><span class="s2">,</span>
+    <span class="s1">SAFETY </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">9</span><span class="s2">,</span>
+    <span class="s1">RESILIENCE </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">10</span>
+<span class="s4">}</span>
+
+<span class="s1">export enum Size </span><span class="s4">{</span>
+    <span class="s1">SMALLTEST </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">16</span><span class="s2">,</span>
+    <span class="s1">MEDIUMTEST </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">17</span><span class="s2">,</span>
+    <span class="s1">LARGETEST </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">18</span>
+<span class="s4">}</span>
+
+<span class="s1">export enum Level </span><span class="s4">{</span>
+    <span class="s1">LEVEL0 </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">24</span><span class="s2">,</span>
+    <span class="s1">LEVEL1 </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">25</span><span class="s2">,</span>
+    <span class="s1">LEVEL2 </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">26</span><span class="s2">,</span>
+    <span class="s1">LEVEL3 </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">27</span><span class="s2">,</span>
+    <span class="s1">LEVEL4 </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">28</span>
+<span class="s4">}</span>
+
+<span class="s1">export function describe</span><span class="s5">(</span><span class="s1">testSuiteName</span><span class="s2">: </span><span class="s1">string</span><span class="s2">, </span><span class="s1">callback</span><span class="s2">: </span><span class="s1">Function</span><span class="s5">)</span><span class="s2">: </span><span class="s1">void</span>
+
+<span class="s1">export function beforeEach</span><span class="s5">(</span><span class="s1">callback</span><span class="s2">: </span><span class="s1">Function</span><span class="s5">)</span><span class="s2">: </span><span class="s1">void</span>
+
+<span class="s1">export function afterEach</span><span class="s5">(</span><span class="s1">callback</span><span class="s2">: </span><span class="s1">Function</span><span class="s5">)</span><span class="s2">: </span><span class="s1">void</span>
+
+<span class="s1">export function beforeAll</span><span class="s5">(</span><span class="s1">callback</span><span class="s2">: </span><span class="s1">Function</span><span class="s5">)</span><span class="s2">: </span><span class="s1">void</span>
+
+<span class="s1">export function afterAll</span><span class="s5">(</span><span class="s1">callback</span><span class="s2">: </span><span class="s1">Function</span><span class="s5">)</span><span class="s2">: </span><span class="s1">void</span>
+
+<span class="s1">export function it</span><span class="s5">(</span><span class="s1">testCaseName</span><span class="s2">: </span><span class="s1">string</span><span class="s2">, </span><span class="s1">attribute</span><span class="s2">: </span><span class="s5">(</span><span class="s1">TestType </span><span class="s2">| </span><span class="s1">Size </span><span class="s2">| </span><span class="s1">Level</span><span class="s5">)</span><span class="s2">, </span><span class="s1">callback</span><span class="s2">: </span><span class="s1">Function</span><span class="s5">)</span>
+
+<span class="s1">export interface Assert </span><span class="s4">{</span>
+    <span class="s1">assertClose</span><span class="s5">(</span><span class="s1">expectValue</span><span class="s2">: </span><span class="s1">number</span><span class="s2">, </span><span class="s1">precision</span><span class="s2">: </span><span class="s1">number</span><span class="s5">)</span><span class="s2">: </span><span class="s1">void</span>
+    <span class="s1">assertContain</span><span class="s5">(</span><span class="s1">expectValue</span><span class="s2">: </span><span class="s1">any</span><span class="s5">)</span><span class="s2">: </span><span class="s1">void</span>
+    <span class="s1">assertEqual</span><span class="s5">(</span><span class="s1">expectValue</span><span class="s2">: </span><span class="s1">any</span><span class="s5">)</span><span class="s2">: </span><span class="s1">void</span>
+    <span class="s1">assertFail</span><span class="s5">()</span><span class="s2">: </span><span class="s1">void</span>
+    <span class="s1">assertFalse</span><span class="s5">()</span><span class="s2">: </span><span class="s1">void</span>
+    <span class="s1">assertTrue</span><span class="s5">()</span><span class="s2">: </span><span class="s1">void</span>
+    <span class="s1">assertInstanceOf</span><span class="s5">(</span><span class="s1">expectValue</span><span class="s2">: </span><span class="s1">string</span><span class="s5">)</span><span class="s2">: </span><span class="s1">void</span>
+    <span class="s1">assertLarger</span><span class="s5">(</span><span class="s1">expectValue</span><span class="s2">: </span><span class="s1">number</span><span class="s5">)</span><span class="s2">: </span><span class="s1">void</span>
+    <span class="s1">assertLess</span><span class="s5">(</span><span class="s1">expectValue</span><span class="s2">: </span><span class="s1">number</span><span class="s5">)</span><span class="s2">: </span><span class="s1">void</span>
+    <span class="s1">assertNull</span><span class="s5">()</span><span class="s2">: </span><span class="s1">void</span>
+    <span class="s1">assertThrowError</span><span class="s5">(</span><span class="s1">expectValue</span><span class="s2">: </span><span class="s1">string</span><span class="s5">)</span><span class="s2">: </span><span class="s1">void</span>
+    <span class="s1">assertUndefined</span><span class="s5">()</span><span class="s2">: </span><span class="s1">void</span>
+    <span class="s1">assertLargerOrEqual</span><span class="s5">(</span><span class="s1">expectValue</span><span class="s2">: </span><span class="s1">number</span><span class="s5">)</span><span class="s2">:</span><span class="s1">void</span>
+    <span class="s1">assertLessOrEqual</span><span class="s5">(</span><span class="s1">expectValue</span><span class="s2">: </span><span class="s1">number</span><span class="s5">)</span><span class="s2">:</span><span class="s1">void</span>
+    <span class="s1">assertNaN</span><span class="s5">()</span><span class="s2">:</span><span class="s1">void</span>
+    <span class="s1">assertNegUnlimited</span><span class="s5">()</span><span class="s2">: </span><span class="s1">void</span>
+    <span class="s1">assertPosUnlimited</span><span class="s5">()</span><span class="s2">: </span><span class="s1">void</span>
+    <span class="s1">not</span><span class="s5">()</span><span class="s2">: </span><span class="s1">Assert</span><span class="s2">;</span>
+    <span class="s1">assertDeepEquals</span><span class="s5">(</span><span class="s1">expectValue</span><span class="s2">: </span><span class="s1">any</span><span class="s5">)</span><span class="s2">:</span><span class="s1">void</span>
+    <span class="s1">assertPromiseIsPending</span><span class="s5">()</span><span class="s2">: </span><span class="s1">void</span>
+    <span class="s1">assertPromiseIsRejected</span><span class="s5">()</span><span class="s2">: </span><span class="s1">void</span>
+    <span class="s1">assertPromiseIsRejectedWith</span><span class="s5">(</span><span class="s1">expectValue</span><span class="s2">?: </span><span class="s1">any</span><span class="s5">)</span><span class="s2">: </span><span class="s1">void</span>
+    <span class="s1">assertPromiseIsRejectedWithError</span><span class="s5">(</span><span class="s2">...</span><span class="s1">expectValue</span><span class="s5">)</span><span class="s2">: </span><span class="s1">void</span>
+    <span class="s1">assertPromiseIsResolved</span><span class="s5">()</span><span class="s2">: </span><span class="s1">void</span>
+    <span class="s1">assertPromiseIsResolvedWith</span><span class="s5">(</span><span class="s1">expectValue</span><span class="s2">?: </span><span class="s1">any</span><span class="s5">)</span><span class="s2">: </span><span class="s1">void</span>
+<span class="s4">}</span>
+
+<span class="s1">export function expect</span><span class="s5">(</span><span class="s1">actualValue</span><span class="s2">?: </span><span class="s1">any</span><span class="s5">)</span><span class="s2">: </span><span class="s1">Assert</span>
+
+<span class="s1">export class ArgumentMatchers </span><span class="s4">{</span>
+    <span class="s1">static any</span><span class="s2">;</span>
+    <span class="s1">static anyString</span><span class="s2">;</span>
+    <span class="s1">static anyBoolean</span><span class="s2">;</span>
+    <span class="s1">static anyNumber</span><span class="s2">;</span>
+    <span class="s1">static anyObj</span><span class="s2">;</span>
+    <span class="s1">static anyFunction</span><span class="s2">;</span>
+    <span class="s1">static matchRegexs</span><span class="s5">(</span><span class="s1">Regex</span><span class="s2">: </span><span class="s1">RegExp</span><span class="s5">)</span><span class="s2">: </span><span class="s1">void</span>
+<span class="s4">}</span>
+
+<span class="s1">declare interface when </span><span class="s4">{</span>
+    <span class="s1">afterReturn</span><span class="s5">(</span><span class="s1">value</span><span class="s2">: </span><span class="s1">any</span><span class="s5">)</span><span class="s2">: </span><span class="s1">any</span>
+    <span class="s1">afterReturnNothing</span><span class="s5">()</span><span class="s2">: </span><span class="s1">undefined</span>
+    <span class="s1">afterAction</span><span class="s5">(</span><span class="s1">action</span><span class="s2">: </span><span class="s1">any</span><span class="s5">)</span><span class="s2">: </span><span class="s1">any</span>
+    <span class="s1">afterThrow</span><span class="s5">(</span><span class="s1">e_msg</span><span class="s2">: </span><span class="s1">string</span><span class="s5">)</span><span class="s2">: </span><span class="s1">string</span>
+    <span class="s5">(</span><span class="s1">argMatchers</span><span class="s2">?: </span><span class="s1">any</span><span class="s5">)</span><span class="s2">: </span><span class="s1">when</span><span class="s2">;</span>
+<span class="s4">}</span>
+
+<span class="s1">export interface VerificationMode </span><span class="s4">{</span>
+    <span class="s1">times</span><span class="s5">(</span><span class="s1">count</span><span class="s2">: </span><span class="s1">Number</span><span class="s5">)</span><span class="s2">: </span><span class="s1">void</span>
+    <span class="s1">never</span><span class="s5">()</span><span class="s2">: </span><span class="s1">void</span>
+    <span class="s1">once</span><span class="s5">()</span><span class="s2">: </span><span class="s1">void</span>
+    <span class="s1">atLeast</span><span class="s5">(</span><span class="s1">count</span><span class="s2">: </span><span class="s1">Number</span><span class="s5">)</span><span class="s2">: </span><span class="s1">void</span>
+    <span class="s1">atMost</span><span class="s5">(</span><span class="s1">count</span><span class="s2">: </span><span class="s1">Number</span><span class="s5">)</span><span class="s2">: </span><span class="s1">void</span>
+<span class="s4">}</span>
+
+<span class="s1">export class MockKit </span><span class="s4">{</span>
+    <span class="s1">constructor</span><span class="s5">()</span>
+    <span class="s1">mockFunc</span><span class="s5">(</span><span class="s1">obj</span><span class="s2">: </span><span class="s1">Object</span><span class="s2">, </span><span class="s1">func</span><span class="s2">: </span><span class="s1">Function</span><span class="s5">)</span><span class="s2">: </span><span class="s1">Function</span>
+    <span class="s1">mockObject</span><span class="s5">(</span><span class="s1">obj</span><span class="s2">: </span><span class="s1">Object</span><span class="s5">)</span><span class="s2">: </span><span class="s1">Object</span>
+    <span class="s1">verify</span><span class="s5">(</span><span class="s1">methodName</span><span class="s2">: </span><span class="s1">String</span><span class="s2">, </span><span class="s1">argsArray</span><span class="s2">: </span><span class="s1">Array</span><span class="s2">&lt;</span><span class="s1">any</span><span class="s2">&gt;</span><span class="s5">)</span><span class="s2">: </span><span class="s1">VerificationMode</span>
+    <span class="s1">ignoreMock</span><span class="s5">(</span><span class="s1">obj</span><span class="s2">: </span><span class="s1">Object</span><span class="s2">, </span><span class="s1">func</span><span class="s2">: </span><span class="s1">Function</span><span class="s5">)</span><span class="s2">: </span><span class="s1">void</span>
+    <span class="s1">clear</span><span class="s5">(</span><span class="s1">obj</span><span class="s2">: </span><span class="s1">Object</span><span class="s5">)</span><span class="s2">: </span><span class="s1">void</span>
+    <span class="s1">clearAll</span><span class="s5">()</span><span class="s2">: </span><span class="s1">void</span>
+<span class="s4">}</span>
+
+<span class="s1">export class SysTestKit </span><span class="s4">{</span>
+    <span class="s1">static actionStart</span><span class="s5">(</span><span class="s1">tag</span><span class="s2">: </span><span class="s1">string</span><span class="s5">)</span><span class="s2">: </span><span class="s1">void</span>
+    <span class="s1">static actionEnd</span><span class="s5">(</span><span class="s1">tag</span><span class="s2">: </span><span class="s1">string</span><span class="s5">)</span><span class="s2">: </span><span class="s1">void</span>
+    <span class="s1">static existKeyword</span><span class="s5">(</span><span class="s1">keyword</span><span class="s2">: </span><span class="s1">string</span><span class="s2">, </span><span class="s1">timeout</span><span class="s2">?: </span><span class="s1">number</span><span class="s5">)</span><span class="s2">: </span><span class="s1">boolean</span>
+<span class="s4">}</span>
+
+<span class="s1">export class Hypium </span><span class="s4">{</span>
+    <span class="s1">static setData</span><span class="s5">(</span><span class="s1">data</span><span class="s2">: </span><span class="s4">{</span><span class="s5">[</span><span class="s1">key</span><span class="s2">: </span><span class="s1">string</span><span class="s5">]</span><span class="s2">: </span><span class="s1">any</span><span class="s4">}</span><span class="s5">)</span><span class="s2">: </span><span class="s1">void</span>
+    <span class="s1">static setTimeConfig</span><span class="s5">(</span><span class="s1">systemTime</span><span class="s2">: </span><span class="s1">any</span><span class="s5">)</span>
+    <span class="s1">static hypiumTest</span><span class="s5">(</span><span class="s1">abilityDelegator</span><span class="s2">: </span><span class="s1">any</span><span class="s2">, </span><span class="s1">abilityDelegatorArguments</span><span class="s2">: </span><span class="s1">any</span><span class="s2">, </span><span class="s1">testsuite</span><span class="s2">: </span><span class="s1">Function</span><span class="s5">)</span><span class="s2">: </span><span class="s1">void</span>
+<span class="s4">}</span></pre>
+</body>
+</html>

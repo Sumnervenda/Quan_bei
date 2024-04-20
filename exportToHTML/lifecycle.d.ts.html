@@ -1,0 +1,584 @@
+<html>
+<head>
+<title>lifecycle.d.ts</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #808080;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #faa23d;}
+.s3 { color: #e2da90;}
+.s4 { color: #db7e9b;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+lifecycle.d.ts</font>
+</center></td></tr></table>
+<pre><span class="s0">/* 
+ * Copyright (c) 2021 Huawei Device Co., Ltd. 
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ */</span>
+<span class="s0">// import Want from &quot;../../@ohos.app.ability.Want&quot;;</span>
+<span class="s0">// import { ResultSet } from &quot;../../data/rdb/resultSet&quot;;</span>
+<span class="s0">// import { AbilityInfo } from &quot;../../bundle/abilityInfo&quot;;</span>
+<span class="s0">// import { DataAbilityResult } from &quot;../../ability/dataAbilityResult&quot;;</span>
+<span class="s0">// import { DataAbilityOperation } from &quot;../../ability/dataAbilityOperation&quot;;</span>
+<span class="s0">// import dataAbility from &quot;../../@ohos.data.dataAbility&quot;;</span>
+<span class="s0">// import formBindingData from &quot;../../@ohos.application.formBindingData&quot;;</span>
+<span class="s0">// import formInfo from &quot;../../@ohos.app.form.formInfo&quot;;</span>
+<span class="s0">// import rdb from &quot;../../@ohos.data.rdb&quot;;</span>
+<span class="s0">// import rpc from &quot;../../@ohos.rpc&quot;;</span>
+<span class="s0">// import { PacMap } from &quot;../../ability/dataAbilityHelper&quot;;</span>
+<span class="s0">// import { AsyncCallback } from &quot;../../basic&quot;;</span>
+<span class="s0">/** 
+ * interface of form lifecycle. 
+ * 
+ * @name LifecycleForm 
+ * @since 7 
+ * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+ * @FAModelOnly 
+ */</span>
+<span class="s1">declare interface LifecycleForm </span><span class="s2">{</span>
+    <span class="s0">/** 
+     * Called to return a {@link formBindingData.FormBindingData} object. 
+     * 
+     * @since 8 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param want Indicates the detailed information for creating a {@link formBindingData#FormBindingData}. 
+     *               The {@code Want} object must include the form ID, form name, and grid style of the form, 
+     *               which can be obtained from {@link formInfo#FormParam#IDENTITY_KEY}, 
+     *               {@link formInfo#FormParam#NAME_KEY}, and {@link formInfo#FormParam#DIMENSION_KEY}, 
+     *               respectively. Such form information must be managed as persistent data for further form 
+     *               acquisition, update, and deletion. 
+     * @returns Returns the created {@link formBindingData#FormBindingData} object. 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">onCreate</span><span class="s3">?</span><span class="s4">(</span><span class="s1">want</span><span class="s3">: </span><span class="s1">Want</span><span class="s4">)</span><span class="s3">: </span><span class="s1">formBindingData</span><span class="s3">.</span><span class="s1">FormBindingData</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Called when the form provider is notified that a temporary form is successfully converted to a normal form. 
+     * 
+     * @since 8 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param formId Indicates the ID of the form. 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">onCastToNormal</span><span class="s3">?</span><span class="s4">(</span><span class="s1">formId</span><span class="s3">: </span><span class="s1">string</span><span class="s4">)</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Called to notify the form provider to update a specified form. 
+     * 
+     * @since 8 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param formId Indicates the ID of the form to update. 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">onUpdate</span><span class="s3">?</span><span class="s4">(</span><span class="s1">formId</span><span class="s3">: </span><span class="s1">string</span><span class="s4">)</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Called when the form provider receives form events from the system. 
+     * 
+     * @since 8 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param newStatus Indicates the form events occurred. The key in the {@code Map} object indicates the form ID, 
+     *    and the value indicates the event type, which can be either {@link formInfo#VisibilityType#FORM_VISIBLE} 
+     *    or {@link formInfo#VisibilityType#FORM_INVISIBLE}. {@link formInfo#VisibilityType#FORM_VISIBLE} 
+     *    means that the form becomes visible, and {@link formInfo#VisibilityType#FORM_INVISIBLE} 
+     *    means that the form becomes invisible. 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">onVisibilityChange</span><span class="s3">?</span><span class="s4">(</span><span class="s1">newStatus</span><span class="s3">: </span><span class="s2">{</span>
+        <span class="s4">[</span><span class="s1">key</span><span class="s3">: </span><span class="s1">string</span><span class="s4">]</span><span class="s3">: </span><span class="s1">number</span><span class="s3">;</span>
+    <span class="s2">}</span><span class="s4">)</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Called when a specified message event defined by the form provider is triggered. This method is valid only for 
+     * JS forms. 
+     * 
+     * @since 8 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param formId Indicates the ID of the form on which the message event is triggered, which is provided by 
+     *               the client to the form provider. 
+     * @param message Indicates the value of the {@code params} field of the message event. This parameter is 
+     *                used to identify the specific component on which the event is triggered. 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">onEvent</span><span class="s3">?</span><span class="s4">(</span><span class="s1">formId</span><span class="s3">: </span><span class="s1">string</span><span class="s3">, </span><span class="s1">message</span><span class="s3">: </span><span class="s1">string</span><span class="s4">)</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Called to notify the form provider that a specified form has been deleted. Override this method if 
+     * you want your application, as the form provider, to be notified of form deletion. 
+     * 
+     * @since 8 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param formId Indicates the ID of the deleted form. 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">onDestroy</span><span class="s3">?</span><span class="s4">(</span><span class="s1">formId</span><span class="s3">: </span><span class="s1">string</span><span class="s4">)</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Called to return a {@link FormState} object. 
+     * 
+     * &lt;p&gt;You must override this callback if you want this ability to return the actual form state. Otherwise, 
+     * this method returns {@link FormState#DEFAULT} by default.&lt;/p&gt; 
+     * 
+     * @since 8 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param want Indicates the description of the form for which the {@link formInfo#FormState} is obtained. 
+     *    The description covers the bundle name, ability name, module name, form name, and form dimensions. 
+     * @returns Returns the {@link formInfo#FormState} object. 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">onAcquireFormState</span><span class="s3">?</span><span class="s4">(</span><span class="s1">want</span><span class="s3">: </span><span class="s1">Want</span><span class="s4">)</span><span class="s3">: </span><span class="s1">formInfo</span><span class="s3">.</span><span class="s1">FormState</span><span class="s3">;</span>
+<span class="s2">}</span>
+<span class="s0">/** 
+ * interface of app lifecycle. 
+ * 
+ * @name LifecycleApp 
+ * @since 7 
+ * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+ * @FAModelOnly 
+ */</span>
+<span class="s1">declare interface LifecycleApp </span><span class="s2">{</span>
+    <span class="s0">/** 
+     * Called back when the state of an ability changes from &lt;b&gt;BACKGROUND&lt;/b&gt; to &lt;b&gt;INACTIVE&lt;/b&gt;. 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">onShow</span><span class="s3">?</span><span class="s4">()</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Called back when an ability enters the &lt;b&gt;BACKGROUND&lt;/b&gt; state. 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">onHide</span><span class="s3">?</span><span class="s4">()</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Called back before an ability is destroyed. 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">onDestroy</span><span class="s3">?</span><span class="s4">()</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Called back when an ability is started for initialization. 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">onCreate</span><span class="s3">?</span><span class="s4">()</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Asks a user whether to start the migration. 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @returns Returns {@code true} if the user allows the migration; returns {@code false} otherwise. 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">onStartContinuation</span><span class="s3">?</span><span class="s4">()</span><span class="s3">: </span><span class="s1">boolean</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Saves the user data of a local ability generated during runtime. 
+     * After the migration is triggered and the local ability is ready, this method is called when the Distributed 
+     * Scheduler Service requests data from the local ability. 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param data Indicates the user data to save. 
+     * @returns Returns {@code true} if the data is successfully saved; returns {@code false} otherwise. 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">onSaveData</span><span class="s3">?</span><span class="s4">(</span><span class="s1">data</span><span class="s3">: </span><span class="s1">Object</span><span class="s4">)</span><span class="s3">: </span><span class="s1">boolean</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Called back when a local ability migration is complete. 
+     * 
+     * &lt;p&gt;You can define the processing logic after the migration is complete. For example, you can display a prompt to 
+     * notify the user of the successful migration and then exit the local ability.&lt;/p&gt; 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param result Indicates the migration result code. The value {@code 0} indicates that the migration is 
+     *               successful, and {@code -1} indicates that the migration fails. 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">onCompleteContinuation</span><span class="s3">?</span><span class="s4">(</span><span class="s1">result</span><span class="s3">: </span><span class="s1">number</span><span class="s4">)</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Restores the user data saved during the migration for an ability on the remote device immediately after the 
+     * ability is created on the remote device. Lifecycle scheduling for the ability starts only after the user data 
+     * is restored. 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param data Indicates the user data to restore. 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">onRestoreData</span><span class="s3">?</span><span class="s4">(</span><span class="s1">data</span><span class="s3">: </span><span class="s1">Object</span><span class="s4">)</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Called to notify the local device when a running ability on the remote device is destroyed after a reversible 
+     * migration is performed for the ability from the local device to the remote device. 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">onRemoteTerminated</span><span class="s3">?</span><span class="s4">()</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * This method is called when the system determines that the ability may be destroyed in an unexpected 
+     * situation, for example, when the screen orientation changes or the user touches the Home key. Generally, 
+     * this method is used only to save temporary states. 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param outState Indicates the {@code PacMap} object used for storing user data and states. This 
+     * parameter cannot be null. 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">onSaveAbilityState</span><span class="s3">?</span><span class="s4">(</span><span class="s1">outState</span><span class="s3">: </span><span class="s1">PacMap</span><span class="s4">)</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * This method is called if an ability was destroyed at a certain time due to resource reclaim or was 
+     * unexpectedly destroyed and the {@link #onSaveAbilityState(PacMap)} method was called to save its user data and 
+     * states. Generally, this method is called after the {@link #onStart(Want)} method. 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param inState Indicates the {@code PacMap} object used for storing data and states. This 
+     * parameter can not be null. 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">onRestoreAbilityState</span><span class="s3">?</span><span class="s4">(</span><span class="s1">inState</span><span class="s3">: </span><span class="s1">PacMap</span><span class="s4">)</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Called back when an ability enters the &lt;b&gt;INACTIVE&lt;/b&gt; state (an ability in this state is not interactive and may 
+     * change to the &lt;b&gt;BACKGROUND&lt;/b&gt; or &lt;b&gt;ACTIVE&lt;/b&gt; state). 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">onInactive</span><span class="s3">?</span><span class="s4">()</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Called back when an ability enters the &lt;b&gt;ACTIVE&lt;/b&gt; state. 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">onActive</span><span class="s3">?</span><span class="s4">()</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Called when the launch mode of an ability is set to singleton. 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param want Indicates the new {@code want} containing information about the ability. 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">onNewWant</span><span class="s3">?</span><span class="s4">(</span><span class="s1">want</span><span class="s3">: </span><span class="s1">Want</span><span class="s4">)</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Called when the system has determined to trim the memory, for example, when the ability is running in the 
+     * background and there is no enough memory for running as many background processes as possible. 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param level Indicates the memory trim level, which shows the current memory usage status. 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">onMemoryLevel</span><span class="s3">?</span><span class="s4">(</span><span class="s1">level</span><span class="s3">: </span><span class="s1">number</span><span class="s4">)</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+<span class="s2">}</span>
+<span class="s0">/** 
+ * interface of service lifecycle. 
+ * 
+ * @name LifecycleService 
+ * @since 7 
+ * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+ * @FAModelOnly 
+ */</span>
+<span class="s1">declare interface LifecycleService </span><span class="s2">{</span>
+    <span class="s0">/** 
+     * Called back when an ability is started for initialization (it can be called only once in the entire lifecycle of 
+     * an ability). 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">onStart</span><span class="s3">?</span><span class="s4">()</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Called back when Service is started. 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param want Indicates the want of Service to start. 
+     * @param startId Indicates the number of times the Service ability has been started. The {@code startId} is 
+     *     incremented by 1 every time the ability is started. For example, if the ability has been started 
+     *     for six times. 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">onCommand</span><span class="s3">?</span><span class="s4">(</span><span class="s1">want</span><span class="s3">: </span><span class="s1">Want</span><span class="s3">, </span><span class="s1">startId</span><span class="s3">: </span><span class="s1">number</span><span class="s4">)</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Called back before an ability is destroyed. 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">onStop</span><span class="s3">?</span><span class="s4">()</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Called back when a Service ability is first connected to an ability. 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param want Indicates connection information about the Service ability. 
+     * @returns Returns the proxy of the Service ability. 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">onConnect</span><span class="s3">?</span><span class="s4">(</span><span class="s1">want</span><span class="s3">: </span><span class="s1">Want</span><span class="s4">)</span><span class="s3">: </span><span class="s1">rpc</span><span class="s3">.</span><span class="s1">RemoteObject</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Called back when all abilities connected to a Service ability are disconnected. 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param want Indicates disconnection information about the Service ability. 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">onDisconnect</span><span class="s3">?</span><span class="s4">(</span><span class="s1">want</span><span class="s3">: </span><span class="s1">Want</span><span class="s4">)</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Called when a new client attempts to connect to a Service ability after all previous client connections to it 
+     * are disconnected. 
+     * 
+     * &lt;p&gt;The Service ability must have been started but not been destroyed, that is, {@link #startAbility} has been 
+     * called but {@link #terminateSelf} has not.&lt;/p&gt; 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param want Indicates the want of the Service ability being connected. 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">onReconnect</span><span class="s3">?</span><span class="s4">(</span><span class="s1">want</span><span class="s3">: </span><span class="s1">Want</span><span class="s4">)</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+<span class="s2">}</span>
+<span class="s0">/** 
+ * interface of data lifecycle. 
+ * 
+ * @name LifecycleData 
+ * @since 7 
+ * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+ * @FAModelOnly 
+ */</span>
+<span class="s1">declare interface LifecycleData </span><span class="s2">{</span>
+    <span class="s0">/** 
+     * Updates one or more data records in the database. This method should be implemented by a Data ability. 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param uri Indicates the database table storing the data to update. 
+     * @param valueBucket Indicates the data to update. This parameter can be null. 
+     * @param predicates Indicates filter criteria. If this parameter is null, all data records will be updated by 
+     *                   default. 
+     * @param callback function specified by framework to receive the result, developer should call this function to 
+     *                 return the result to framework. 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">update</span><span class="s3">?</span><span class="s4">(</span><span class="s1">uri</span><span class="s3">: </span><span class="s1">string</span><span class="s3">, </span><span class="s1">valueBucket</span><span class="s3">: </span><span class="s1">rdb</span><span class="s3">.</span><span class="s1">ValuesBucket</span><span class="s3">, </span><span class="s1">predicates</span><span class="s3">: </span><span class="s1">dataAbility</span><span class="s3">.</span><span class="s1">DataAbilityPredicates</span><span class="s3">, </span><span class="s1">callback</span><span class="s3">: </span><span class="s1">AsyncCallback</span><span class="s3">&lt;</span><span class="s1">number</span><span class="s3">&gt;</span><span class="s4">)</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Queries one or more data records in the database. This method should be implemented by a Data ability. 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param uri Indicates the database table storing the data to query. 
+     * @param columns Indicates the columns to be queried, in array, for example, {&quot;name&quot;,&quot;age&quot;}. You should define 
+     *                the processing logic when this parameter is null. 
+     * @param predicates Indicates filter criteria. If this parameter is null, all data records will be queried by 
+     *                   default. 
+     * @param callback function specified by framework to receive the result, developer should call this function to 
+     *                 return the result to framework. 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">query</span><span class="s3">?</span><span class="s4">(</span><span class="s1">uri</span><span class="s3">: </span><span class="s1">string</span><span class="s3">, </span><span class="s1">columns</span><span class="s3">: </span><span class="s1">Array</span><span class="s3">&lt;</span><span class="s1">string</span><span class="s3">&gt;, </span><span class="s1">predicates</span><span class="s3">: </span><span class="s1">dataAbility</span><span class="s3">.</span><span class="s1">DataAbilityPredicates</span><span class="s3">, </span><span class="s1">callback</span><span class="s3">: </span><span class="s1">AsyncCallback</span><span class="s3">&lt;</span><span class="s1">ResultSet</span><span class="s3">&gt;</span><span class="s4">)</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Deletes one or more data records. This method should be implemented by a Data ability. 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param uri Indicates the database table storing the data to delete. 
+     * @param predicates Indicates filter criteria. If this parameter is null, all data records will be deleted by 
+     *     default. 
+     * @param callback function specified by framework to receive the result, developer should call this function to 
+     *                 return the result to framework. 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">delete</span><span class="s3">?</span><span class="s4">(</span><span class="s1">uri</span><span class="s3">: </span><span class="s1">string</span><span class="s3">, </span><span class="s1">predicates</span><span class="s3">: </span><span class="s1">dataAbility</span><span class="s3">.</span><span class="s1">DataAbilityPredicates</span><span class="s3">, </span><span class="s1">callback</span><span class="s3">: </span><span class="s1">AsyncCallback</span><span class="s3">&lt;</span><span class="s1">number</span><span class="s3">&gt;</span><span class="s4">)</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Converts the given {@code uri} that refer to the Data ability into a normalized URI. A normalized URI can be 
+     * used across devices, persisted, backed up, and restored. It can refer to the same item in the Data ability 
+     * even if the context has changed. 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param uri Indicates the uri to normalize. 
+     * @param callback function specified by framework to receive the result, developer should call this function to 
+     *                 return the result to framework. 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">normalizeUri</span><span class="s3">?</span><span class="s4">(</span><span class="s1">uri</span><span class="s3">: </span><span class="s1">string</span><span class="s3">, </span><span class="s1">callback</span><span class="s3">: </span><span class="s1">AsyncCallback</span><span class="s3">&lt;</span><span class="s1">string</span><span class="s3">&gt;</span><span class="s4">)</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Inserts multiple data records into the database. This method should be implemented by a Data ability. 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param uri Indicates the position where the data is to insert. 
+     * @param valueBuckets Indicates the data to insert. 
+     * @param callback function specified by framework to receive the result, developer should call this function to 
+     *                 return the result to framework. 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">batchInsert</span><span class="s3">?</span><span class="s4">(</span><span class="s1">uri</span><span class="s3">: </span><span class="s1">string</span><span class="s3">, </span><span class="s1">valueBuckets</span><span class="s3">: </span><span class="s1">Array</span><span class="s3">&lt;</span><span class="s1">rdb</span><span class="s3">.</span><span class="s1">ValuesBucket</span><span class="s3">&gt;, </span><span class="s1">callback</span><span class="s3">: </span><span class="s1">AsyncCallback</span><span class="s3">&lt;</span><span class="s1">number</span><span class="s3">&gt;</span><span class="s4">)</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Converts the given normalized {@code uri} generated by {@link #normalizeUri(uri)} into a denormalized one. 
+     * The default implementation of this method returns the original uri passed to it. 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param uri Indicates the uri to denormalize. 
+     * @param callback function specified by framework to receive the result, developer should call this function to 
+     *                 return the result to framework. 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">denormalizeUri</span><span class="s3">?</span><span class="s4">(</span><span class="s1">uri</span><span class="s3">: </span><span class="s1">string</span><span class="s3">, </span><span class="s1">callback</span><span class="s3">: </span><span class="s1">AsyncCallback</span><span class="s3">&lt;</span><span class="s1">string</span><span class="s3">&gt;</span><span class="s4">)</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Inserts a data record into the database. This method should be implemented by a Data ability. 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param uri Indicates the position where the data is to insert. 
+     * @param valueBucket Indicates the data to insert. 
+     * @param callback function specified by framework to receive the result, developer should call this function to 
+     *                 return the result to framework. 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">insert</span><span class="s3">?</span><span class="s4">(</span><span class="s1">uri</span><span class="s3">: </span><span class="s1">string</span><span class="s3">, </span><span class="s1">valueBucket</span><span class="s3">: </span><span class="s1">rdb</span><span class="s3">.</span><span class="s1">ValuesBucket</span><span class="s3">, </span><span class="s1">callback</span><span class="s3">: </span><span class="s1">AsyncCallback</span><span class="s3">&lt;</span><span class="s1">number</span><span class="s3">&gt;</span><span class="s4">)</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Opens a file. This method should be implemented by a Data ability. 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param uri Indicates the path of the file to open. 
+     * @param mode Indicates the open mode, which can be &quot;r&quot; for read-only access, &quot;w&quot; for write-only access (erasing 
+     *     whatever data is currently in the file), &quot;wt&quot; for write access that truncates any existing file, 
+     *     &quot;wa&quot; for write-only access to append to any existing data, &quot;rw&quot; for read and write access on any 
+     *     existing data, or &quot;rwt&quot; for read and write access that truncates any existing file. 
+     * @param callback function specified by framework to receive the result, developer should call this function to 
+     *                 return the result to framework. 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">openFile</span><span class="s3">?</span><span class="s4">(</span><span class="s1">uri</span><span class="s3">: </span><span class="s1">string</span><span class="s3">, </span><span class="s1">mode</span><span class="s3">: </span><span class="s1">string</span><span class="s3">, </span><span class="s1">callback</span><span class="s3">: </span><span class="s1">AsyncCallback</span><span class="s3">&lt;</span><span class="s1">number</span><span class="s3">&gt;</span><span class="s4">)</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Obtains the MIME type of files. This method should be implemented by a Data ability. 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param uri Indicates the path of the files to obtain. 
+     * @param mimeTypeFilter Indicates the MIME type of the files to obtain. This parameter cannot be set to {@code 
+     *     null}. 
+     *     &lt;p&gt;1. &quot;&amp;ast;/*&quot;: Obtains all types supported by a Data ability. 
+     *     &lt;p&gt;2. &quot;image/*&quot;: Obtains files whose main type is image of any subtype. 
+     *     &lt;p&gt;3. &quot;&amp;ast;/jpg&quot;: Obtains files whose subtype is JPG of any main type. 
+     * @param callback function specified by framework to receive the result, developer should call this function to 
+     *                 return the result to framework. 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">getFileTypes</span><span class="s3">?</span><span class="s4">(</span><span class="s1">uri</span><span class="s3">: </span><span class="s1">string</span><span class="s3">, </span><span class="s1">mimeTypeFilter</span><span class="s3">: </span><span class="s1">string</span><span class="s3">, </span><span class="s1">callback</span><span class="s3">: </span><span class="s1">AsyncCallback</span><span class="s3">&lt;</span><span class="s1">Array</span><span class="s3">&lt;</span><span class="s1">string</span><span class="s3">&gt;&gt;</span><span class="s4">)</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Called to carry {@code AbilityInfo} to this ability after the ability is initialized. 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param info Indicates the {@code AbilityInfo} object containing information about this ability. 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">onInitialized</span><span class="s3">?</span><span class="s4">(</span><span class="s1">info</span><span class="s3">: </span><span class="s1">AbilityInfo</span><span class="s4">)</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Obtains the MIME type matching the data specified by the URI of the Data ability. This method should be 
+     * implemented by a Data ability. 
+     * 
+     * &lt;p&gt;Data abilities supports general data types, including text, HTML, and JPEG.&lt;/p&gt; 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param uri Indicates the uri of the data. 
+     * @param callback function specified by framework to receive the result, developer should call this function to 
+     *                 return the result to framework. 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">getType</span><span class="s3">?</span><span class="s4">(</span><span class="s1">uri</span><span class="s3">: </span><span class="s1">string</span><span class="s3">, </span><span class="s1">callback</span><span class="s3">: </span><span class="s1">AsyncCallback</span><span class="s3">&lt;</span><span class="s1">string</span><span class="s3">&gt;</span><span class="s4">)</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Performs batch operations on the database. This method should be implemented by a Data ability. 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param ops Indicates the data operation list, which can contain multiple operations on the database. 
+     * @param callback function specified by framework to receive the result, developer should call this function to 
+     *                 return the result to framework. 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">executeBatch</span><span class="s3">?</span><span class="s4">(</span><span class="s1">ops</span><span class="s3">: </span><span class="s1">Array</span><span class="s3">&lt;</span><span class="s1">DataAbilityOperation</span><span class="s3">&gt;, </span><span class="s1">callback</span><span class="s3">: </span><span class="s1">AsyncCallback</span><span class="s3">&lt;</span><span class="s1">Array</span><span class="s3">&lt;</span><span class="s1">DataAbilityResult</span><span class="s3">&gt;&gt;</span><span class="s4">)</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Defines a method in this Data ability (implementation depending on child classes). 
+     * 
+     * @since 7 
+     * @syscap SystemCapability.Ability.AbilityRuntime.FAModel 
+     * @param method Indicates the method name. 
+     * @param arg Indicates the parameter transferred by the method. 
+     * @param extras Indicates the parameter transferred by the method. 
+     * @param callback function specified by framework to receive the result, developer should call this function to 
+     *                 return the result to framework. 
+     * @returns - 
+     * @FAModelOnly 
+     */</span>
+    <span class="s1">call</span><span class="s3">?</span><span class="s4">(</span><span class="s1">method</span><span class="s3">: </span><span class="s1">string</span><span class="s3">, </span><span class="s1">arg</span><span class="s3">: </span><span class="s1">string</span><span class="s3">, </span><span class="s1">extras</span><span class="s3">: </span><span class="s1">PacMap</span><span class="s3">, </span><span class="s1">callback</span><span class="s3">: </span><span class="s1">AsyncCallback</span><span class="s3">&lt;</span><span class="s1">PacMap</span><span class="s3">&gt;</span><span class="s4">)</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

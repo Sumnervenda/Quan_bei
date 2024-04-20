@@ -1,0 +1,315 @@
+<html>
+<head>
+<title>configService.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #808080;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #faa23d;}
+.s3 { color: #e2da90;}
+.s4 { color: #aa7dfc;}
+.s5 { color: #db7e9b;}
+.s6 { color: #b3e54c;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+configService.js</font>
+</center></td></tr></table>
+<pre><span class="s0">/* 
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd. 
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ */</span>
+
+<span class="s1">import </span><span class="s2">{</span><span class="s1">ClassFilter</span><span class="s3">, </span><span class="s1">NotClassFilter</span><span class="s3">, </span><span class="s1">SuiteAndItNameFilter</span><span class="s3">, </span><span class="s1">TestTypesFilter</span><span class="s2">} </span><span class="s1">from </span><span class="s4">'./Filter'</span><span class="s3">;</span>
+<span class="s1">const STRESS_RULE </span><span class="s3">= </span><span class="s4">/^[1-9]\d*$/</span><span class="s3">;</span>
+
+<span class="s1">class ConfigService </span><span class="s2">{</span>
+    <span class="s1">constructor</span><span class="s5">(</span><span class="s1">attr</span><span class="s5">) </span><span class="s2">{</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">id </span><span class="s3">= </span><span class="s1">attr</span><span class="s3">.</span><span class="s1">id</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">supportAsync </span><span class="s3">= </span><span class="s1">false</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">random </span><span class="s3">= </span><span class="s1">false</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">filterValid </span><span class="s3">= </span><span class="s5">[]</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">filter </span><span class="s3">= </span><span class="s6">0</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">flag </span><span class="s3">= </span><span class="s1">false</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">suite </span><span class="s3">= </span><span class="s1">null</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">itName </span><span class="s3">= </span><span class="s1">null</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">testType </span><span class="s3">= </span><span class="s1">null</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">level </span><span class="s3">= </span><span class="s1">null</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">size </span><span class="s3">= </span><span class="s1">null</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">class </span><span class="s3">= </span><span class="s1">null</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">notClass </span><span class="s3">= </span><span class="s1">null</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">timeout </span><span class="s3">= </span><span class="s1">null</span><span class="s3">;</span>
+        <span class="s0">// 遇错即停模式配置</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">breakOnError </span><span class="s3">= </span><span class="s1">false</span><span class="s3">;</span>
+        <span class="s0">// 压力测试配置</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">stress </span><span class="s3">= </span><span class="s1">null</span><span class="s3">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">init</span><span class="s5">(</span><span class="s1">coreContext</span><span class="s5">) </span><span class="s2">{</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext </span><span class="s3">= </span><span class="s1">coreContext</span><span class="s3">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">isNormalInteger</span><span class="s5">(</span><span class="s1">str</span><span class="s5">) </span><span class="s2">{</span>
+        <span class="s1">const n </span><span class="s3">= </span><span class="s1">Math</span><span class="s3">.</span><span class="s1">floor</span><span class="s5">(</span><span class="s1">Number</span><span class="s5">(</span><span class="s1">str</span><span class="s5">))</span><span class="s3">;</span>
+        <span class="s1">return n </span><span class="s3">!== </span><span class="s1">Infinity </span><span class="s3">&amp;&amp; </span><span class="s1">String</span><span class="s5">(</span><span class="s1">n</span><span class="s5">) </span><span class="s3">=== </span><span class="s1">String</span><span class="s5">(</span><span class="s1">str</span><span class="s5">) </span><span class="s3">&amp;&amp; </span><span class="s1">n </span><span class="s3">&gt;= </span><span class="s6">0</span><span class="s3">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">getStress</span><span class="s5">() </span><span class="s2">{</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">stress </span><span class="s3">=== </span><span class="s1">undefined </span><span class="s3">|| </span><span class="s1">this</span><span class="s3">.</span><span class="s1">stress </span><span class="s3">=== </span><span class="s4">'' </span><span class="s3">|| </span><span class="s1">this</span><span class="s3">.</span><span class="s1">stress </span><span class="s3">=== </span><span class="s1">null</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">return </span><span class="s6">1</span><span class="s3">;</span>
+        <span class="s2">}</span>
+        <span class="s1">return </span><span class="s3">!</span><span class="s1">this</span><span class="s3">.</span><span class="s1">stress</span><span class="s3">.</span><span class="s1">match</span><span class="s5">(</span><span class="s1">STRESS_RULE</span><span class="s5">) </span><span class="s3">? </span><span class="s6">1 </span><span class="s3">: </span><span class="s1">Number</span><span class="s3">.</span><span class="s1">parseInt</span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">stress</span><span class="s5">)</span><span class="s3">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">basicParamValidCheck</span><span class="s5">(</span><span class="s1">params</span><span class="s5">) </span><span class="s2">{</span>
+        <span class="s1">let size </span><span class="s3">= </span><span class="s1">params</span><span class="s3">.</span><span class="s1">size</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">size </span><span class="s3">!== </span><span class="s1">undefined </span><span class="s3">&amp;&amp; </span><span class="s1">size </span><span class="s3">!== </span><span class="s4">'' </span><span class="s3">&amp;&amp; </span><span class="s1">size </span><span class="s3">!== </span><span class="s1">null</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">let sizeArray </span><span class="s3">= </span><span class="s5">[</span><span class="s4">'small'</span><span class="s3">, </span><span class="s4">'medium'</span><span class="s3">, </span><span class="s4">'large'</span><span class="s5">]</span><span class="s3">;</span>
+            <span class="s1">if </span><span class="s5">(</span><span class="s1">sizeArray</span><span class="s3">.</span><span class="s1">indexOf</span><span class="s5">(</span><span class="s1">size</span><span class="s5">) </span><span class="s3">=== -</span><span class="s6">1</span><span class="s5">) </span><span class="s2">{</span>
+                <span class="s1">this</span><span class="s3">.</span><span class="s1">filterValid</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s4">'size:' </span><span class="s3">+ </span><span class="s1">size</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+        <span class="s1">let level </span><span class="s3">= </span><span class="s1">params</span><span class="s3">.</span><span class="s1">level</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">level </span><span class="s3">!== </span><span class="s1">undefined </span><span class="s3">&amp;&amp; </span><span class="s1">level </span><span class="s3">!== </span><span class="s4">'' </span><span class="s3">&amp;&amp; </span><span class="s1">level </span><span class="s3">!== </span><span class="s1">null</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">let levelArray </span><span class="s3">= </span><span class="s5">[</span><span class="s4">'0'</span><span class="s3">, </span><span class="s4">'1'</span><span class="s3">, </span><span class="s4">'2'</span><span class="s3">, </span><span class="s4">'3'</span><span class="s3">, </span><span class="s4">'4'</span><span class="s5">]</span><span class="s3">;</span>
+            <span class="s1">if </span><span class="s5">(</span><span class="s1">levelArray</span><span class="s3">.</span><span class="s1">indexOf</span><span class="s5">(</span><span class="s1">level</span><span class="s5">) </span><span class="s3">=== -</span><span class="s6">1</span><span class="s5">) </span><span class="s2">{</span>
+                <span class="s1">this</span><span class="s3">.</span><span class="s1">filterValid</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s4">'level:' </span><span class="s3">+ </span><span class="s1">level</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+        <span class="s1">let testType </span><span class="s3">= </span><span class="s1">params</span><span class="s3">.</span><span class="s1">testType</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">testType </span><span class="s3">!== </span><span class="s1">undefined </span><span class="s3">&amp;&amp; </span><span class="s1">testType </span><span class="s3">!== </span><span class="s4">'' </span><span class="s3">&amp;&amp; </span><span class="s1">testType </span><span class="s3">!== </span><span class="s1">null</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">let testTypeArray </span><span class="s3">= </span><span class="s5">[</span><span class="s4">'function'</span><span class="s3">, </span><span class="s4">'performance'</span><span class="s3">, </span><span class="s4">'power'</span><span class="s3">, </span><span class="s4">'reliability'</span><span class="s3">, </span><span class="s4">'security'</span><span class="s3">,</span>
+                <span class="s4">'global'</span><span class="s3">, </span><span class="s4">'compatibility'</span><span class="s3">, </span><span class="s4">'user'</span><span class="s3">, </span><span class="s4">'standard'</span><span class="s3">, </span><span class="s4">'safety'</span><span class="s3">, </span><span class="s4">'resilience'</span><span class="s5">]</span><span class="s3">;</span>
+            <span class="s1">if </span><span class="s5">(</span><span class="s1">testTypeArray</span><span class="s3">.</span><span class="s1">indexOf</span><span class="s5">(</span><span class="s1">testType</span><span class="s5">) </span><span class="s3">=== -</span><span class="s6">1</span><span class="s5">) </span><span class="s2">{</span>
+                <span class="s1">this</span><span class="s3">.</span><span class="s1">filterValid</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s4">'testType:' </span><span class="s3">+ </span><span class="s1">testType</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">filterParamValidCheck</span><span class="s5">(</span><span class="s1">params</span><span class="s5">) </span><span class="s2">{</span>
+        <span class="s1">let timeout </span><span class="s3">= </span><span class="s1">params</span><span class="s3">.</span><span class="s1">timeout</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">timeout </span><span class="s3">!== </span><span class="s1">undefined </span><span class="s3">&amp;&amp; </span><span class="s1">timeout </span><span class="s3">!== </span><span class="s4">'' </span><span class="s3">&amp;&amp; </span><span class="s1">timeout </span><span class="s3">!== </span><span class="s1">null</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">if </span><span class="s5">(</span><span class="s3">!</span><span class="s1">this</span><span class="s3">.</span><span class="s1">isNormalInteger</span><span class="s5">(</span><span class="s1">timeout</span><span class="s5">)) </span><span class="s2">{</span>
+                <span class="s1">this</span><span class="s3">.</span><span class="s1">filterValid</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s4">'timeout:' </span><span class="s3">+ </span><span class="s1">timeout</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s1">let paramKeys </span><span class="s3">= </span><span class="s5">[</span><span class="s4">'dryRun'</span><span class="s3">, </span><span class="s4">'random'</span><span class="s3">, </span><span class="s4">'breakOnError'</span><span class="s3">, </span><span class="s4">'coverage'</span><span class="s5">]</span><span class="s3">;</span>
+        <span class="s1">for </span><span class="s5">(</span><span class="s1">const key of paramKeys</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">if </span><span class="s5">(</span><span class="s1">params</span><span class="s5">[</span><span class="s1">key</span><span class="s5">] </span><span class="s3">!== </span><span class="s1">undefined </span><span class="s3">&amp;&amp; </span><span class="s1">params</span><span class="s5">[</span><span class="s1">key</span><span class="s5">] </span><span class="s3">!== </span><span class="s4">'true' </span><span class="s3">&amp;&amp; </span><span class="s1">params</span><span class="s5">[</span><span class="s1">key</span><span class="s5">] </span><span class="s3">!== </span><span class="s4">'false'</span><span class="s5">) </span><span class="s2">{</span>
+                <span class="s1">this</span><span class="s3">.</span><span class="s1">filterValid</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s4">`</span><span class="s2">${</span><span class="s1">key</span><span class="s2">}</span><span class="s4">:</span><span class="s2">${</span><span class="s1">params</span><span class="s5">[</span><span class="s1">key</span><span class="s5">]</span><span class="s2">}</span><span class="s4">`</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s0">// 压力测试参数验证,正整数</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">params</span><span class="s3">.</span><span class="s1">stress </span><span class="s3">!== </span><span class="s1">undefined </span><span class="s3">&amp;&amp; </span><span class="s1">params</span><span class="s3">.</span><span class="s1">stress </span><span class="s3">!== </span><span class="s4">'' </span><span class="s3">&amp;&amp; </span><span class="s1">params</span><span class="s3">.</span><span class="s1">stress </span><span class="s3">!== </span><span class="s1">null</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">if </span><span class="s5">(</span><span class="s3">!</span><span class="s1">params</span><span class="s3">.</span><span class="s1">stress</span><span class="s3">.</span><span class="s1">match</span><span class="s5">(</span><span class="s1">STRESS_RULE</span><span class="s5">)) </span><span class="s2">{</span>
+                <span class="s1">this</span><span class="s3">.</span><span class="s1">filterValid</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s4">'stress:' </span><span class="s3">+ </span><span class="s1">params</span><span class="s3">.</span><span class="s1">stress</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s1">let nameRule </span><span class="s3">= </span><span class="s4">/^[A-Za-z]{1}[\w#,.]*$/</span><span class="s3">;</span>
+        <span class="s1">let paramClassKeys </span><span class="s3">= </span><span class="s5">[</span><span class="s4">'class'</span><span class="s3">, </span><span class="s4">'notClass'</span><span class="s5">]</span><span class="s3">;</span>
+        <span class="s1">for </span><span class="s5">(</span><span class="s1">const key of paramClassKeys</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">if </span><span class="s5">(</span><span class="s1">params</span><span class="s5">[</span><span class="s1">key</span><span class="s5">] </span><span class="s3">!== </span><span class="s1">undefined </span><span class="s3">&amp;&amp; </span><span class="s1">params</span><span class="s5">[</span><span class="s1">key</span><span class="s5">] </span><span class="s3">!== </span><span class="s4">'' </span><span class="s3">&amp;&amp; </span><span class="s1">params</span><span class="s5">[</span><span class="s1">key</span><span class="s5">] </span><span class="s3">!== </span><span class="s1">null</span><span class="s5">) </span><span class="s2">{</span>
+                <span class="s1">let classArray </span><span class="s3">= </span><span class="s1">params</span><span class="s5">[</span><span class="s1">key</span><span class="s5">]</span><span class="s3">.</span><span class="s1">split</span><span class="s5">(</span><span class="s4">','</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s1">classArray</span><span class="s3">.</span><span class="s1">forEach</span><span class="s5">(</span><span class="s1">item </span><span class="s3">=&gt; !</span><span class="s1">item</span><span class="s3">.</span><span class="s1">match</span><span class="s5">(</span><span class="s1">nameRule</span><span class="s5">) </span><span class="s3">? </span><span class="s1">this</span><span class="s3">.</span><span class="s1">filterValid</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s4">`</span><span class="s2">${</span><span class="s1">key</span><span class="s2">}</span><span class="s4">:</span><span class="s2">${</span><span class="s1">params</span><span class="s5">[</span><span class="s1">key</span><span class="s5">]</span><span class="s2">}</span><span class="s4">`</span><span class="s5">) </span><span class="s3">: </span><span class="s1">null</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">setConfig</span><span class="s5">(</span><span class="s1">params</span><span class="s5">) </span><span class="s2">{</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">basicParamValidCheck</span><span class="s5">(</span><span class="s1">params</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">filterParamValidCheck</span><span class="s5">(</span><span class="s1">params</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">try </span><span class="s2">{</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">class </span><span class="s3">= </span><span class="s1">params</span><span class="s3">.</span><span class="s1">class</span><span class="s3">;</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">notClass </span><span class="s3">= </span><span class="s1">params</span><span class="s3">.</span><span class="s1">notClass</span><span class="s3">;</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">flag </span><span class="s3">= </span><span class="s1">params</span><span class="s3">.</span><span class="s1">flag </span><span class="s3">|| </span><span class="s2">{</span><span class="s1">flag</span><span class="s3">: </span><span class="s1">false</span><span class="s2">}</span><span class="s3">;</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">suite </span><span class="s3">= </span><span class="s1">params</span><span class="s3">.</span><span class="s1">suite</span><span class="s3">;</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">itName </span><span class="s3">= </span><span class="s1">params</span><span class="s3">.</span><span class="s1">itName</span><span class="s3">;</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">filter </span><span class="s3">= </span><span class="s1">params</span><span class="s3">.</span><span class="s1">filter</span><span class="s3">;</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">testType </span><span class="s3">= </span><span class="s1">params</span><span class="s3">.</span><span class="s1">testType</span><span class="s3">;</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">level </span><span class="s3">= </span><span class="s1">params</span><span class="s3">.</span><span class="s1">level</span><span class="s3">;</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">size </span><span class="s3">= </span><span class="s1">params</span><span class="s3">.</span><span class="s1">size</span><span class="s3">;</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">timeout </span><span class="s3">= </span><span class="s1">params</span><span class="s3">.</span><span class="s1">timeout</span><span class="s3">;</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">dryRun </span><span class="s3">= </span><span class="s1">params</span><span class="s3">.</span><span class="s1">dryRun</span><span class="s3">;</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">breakOnError </span><span class="s3">= </span><span class="s1">params</span><span class="s3">.</span><span class="s1">breakOnError</span><span class="s3">;</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">random </span><span class="s3">= </span><span class="s1">params</span><span class="s3">.</span><span class="s1">random </span><span class="s3">=== </span><span class="s4">'true' </span><span class="s3">? </span><span class="s1">true </span><span class="s3">: </span><span class="s1">false</span><span class="s3">;</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">stress </span><span class="s3">= </span><span class="s1">params</span><span class="s3">.</span><span class="s1">stress</span><span class="s3">;</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">coverage </span><span class="s3">= </span><span class="s1">params</span><span class="s3">.</span><span class="s1">coverage</span><span class="s3">;</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">filterParam </span><span class="s3">= </span><span class="s2">{</span>
+                <span class="s1">testType</span><span class="s3">: </span><span class="s2">{</span>
+                    <span class="s4">'function'</span><span class="s3">: </span><span class="s6">1</span><span class="s3">,</span>
+                    <span class="s4">'performance'</span><span class="s3">: </span><span class="s6">1 </span><span class="s3">&lt;&lt; </span><span class="s6">1</span><span class="s3">,</span>
+                    <span class="s4">'power'</span><span class="s3">: </span><span class="s6">1 </span><span class="s3">&lt;&lt; </span><span class="s6">2</span><span class="s3">,</span>
+                    <span class="s4">'reliability'</span><span class="s3">: </span><span class="s6">1 </span><span class="s3">&lt;&lt; </span><span class="s6">3</span><span class="s3">,</span>
+                    <span class="s4">'security'</span><span class="s3">: </span><span class="s6">1 </span><span class="s3">&lt;&lt; </span><span class="s6">4</span><span class="s3">,</span>
+                    <span class="s4">'global'</span><span class="s3">: </span><span class="s6">1 </span><span class="s3">&lt;&lt; </span><span class="s6">5</span><span class="s3">,</span>
+                    <span class="s4">'compatibility'</span><span class="s3">: </span><span class="s6">1 </span><span class="s3">&lt;&lt; </span><span class="s6">6</span><span class="s3">,</span>
+                    <span class="s4">'user'</span><span class="s3">: </span><span class="s6">1 </span><span class="s3">&lt;&lt; </span><span class="s6">7</span><span class="s3">,</span>
+                    <span class="s4">'standard'</span><span class="s3">: </span><span class="s6">1 </span><span class="s3">&lt;&lt; </span><span class="s6">8</span><span class="s3">,</span>
+                    <span class="s4">'safety'</span><span class="s3">: </span><span class="s6">1 </span><span class="s3">&lt;&lt; </span><span class="s6">9</span><span class="s3">,</span>
+                    <span class="s4">'resilience'</span><span class="s3">: </span><span class="s6">1 </span><span class="s3">&lt;&lt; </span><span class="s6">10</span><span class="s3">,</span>
+                <span class="s2">}</span><span class="s3">,</span>
+                <span class="s1">level</span><span class="s3">: </span><span class="s2">{</span>
+                    <span class="s4">'0'</span><span class="s3">: </span><span class="s6">1 </span><span class="s3">&lt;&lt; </span><span class="s6">24</span><span class="s3">,</span>
+                    <span class="s4">'1'</span><span class="s3">: </span><span class="s6">1 </span><span class="s3">&lt;&lt; </span><span class="s6">25</span><span class="s3">,</span>
+                    <span class="s4">'2'</span><span class="s3">: </span><span class="s6">1 </span><span class="s3">&lt;&lt; </span><span class="s6">26</span><span class="s3">,</span>
+                    <span class="s4">'3'</span><span class="s3">: </span><span class="s6">1 </span><span class="s3">&lt;&lt; </span><span class="s6">27</span><span class="s3">,</span>
+                    <span class="s4">'4'</span><span class="s3">: </span><span class="s6">1 </span><span class="s3">&lt;&lt; </span><span class="s6">28</span><span class="s3">,</span>
+                <span class="s2">}</span><span class="s3">,</span>
+                <span class="s1">size</span><span class="s3">: </span><span class="s2">{</span>
+                    <span class="s4">'small'</span><span class="s3">: </span><span class="s6">1 </span><span class="s3">&lt;&lt; </span><span class="s6">16</span><span class="s3">,</span>
+                    <span class="s4">'medium'</span><span class="s3">: </span><span class="s6">1 </span><span class="s3">&lt;&lt; </span><span class="s6">17</span><span class="s3">,</span>
+                    <span class="s4">'large'</span><span class="s3">: </span><span class="s6">1 </span><span class="s3">&lt;&lt; </span><span class="s6">18</span><span class="s3">,</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span><span class="s3">;</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">parseParams</span><span class="s5">()</span><span class="s3">;</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s5">(</span><span class="s1">err</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">console</span><span class="s3">.</span><span class="s1">info</span><span class="s5">(</span><span class="s4">'setConfig error: ' </span><span class="s3">+ </span><span class="s1">err</span><span class="s3">.</span><span class="s1">message</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">parseParams</span><span class="s5">() </span><span class="s2">{</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">filter </span><span class="s3">!= </span><span class="s1">null</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">return</span><span class="s3">;</span>
+        <span class="s2">}</span>
+        <span class="s1">let testTypeFilter </span><span class="s3">= </span><span class="s6">0</span><span class="s3">;</span>
+        <span class="s1">let sizeFilter </span><span class="s3">= </span><span class="s6">0</span><span class="s3">;</span>
+        <span class="s1">let levelFilter </span><span class="s3">= </span><span class="s6">0</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">testType </span><span class="s3">!= </span><span class="s1">null</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">testTypeFilter </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">testType</span><span class="s3">.</span><span class="s1">split</span><span class="s5">(</span><span class="s4">','</span><span class="s5">)</span>
+                <span class="s3">.</span><span class="s1">map</span><span class="s5">(</span><span class="s1">item </span><span class="s3">=&gt; </span><span class="s1">this</span><span class="s3">.</span><span class="s1">filterParam</span><span class="s3">.</span><span class="s1">testType</span><span class="s5">[</span><span class="s1">item</span><span class="s5">] </span><span class="s3">|| </span><span class="s6">0</span><span class="s5">)</span>
+                <span class="s3">.</span><span class="s1">reduce</span><span class="s5">((</span><span class="s1">pre</span><span class="s3">, </span><span class="s1">cur</span><span class="s5">) </span><span class="s3">=&gt; </span><span class="s1">pre </span><span class="s3">| </span><span class="s1">cur</span><span class="s3">, </span><span class="s6">0</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s2">}</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">level </span><span class="s3">!= </span><span class="s1">null</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">levelFilter </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">level</span><span class="s3">.</span><span class="s1">split</span><span class="s5">(</span><span class="s4">','</span><span class="s5">)</span>
+                <span class="s3">.</span><span class="s1">map</span><span class="s5">(</span><span class="s1">item </span><span class="s3">=&gt; </span><span class="s1">this</span><span class="s3">.</span><span class="s1">filterParam</span><span class="s3">.</span><span class="s1">level</span><span class="s5">[</span><span class="s1">item</span><span class="s5">] </span><span class="s3">|| </span><span class="s6">0</span><span class="s5">)</span>
+                <span class="s3">.</span><span class="s1">reduce</span><span class="s5">((</span><span class="s1">pre</span><span class="s3">, </span><span class="s1">cur</span><span class="s5">) </span><span class="s3">=&gt; </span><span class="s1">pre </span><span class="s3">| </span><span class="s1">cur</span><span class="s3">, </span><span class="s6">0</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s2">}</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">size </span><span class="s3">!= </span><span class="s1">null</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">sizeFilter </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">size</span><span class="s3">.</span><span class="s1">split</span><span class="s5">(</span><span class="s4">','</span><span class="s5">)</span>
+                <span class="s3">.</span><span class="s1">map</span><span class="s5">(</span><span class="s1">item </span><span class="s3">=&gt; </span><span class="s1">this</span><span class="s3">.</span><span class="s1">filterParam</span><span class="s3">.</span><span class="s1">size</span><span class="s5">[</span><span class="s1">item</span><span class="s5">] </span><span class="s3">|| </span><span class="s6">0</span><span class="s5">)</span>
+                <span class="s3">.</span><span class="s1">reduce</span><span class="s5">((</span><span class="s1">pre</span><span class="s3">, </span><span class="s1">cur</span><span class="s5">) </span><span class="s3">=&gt; </span><span class="s1">pre </span><span class="s3">| </span><span class="s1">cur</span><span class="s3">, </span><span class="s6">0</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s2">}</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">filter </span><span class="s3">= </span><span class="s1">testTypeFilter </span><span class="s3">| </span><span class="s1">sizeFilter </span><span class="s3">| </span><span class="s1">levelFilter</span><span class="s3">;</span>
+        <span class="s1">console</span><span class="s3">.</span><span class="s1">info</span><span class="s5">(</span><span class="s4">'filter params:' </span><span class="s3">+ </span><span class="s1">this</span><span class="s3">.</span><span class="s1">filter</span><span class="s5">)</span><span class="s3">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">isCurrentSuite</span><span class="s5">(</span><span class="s1">description</span><span class="s5">) </span><span class="s2">{</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">suite </span><span class="s3">!== </span><span class="s1">undefined </span><span class="s3">&amp;&amp; </span><span class="s1">this</span><span class="s3">.</span><span class="s1">suite </span><span class="s3">!== </span><span class="s4">'' </span><span class="s3">&amp;&amp; </span><span class="s1">this</span><span class="s3">.</span><span class="s1">suite </span><span class="s3">!== </span><span class="s1">null</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">let suiteArray </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">suite</span><span class="s3">.</span><span class="s1">split</span><span class="s5">(</span><span class="s4">','</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s1">return suiteArray</span><span class="s3">.</span><span class="s1">indexOf</span><span class="s5">(</span><span class="s1">description</span><span class="s5">) </span><span class="s3">!== -</span><span class="s6">1</span><span class="s3">;</span>
+        <span class="s2">}</span>
+        <span class="s1">return false</span><span class="s3">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">filterSuite</span><span class="s5">(</span><span class="s1">currentSuiteName</span><span class="s5">) </span><span class="s2">{</span>
+        <span class="s1">let filterArray </span><span class="s3">= </span><span class="s5">[]</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">suite </span><span class="s3">!== </span><span class="s1">undefined </span><span class="s3">&amp;&amp; </span><span class="s1">this</span><span class="s3">.</span><span class="s1">suite </span><span class="s3">!== </span><span class="s4">'' </span><span class="s3">&amp;&amp; </span><span class="s1">this</span><span class="s3">.</span><span class="s1">suite </span><span class="s3">!== </span><span class="s1">null</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">filterArray</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s1">new SuiteAndItNameFilter</span><span class="s5">(</span><span class="s1">currentSuiteName</span><span class="s3">, </span><span class="s4">''</span><span class="s3">, </span><span class="s1">this</span><span class="s3">.</span><span class="s1">suite</span><span class="s5">))</span><span class="s3">;</span>
+        <span class="s2">}</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">class </span><span class="s3">!== </span><span class="s1">undefined </span><span class="s3">&amp;&amp; </span><span class="s1">this</span><span class="s3">.</span><span class="s1">class </span><span class="s3">!== </span><span class="s4">'' </span><span class="s3">&amp;&amp; </span><span class="s1">this</span><span class="s3">.</span><span class="s1">class </span><span class="s3">!== </span><span class="s1">null</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">filterArray</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s1">new ClassFilter</span><span class="s5">(</span><span class="s1">currentSuiteName</span><span class="s3">, </span><span class="s4">''</span><span class="s3">, </span><span class="s1">this</span><span class="s3">.</span><span class="s1">class</span><span class="s5">))</span><span class="s3">;</span>
+        <span class="s2">}</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">notClass </span><span class="s3">!== </span><span class="s1">undefined </span><span class="s3">&amp;&amp; </span><span class="s1">this</span><span class="s3">.</span><span class="s1">notClass </span><span class="s3">!== </span><span class="s4">'' </span><span class="s3">&amp;&amp; </span><span class="s1">this</span><span class="s3">.</span><span class="s1">notClass </span><span class="s3">!== </span><span class="s1">null</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">filterArray</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s1">new NotClassFilter</span><span class="s5">(</span><span class="s1">currentSuiteName</span><span class="s3">, </span><span class="s4">''</span><span class="s3">, </span><span class="s1">this</span><span class="s3">.</span><span class="s1">notClass</span><span class="s5">))</span><span class="s3">;</span>
+        <span class="s2">}</span>
+
+        <span class="s1">let result </span><span class="s3">= </span><span class="s1">filterArray</span><span class="s3">.</span><span class="s1">map</span><span class="s5">(</span><span class="s1">item </span><span class="s3">=&gt; </span><span class="s1">item</span><span class="s3">.</span><span class="s1">filterSuite</span><span class="s5">())</span><span class="s3">.</span><span class="s1">reduce</span><span class="s5">((</span><span class="s1">pre</span><span class="s3">, </span><span class="s1">cur</span><span class="s5">) </span><span class="s3">=&gt; </span><span class="s1">pre </span><span class="s3">|| </span><span class="s1">cur</span><span class="s3">, </span><span class="s1">false</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">return result</span><span class="s3">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">filterDesc</span><span class="s5">(</span><span class="s1">currentSuiteName</span><span class="s3">, </span><span class="s1">desc</span><span class="s3">, </span><span class="s1">fi</span><span class="s3">, </span><span class="s1">coreContext</span><span class="s5">) </span><span class="s2">{</span>
+        <span class="s1">let filterArray </span><span class="s3">= </span><span class="s5">[]</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">itName </span><span class="s3">!== </span><span class="s1">undefined </span><span class="s3">&amp;&amp; </span><span class="s1">this</span><span class="s3">.</span><span class="s1">itName </span><span class="s3">!== </span><span class="s4">'' </span><span class="s3">&amp;&amp; </span><span class="s1">this</span><span class="s3">.</span><span class="s1">itName </span><span class="s3">!== </span><span class="s1">null</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">filterArray</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s1">new SuiteAndItNameFilter</span><span class="s5">(</span><span class="s1">currentSuiteName</span><span class="s3">, </span><span class="s1">desc</span><span class="s3">, </span><span class="s1">this</span><span class="s3">.</span><span class="s1">itName</span><span class="s5">))</span><span class="s3">;</span>
+        <span class="s2">}</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">class </span><span class="s3">!== </span><span class="s1">undefined </span><span class="s3">&amp;&amp; </span><span class="s1">this</span><span class="s3">.</span><span class="s1">class </span><span class="s3">!== </span><span class="s4">'' </span><span class="s3">&amp;&amp; </span><span class="s1">this</span><span class="s3">.</span><span class="s1">class </span><span class="s3">!== </span><span class="s1">null</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">filterArray</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s1">new ClassFilter</span><span class="s5">(</span><span class="s1">currentSuiteName</span><span class="s3">, </span><span class="s1">desc</span><span class="s3">, </span><span class="s1">this</span><span class="s3">.</span><span class="s1">class</span><span class="s5">))</span><span class="s3">;</span>
+        <span class="s2">}</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">notClass </span><span class="s3">!== </span><span class="s1">undefined </span><span class="s3">&amp;&amp; </span><span class="s1">this</span><span class="s3">.</span><span class="s1">notClass </span><span class="s3">!== </span><span class="s4">'' </span><span class="s3">&amp;&amp; </span><span class="s1">this</span><span class="s3">.</span><span class="s1">notClass </span><span class="s3">!== </span><span class="s1">null</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">filterArray</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s1">new NotClassFilter</span><span class="s5">(</span><span class="s1">currentSuiteName</span><span class="s3">, </span><span class="s1">desc</span><span class="s3">, </span><span class="s1">this</span><span class="s3">.</span><span class="s1">notClass</span><span class="s5">))</span><span class="s3">;</span>
+        <span class="s2">}</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">typeof </span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">filter</span><span class="s5">) </span><span class="s3">!== </span><span class="s4">'undefined' </span><span class="s3">&amp;&amp; </span><span class="s1">this</span><span class="s3">.</span><span class="s1">filter </span><span class="s3">!== </span><span class="s6">0 </span><span class="s3">&amp;&amp; </span><span class="s1">fi </span><span class="s3">!== </span><span class="s6">0</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">filterArray</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s1">new TestTypesFilter</span><span class="s5">(</span><span class="s4">''</span><span class="s3">, </span><span class="s4">''</span><span class="s3">, </span><span class="s1">fi</span><span class="s3">, </span><span class="s1">this</span><span class="s3">.</span><span class="s1">filter</span><span class="s5">))</span><span class="s3">;</span>
+        <span class="s2">}</span>
+        <span class="s1">let result </span><span class="s3">= </span><span class="s1">filterArray</span><span class="s3">.</span><span class="s1">map</span><span class="s5">(</span><span class="s1">item </span><span class="s3">=&gt; </span><span class="s1">item</span><span class="s3">.</span><span class="s1">filterIt</span><span class="s5">())</span><span class="s3">.</span><span class="s1">reduce</span><span class="s5">((</span><span class="s1">pre</span><span class="s3">, </span><span class="s1">cur</span><span class="s5">) </span><span class="s3">=&gt; </span><span class="s1">pre </span><span class="s3">|| </span><span class="s1">cur</span><span class="s3">, </span><span class="s1">false</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">return result</span><span class="s3">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">isRandom</span><span class="s5">() </span><span class="s2">{</span>
+        <span class="s1">return this</span><span class="s3">.</span><span class="s1">random </span><span class="s3">|| </span><span class="s1">false</span><span class="s3">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">isBreakOnError</span><span class="s5">() </span><span class="s2">{</span>
+        <span class="s1">return this</span><span class="s3">.</span><span class="s1">breakOnError </span><span class="s3">!== </span><span class="s4">'true' </span><span class="s3">? </span><span class="s1">false </span><span class="s3">: </span><span class="s1">true</span><span class="s3">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">setSupportAsync</span><span class="s5">(</span><span class="s1">value</span><span class="s5">) </span><span class="s2">{</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">supportAsync </span><span class="s3">= </span><span class="s1">value</span><span class="s3">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">isSupportAsync</span><span class="s5">() </span><span class="s2">{</span>
+        <span class="s1">return this</span><span class="s3">.</span><span class="s1">supportAsync</span><span class="s3">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">translateParams</span><span class="s5">(</span><span class="s1">parameters</span><span class="s5">) </span><span class="s2">{</span>
+        <span class="s1">const keySet </span><span class="s3">= </span><span class="s1">new Set</span><span class="s5">([</span>
+            <span class="s4">'-s class'</span><span class="s3">, </span><span class="s4">'-s notClass'</span><span class="s3">, </span><span class="s4">'-s suite'</span><span class="s3">, </span><span class="s4">'-s itName'</span><span class="s3">,</span>
+            <span class="s4">'-s level'</span><span class="s3">, </span><span class="s4">'-s testType'</span><span class="s3">, </span><span class="s4">'-s size'</span><span class="s3">, </span><span class="s4">'-s timeout'</span><span class="s3">,</span>
+            <span class="s4">'-s dryRun'</span><span class="s3">, </span><span class="s4">'-s random'</span><span class="s3">, </span><span class="s4">'-s breakOnError'</span><span class="s3">, </span><span class="s4">'-s stress'</span><span class="s3">,</span>
+            <span class="s4">'-s coverage'</span><span class="s3">, </span><span class="s4">'class'</span><span class="s3">, </span><span class="s4">'notClass'</span><span class="s3">, </span><span class="s4">'suite'</span><span class="s3">, </span><span class="s4">'itName'</span><span class="s3">,</span>
+            <span class="s4">'level'</span><span class="s3">, </span><span class="s4">'testType'</span><span class="s3">, </span><span class="s4">'size'</span><span class="s3">, </span><span class="s4">'timeout'</span><span class="s3">, </span><span class="s4">'dryRun'</span><span class="s3">, </span><span class="s4">'random'</span><span class="s3">,</span>
+            <span class="s4">'breakOnError'</span><span class="s3">, </span><span class="s4">'stress'</span><span class="s3">, </span><span class="s4">'coverage'</span>
+        <span class="s5">])</span><span class="s3">;</span>
+        <span class="s1">let targetParams </span><span class="s3">= </span><span class="s2">{}</span><span class="s3">;</span>
+        <span class="s1">for </span><span class="s5">(</span><span class="s1">const key in parameters</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">if </span><span class="s5">(</span><span class="s1">keySet</span><span class="s3">.</span><span class="s1">has</span><span class="s5">(</span><span class="s1">key</span><span class="s5">)) </span><span class="s2">{</span>
+                <span class="s1">var newKey </span><span class="s3">= </span><span class="s1">key</span><span class="s3">.</span><span class="s1">replace</span><span class="s5">(</span><span class="s4">&quot;-s &quot;</span><span class="s3">, </span><span class="s4">&quot;&quot;</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s1">targetParams</span><span class="s5">[</span><span class="s1">newKey</span><span class="s5">] </span><span class="s3">= </span><span class="s1">parameters</span><span class="s5">[</span><span class="s1">key</span><span class="s5">]</span><span class="s3">;</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+        <span class="s1">return targetParams</span><span class="s3">;</span>
+    <span class="s2">}</span>
+    <span class="s1">translateParamsToString</span><span class="s5">(</span><span class="s1">parameters</span><span class="s5">) </span><span class="s2">{</span>
+        <span class="s1">const keySet </span><span class="s3">= </span><span class="s1">new Set</span><span class="s5">([</span>
+            <span class="s4">'-s class'</span><span class="s3">, </span><span class="s4">'-s notClass'</span><span class="s3">, </span><span class="s4">'-s suite'</span><span class="s3">, </span><span class="s4">'-s itName'</span><span class="s3">,</span>
+            <span class="s4">'-s level'</span><span class="s3">, </span><span class="s4">'-s testType'</span><span class="s3">, </span><span class="s4">'-s size'</span><span class="s3">, </span><span class="s4">'-s timeout'</span><span class="s3">,</span>
+            <span class="s4">'-s dryRun'</span><span class="s3">, </span><span class="s4">'-s random'</span><span class="s3">, </span><span class="s4">'-s breakOnError'</span><span class="s3">, </span><span class="s4">'-s stress'</span><span class="s3">,</span>
+            <span class="s4">'-s coverage'</span><span class="s3">,</span><span class="s4">'class'</span><span class="s3">, </span><span class="s4">'notClass'</span><span class="s3">, </span><span class="s4">'suite'</span><span class="s3">, </span><span class="s4">'itName'</span><span class="s3">,</span>
+            <span class="s4">'level'</span><span class="s3">, </span><span class="s4">'testType'</span><span class="s3">, </span><span class="s4">'size'</span><span class="s3">, </span><span class="s4">'timeout'</span><span class="s3">, </span><span class="s4">'dryRun'</span><span class="s3">, </span><span class="s4">'random'</span><span class="s3">,</span>
+            <span class="s4">'breakOnError'</span><span class="s3">, </span><span class="s4">'stress'</span><span class="s3">, </span><span class="s4">'coverage'</span>
+        <span class="s5">])</span><span class="s3">;</span>
+        <span class="s1">let targetParams </span><span class="s3">= </span><span class="s4">''</span><span class="s3">;</span>
+        <span class="s1">for </span><span class="s5">(</span><span class="s1">const key in parameters</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">if </span><span class="s5">(</span><span class="s1">keySet</span><span class="s3">.</span><span class="s1">has</span><span class="s5">(</span><span class="s1">key</span><span class="s5">)) </span><span class="s2">{</span>
+                <span class="s1">targetParams </span><span class="s3">+= </span><span class="s4">' ' </span><span class="s3">+ </span><span class="s1">key </span><span class="s3">+ </span><span class="s4">' ' </span><span class="s3">+ </span><span class="s1">parameters</span><span class="s5">[</span><span class="s1">key</span><span class="s5">]</span><span class="s3">;</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+        <span class="s1">return targetParams</span><span class="s3">.</span><span class="s1">trim</span><span class="s5">()</span><span class="s3">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">execute</span><span class="s5">() </span><span class="s2">{</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+<span class="s1">export </span><span class="s2">{</span>
+    <span class="s1">ConfigService</span>
+<span class="s2">}</span><span class="s3">;</span>
+</pre>
+</body>
+</html>

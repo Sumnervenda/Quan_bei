@@ -1,0 +1,113 @@
+<html>
+<head>
+<title>index.ets</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #808080;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #aa7dfc;}
+.s3 { color: #e2da90;}
+.s4 { color: #faa23d;}
+.s5 { color: #db7e9b;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+index.ets</font>
+</center></td></tr></table>
+<pre><span class="s0">/* 
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd. 
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;) 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ */</span>
+
+<span class="s1">import Core from </span><span class="s2">'./src/main/core'</span><span class="s3">;</span>
+<span class="s1">import </span><span class="s4">{</span><span class="s1">DEFAULT</span><span class="s3">, </span><span class="s1">TestType</span><span class="s3">, </span><span class="s1">Size</span><span class="s3">, </span><span class="s1">Level</span><span class="s4">} </span><span class="s1">from </span><span class="s2">'./src/main/Constant'</span><span class="s3">;</span>
+<span class="s1">import DataDriver from </span><span class="s2">'./src/main/module/config/DataDriver'</span><span class="s3">;</span>
+<span class="s1">import ExpectExtend from </span><span class="s2">'./src/main/module/assert/ExpectExtend'</span><span class="s3">;</span>
+<span class="s1">import OhReport from </span><span class="s2">'./src/main/module/report/OhReport'</span><span class="s3">;</span>
+<span class="s1">import SysTestKit from </span><span class="s2">'./src/main/module/kit/SysTestKit'</span><span class="s3">;</span>
+<span class="s1">import </span><span class="s4">{</span><span class="s1">describe</span><span class="s3">, </span><span class="s1">beforeAll</span><span class="s3">, </span><span class="s1">beforeEach</span><span class="s3">, </span><span class="s1">afterEach</span><span class="s3">, </span><span class="s1">afterAll</span><span class="s3">, </span><span class="s1">it</span><span class="s3">, </span><span class="s1">expect</span><span class="s4">} </span><span class="s1">from </span><span class="s2">'./src/main/interface'</span><span class="s3">;</span>
+<span class="s1">import </span><span class="s4">{</span><span class="s1">MockKit</span><span class="s3">, </span><span class="s1">when</span><span class="s4">} </span><span class="s1">from </span><span class="s2">'./src/main/module/mock/MockKit'</span><span class="s3">;</span>
+<span class="s1">import ArgumentMatchers from </span><span class="s2">'./src/main/module/mock/ArgumentMatchers'</span><span class="s3">;</span>
+
+<span class="s1">class Hypium </span><span class="s4">{</span>
+    <span class="s1">static setData</span><span class="s5">(</span><span class="s1">data</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">const core </span><span class="s3">= </span><span class="s1">Core</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s5">()</span><span class="s3">;</span>
+        <span class="s1">const dataDriver </span><span class="s3">= </span><span class="s1">new DataDriver</span><span class="s5">(</span><span class="s4">{</span><span class="s1">data</span><span class="s4">}</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">core</span><span class="s3">.</span><span class="s1">addService</span><span class="s5">(</span><span class="s2">'dataDriver'</span><span class="s3">, </span><span class="s1">dataDriver</span><span class="s5">)</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">static setTimeConfig</span><span class="s5">(</span><span class="s1">systemTime</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">SysTestKit</span><span class="s3">.</span><span class="s1">systemTime </span><span class="s3">= </span><span class="s1">systemTime</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">static hypiumTest</span><span class="s5">(</span><span class="s1">abilityDelegator</span><span class="s3">, </span><span class="s1">abilityDelegatorArguments</span><span class="s3">, </span><span class="s1">testsuite</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">const core </span><span class="s3">= </span><span class="s1">Core</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s5">()</span><span class="s3">;</span>
+        <span class="s1">const expectExtend </span><span class="s3">= </span><span class="s1">new ExpectExtend</span><span class="s5">(</span><span class="s4">{</span>
+            <span class="s2">'id'</span><span class="s3">: </span><span class="s2">'extend'</span>
+        <span class="s4">}</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">core</span><span class="s3">.</span><span class="s1">addService</span><span class="s5">(</span><span class="s2">'expect'</span><span class="s3">, </span><span class="s1">expectExtend</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">const ohReport </span><span class="s3">= </span><span class="s1">new OhReport</span><span class="s5">(</span><span class="s4">{</span>
+            <span class="s2">'delegator'</span><span class="s3">: </span><span class="s1">abilityDelegator</span><span class="s3">,</span>
+            <span class="s2">'abilityDelegatorArguments'</span><span class="s3">: </span><span class="s1">abilityDelegatorArguments</span>
+        <span class="s4">}</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">SysTestKit</span><span class="s3">.</span><span class="s1">delegator </span><span class="s3">= </span><span class="s1">abilityDelegator</span><span class="s3">;</span>
+        <span class="s1">core</span><span class="s3">.</span><span class="s1">addService</span><span class="s5">(</span><span class="s2">'report'</span><span class="s3">, </span><span class="s1">ohReport</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">core</span><span class="s3">.</span><span class="s1">init</span><span class="s5">()</span><span class="s3">;</span>
+        <span class="s1">core</span><span class="s3">.</span><span class="s1">subscribeEvent</span><span class="s5">(</span><span class="s2">'spec'</span><span class="s3">, </span><span class="s1">ohReport</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">core</span><span class="s3">.</span><span class="s1">subscribeEvent</span><span class="s5">(</span><span class="s2">'suite'</span><span class="s3">, </span><span class="s1">ohReport</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">core</span><span class="s3">.</span><span class="s1">subscribeEvent</span><span class="s5">(</span><span class="s2">'task'</span><span class="s3">, </span><span class="s1">ohReport</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">const configService </span><span class="s3">= </span><span class="s1">core</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s2">'config'</span><span class="s5">)</span><span class="s3">;</span>
+
+        <span class="s1">let testParameters </span><span class="s3">= </span><span class="s4">{}</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">abilityDelegatorArguments </span><span class="s3">!== </span><span class="s1">null</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">testParameters </span><span class="s3">= </span><span class="s1">configService</span><span class="s3">.</span><span class="s1">translateParams</span><span class="s5">(</span><span class="s1">abilityDelegatorArguments</span><span class="s3">.</span><span class="s1">parameters</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s4">}</span>
+        <span class="s1">console</span><span class="s3">.</span><span class="s1">info</span><span class="s5">(</span><span class="s2">'parameters:' </span><span class="s3">+ </span><span class="s1">JSON</span><span class="s3">.</span><span class="s1">stringify</span><span class="s5">(</span><span class="s1">testParameters</span><span class="s5">))</span><span class="s3">;</span>
+        <span class="s1">configService</span><span class="s3">.</span><span class="s1">setConfig</span><span class="s5">(</span><span class="s1">testParameters</span><span class="s5">)</span><span class="s3">;</span>
+
+        <span class="s1">testsuite</span><span class="s5">()</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">Object</span><span class="s3">.</span><span class="s1">prototype</span><span class="s3">.</span><span class="s1">hasOwnProperty</span><span class="s3">.</span><span class="s1">call</span><span class="s5">(</span><span class="s1">globalThis</span><span class="s3">, </span><span class="s2">'setupUiTestEnvironment'</span><span class="s5">)) </span><span class="s4">{</span>
+            <span class="s1">globalThis</span><span class="s3">.</span><span class="s1">setupUiTestEnvironment</span><span class="s5">()</span><span class="s3">.</span><span class="s1">then</span><span class="s5">(() </span><span class="s3">=&gt; </span><span class="s4">{</span>
+                <span class="s1">console</span><span class="s3">.</span><span class="s1">info</span><span class="s5">(</span><span class="s2">'UiTestKit::after run uitest setup, start run testcases'</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s1">core</span><span class="s3">.</span><span class="s1">execute</span><span class="s5">(</span><span class="s1">abilityDelegator</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">}</span><span class="s5">)</span><span class="s3">.</span><span class="s1">catch</span><span class="s5">((</span><span class="s1">error</span><span class="s5">) </span><span class="s3">=&gt; </span><span class="s4">{</span>
+                <span class="s1">console</span><span class="s3">.</span><span class="s1">error</span><span class="s5">(</span><span class="s2">'UiTestKit:: call setupUiTestEnvironment failure:' </span><span class="s3">+ </span><span class="s1">error</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s1">core</span><span class="s3">.</span><span class="s1">execute</span><span class="s5">(</span><span class="s1">abilityDelegator</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">}</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s4">} </span><span class="s1">else </span><span class="s4">{</span>
+            <span class="s1">console</span><span class="s3">.</span><span class="s1">info</span><span class="s5">(</span><span class="s2">'UiTestKit:: no need to setup uitest, start run testcases'</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s1">core</span><span class="s3">.</span><span class="s1">execute</span><span class="s5">(</span><span class="s1">abilityDelegator</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+<span class="s4">}</span>
+
+<span class="s1">export </span><span class="s4">{</span>
+    <span class="s1">Hypium</span><span class="s3">,</span>
+    <span class="s1">Core</span><span class="s3">,</span>
+    <span class="s1">DEFAULT</span><span class="s3">,</span>
+    <span class="s1">TestType</span><span class="s3">,</span>
+    <span class="s1">Size</span><span class="s3">,</span>
+    <span class="s1">Level</span><span class="s3">,</span>
+    <span class="s1">DataDriver</span><span class="s3">,</span>
+    <span class="s1">ExpectExtend</span><span class="s3">,</span>
+    <span class="s1">OhReport</span><span class="s3">,</span>
+    <span class="s1">SysTestKit</span><span class="s3">,</span>
+    <span class="s1">describe</span><span class="s3">, </span><span class="s1">beforeAll</span><span class="s3">, </span><span class="s1">beforeEach</span><span class="s3">, </span><span class="s1">afterEach</span><span class="s3">, </span><span class="s1">afterAll</span><span class="s3">, </span><span class="s1">it</span><span class="s3">, </span><span class="s1">expect</span><span class="s3">,</span>
+    <span class="s1">MockKit</span><span class="s3">, </span><span class="s1">when</span><span class="s3">,</span>
+    <span class="s1">ArgumentMatchers</span>
+<span class="s4">}</span><span class="s3">;</span></pre>
+</body>
+</html>

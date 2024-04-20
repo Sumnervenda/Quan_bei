@@ -1,0 +1,61 @@
+<html>
+<head>
+<title>assertPromiseIsRejected.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #808080;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #aa7dfc;}
+.s3 { color: #e2da90;}
+.s4 { color: #db7e9b;}
+.s5 { color: #faa23d;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+assertPromiseIsRejected.js</font>
+</center></td></tr></table>
+<pre><span class="s0">/* 
+ * Copyright (c) 2022 Huawei Device Co., Ltd. 
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ */</span>
+
+<span class="s1">import isPromiseLike from </span><span class="s2">'./isPromiseLike'</span><span class="s3">;</span>
+
+<span class="s1">function assertPromiseIsRejected</span><span class="s4">(</span><span class="s1">actualPromise</span><span class="s4">) </span><span class="s5">{</span>
+    <span class="s1">if </span><span class="s4">(</span><span class="s3">!</span><span class="s1">isPromiseLike</span><span class="s4">(</span><span class="s1">actualPromise</span><span class="s4">)) </span><span class="s5">{</span>
+        <span class="s1">return Promise</span><span class="s3">.</span><span class="s1">reject</span><span class="s4">()</span><span class="s3">.</span><span class="s1">then</span><span class="s4">(</span><span class="s1">function </span><span class="s4">() </span><span class="s5">{</span>
+        <span class="s5">}</span><span class="s3">, </span><span class="s1">function </span><span class="s4">() </span><span class="s5">{</span>
+            <span class="s1">return </span><span class="s5">{</span><span class="s1">pass</span><span class="s3">: </span><span class="s1">false</span><span class="s3">, </span><span class="s1">message</span><span class="s3">: </span><span class="s2">'Expected not be called on a promise.'</span><span class="s5">}</span><span class="s3">;</span>
+        <span class="s5">}</span><span class="s4">)</span><span class="s3">;</span>
+    <span class="s5">}</span>
+    <span class="s1">const helper </span><span class="s3">= </span><span class="s5">{}</span><span class="s3">;</span>
+    <span class="s1">return Promise</span><span class="s3">.</span><span class="s1">race</span><span class="s4">([</span><span class="s1">actualPromise</span><span class="s3">, </span><span class="s1">Promise</span><span class="s3">.</span><span class="s1">resolve</span><span class="s4">(</span><span class="s1">helper</span><span class="s4">)])</span><span class="s3">.</span><span class="s1">then</span><span class="s4">(</span>
+        <span class="s1">function </span><span class="s4">(</span><span class="s1">got</span><span class="s4">) </span><span class="s5">{</span>
+            <span class="s1">return </span><span class="s5">{</span>
+                <span class="s1">pass</span><span class="s3">: </span><span class="s1">false</span><span class="s3">,</span>
+                <span class="s1">message</span><span class="s3">: </span><span class="s2">'expect isRejected, but actualValue is '</span>
+                    <span class="s3">+ </span><span class="s4">(</span><span class="s1">helper </span><span class="s3">=== </span><span class="s1">got </span><span class="s3">? </span><span class="s2">'isPending' </span><span class="s3">: </span><span class="s2">'resolve'</span><span class="s4">)</span>
+            <span class="s5">}</span><span class="s3">;</span>
+        <span class="s5">}</span><span class="s3">,</span>
+        <span class="s1">function </span><span class="s4">() </span><span class="s5">{</span>
+            <span class="s1">return </span><span class="s5">{</span><span class="s1">pass</span><span class="s3">: </span><span class="s1">true</span><span class="s3">, </span><span class="s1">message</span><span class="s3">: </span><span class="s2">'actualValue is isRejected'</span><span class="s5">}</span><span class="s3">;</span>
+        <span class="s5">}</span>
+    <span class="s4">)</span><span class="s3">;</span>
+<span class="s5">}</span>
+
+<span class="s1">export default assertPromiseIsRejected</span><span class="s3">;</span></pre>
+</body>
+</html>

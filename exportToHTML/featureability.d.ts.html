@@ -1,0 +1,376 @@
+<html>
+<head>
+<title>featureability.d.ts</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #808080;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #faa23d;}
+.s3 { color: #e2da90;}
+.s4 { color: #db7e9b;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+featureability.d.ts</font>
+</center></td></tr></table>
+<pre><span class="s0">/* 
+ * Copyright (c) 2020 Huawei Device Co., Ltd. 
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ */</span>
+<span class="s0">/** 
+ * @since 5 
+ * @deprecated since 8 
+ */</span>
+<span class="s1">declare interface Result </span><span class="s2">{</span>
+    <span class="s0">/** 
+     * Result code. 
+     * @since 5 
+     */</span>
+    <span class="s1">code</span><span class="s3">: </span><span class="s1">number</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Returned data. 
+     * @since 5 
+     */</span>
+    <span class="s1">data</span><span class="s3">: </span><span class="s1">object</span><span class="s3">;</span>
+<span class="s2">}</span>
+<span class="s0">/** 
+ * @syscap SystemCapability.ArkUI.ArkUI.Lite 
+ * @since 5 
+ * @deprecated since 8 
+ */</span>
+<span class="s1">declare interface SubscribeMessageResponse </span><span class="s2">{</span>
+    <span class="s0">/** 
+     * Peer device ID. 
+     * @since 5 
+     */</span>
+    <span class="s1">deviceId</span><span class="s3">: </span><span class="s1">string</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Name of the bundle where the peer ability has been located. The name is case sensitive. 
+     * @since 5 
+     */</span>
+    <span class="s1">bundleName</span><span class="s3">: </span><span class="s1">string</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Peer ability name, which is case sensitive. 
+     * @since 5 
+     */</span>
+    <span class="s1">abilityName</span><span class="s3">: </span><span class="s1">string</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Messages received from the device. 
+     * @since 5 
+     */</span>
+    <span class="s1">message</span><span class="s3">: </span><span class="s1">string</span><span class="s3">;</span>
+<span class="s2">}</span>
+<span class="s0">/** 
+ * @since 5 
+ * @deprecated since 8 
+ */</span>
+<span class="s1">declare interface CallAbilityParam </span><span class="s2">{</span>
+    <span class="s0">/** 
+     * Name of the bundle where the ability has been located. The name is case sensitive and must be the same as that on the AA side. 
+     * @since 5 
+     */</span>
+    <span class="s1">bundleName</span><span class="s3">: </span><span class="s1">string</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Ability name, which is case sensitive and must be the same as that on the AA side. 
+     * @since 5 
+     */</span>
+    <span class="s1">abilityName</span><span class="s3">: </span><span class="s1">string</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Ability operation code, which defines the service function of an AA and must be consistent with the AA side. 
+     * @since 5 
+     */</span>
+    <span class="s1">messageCode</span><span class="s3">: </span><span class="s1">number</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Ability type. Different types of abilities have different implementation on the AA side. 
+     * 0: Ability, which has an independent lifecycle. The FA starts and requests an AA through an RPC. Such type of abilities are used to provide basic services for multiple FAs to call or are used when the abilities should run in the background. 
+     * 1: Internal ability, which shares the same process with the FA and communicates with it by calling internal functions. Such type of abilities are used in scenarios that require low response latency and cannot be called by other FAs. 
+     * @since 5 
+     */</span>
+    <span class="s1">abilityType</span><span class="s3">: </span><span class="s1">number</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Data sent to the ability. The data to carry differs depending on the service to be processed and its field name must be consistent with the AA side. 
+     * @since 5 
+     */</span>
+    <span class="s1">data</span><span class="s3">?: </span><span class="s1">object</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Whether the request is synchronous or asynchronous. The synchronous mode is used by default. Currently, the asynchronous mode is available only for internal abilities. 
+     * 0: Synchronous mode (default value) 
+     * 1: Asynchronous mode 
+     * @since 5 
+     */</span>
+    <span class="s1">syncOption</span><span class="s3">?: </span><span class="s1">number</span><span class="s3">;</span>
+<span class="s2">}</span>
+<span class="s0">/** 
+ * @since 5 
+ * @deprecated since 8 
+ */</span>
+<span class="s1">declare interface SubscribeAbilityEventParam </span><span class="s2">{</span>
+    <span class="s0">/** 
+     * Name of the bundle where the ability has been located. The name is case sensitive and must be the same as that on the AA side. 
+     * @since 5 
+     */</span>
+    <span class="s1">bundleName</span><span class="s3">: </span><span class="s1">string</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Ability name, which is case sensitive and must be the same as that on the AA side. 
+     * @since 5 
+     */</span>
+    <span class="s1">abilityName</span><span class="s3">: </span><span class="s1">string</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Ability operation code, which defines the service function of an AA and must be consistent with the AA side. 
+     * @since 5 
+     */</span>
+    <span class="s1">messageCode</span><span class="s3">: </span><span class="s1">number</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Ability type. Different types of abilities have different implementation on the AA side. 
+     * 0: Ability, which has an independent lifecycle. The FA starts and requests an AA through an RPC. Such type of abilities are used to provide basic services for multiple FAs to call or are used when the abilities should run in the background. 
+     * 1: Internal ability, which shares the same process with the FA and communicates with it by calling internal functions. Such type of abilities are used in scenarios that require low response latency and cannot be called by other FAs. 
+     * @since 5 
+     */</span>
+    <span class="s1">abilityType</span><span class="s3">: </span><span class="s1">number</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Whether the request is synchronous or asynchronous. The synchronous mode is used by default. Currently, the asynchronous mode is available only for internal abilities. 
+     * 0: Synchronous mode (default value) 
+     * 1: Asynchronous mode 
+     * @since 5 
+     */</span>
+    <span class="s1">syncOption</span><span class="s3">?: </span><span class="s1">number</span><span class="s3">;</span>
+<span class="s2">}</span>
+<span class="s0">/** 
+ * @syscap SystemCapability.ArkUI.ArkUI.Lite 
+ * @since 5 
+ * @deprecated since 8 
+ */</span>
+<span class="s1">declare interface SendMessageOptions </span><span class="s2">{</span>
+    <span class="s0">/** 
+     * Destination device ID. 
+     * @since 5 
+     */</span>
+    <span class="s1">deviceId</span><span class="s3">: </span><span class="s1">string</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Name of the destination bundle where the ability has been located. The name is case sensitive. 
+     * @since 5 
+     */</span>
+    <span class="s1">bundleName</span><span class="s3">: </span><span class="s1">string</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Destination ability name, which is case sensitive. 
+     * @since 5 
+     */</span>
+    <span class="s1">abilityName</span><span class="s3">: </span><span class="s1">string</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Messages sent to the destination device. 
+     * A maximum of 1 KB of data can be transmitted at a time. 
+     * If more than 1 KB of data needs to be transmitted, split the messages into multiple parts to transmit. 
+     * @since 5 
+     */</span>
+    <span class="s1">message</span><span class="s3">?: </span><span class="s1">string</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Called when the messages are sent successfully. 
+     * @since 5 
+     */</span>
+    <span class="s1">success</span><span class="s3">?: </span><span class="s4">() </span><span class="s3">=&gt; </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Called when the messages fail to be sent. 
+     * @since 5 
+     */</span>
+    <span class="s1">fail</span><span class="s3">?: </span><span class="s4">(</span><span class="s1">data</span><span class="s3">: </span><span class="s1">string</span><span class="s3">, </span><span class="s1">code</span><span class="s3">: </span><span class="s1">number</span><span class="s4">) </span><span class="s3">=&gt; </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Called when the execution is completed. 
+     * @since 5 
+     */</span>
+    <span class="s1">complete</span><span class="s3">?: </span><span class="s4">() </span><span class="s3">=&gt; </span><span class="s1">void</span><span class="s3">;</span>
+<span class="s2">}</span>
+<span class="s0">/** 
+ * @syscap SystemCapability.ArkUI.ArkUI.Lite 
+ * @since 5 
+ * @deprecated since 8 
+ */</span>
+<span class="s1">declare interface SubscribeMessageOptions </span><span class="s2">{</span>
+    <span class="s0">/** 
+     * Called when the messages are sent successfully. 
+     * @since 5 
+     */</span>
+    <span class="s1">success</span><span class="s3">?: </span><span class="s4">(</span><span class="s1">data</span><span class="s3">: </span><span class="s1">SubscribeMessageResponse</span><span class="s4">) </span><span class="s3">=&gt; </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Called when the messages fail to be sent. 
+     * @since 5 
+     */</span>
+    <span class="s1">fail</span><span class="s3">?: </span><span class="s4">(</span><span class="s1">data</span><span class="s3">: </span><span class="s1">string</span><span class="s3">, </span><span class="s1">code</span><span class="s3">: </span><span class="s1">number</span><span class="s4">) </span><span class="s3">=&gt; </span><span class="s1">void</span><span class="s3">;</span>
+<span class="s2">}</span>
+<span class="s0">/** 
+ * @since 5 
+ * @deprecated since 8 
+ */</span>
+<span class="s1">declare interface RequestParams </span><span class="s2">{</span>
+    <span class="s0">/** 
+     * The name of the bundle to start. It should be used with abilityname and case sensitive. 
+     * @since 5 
+     */</span>
+    <span class="s1">bundleName</span><span class="s3">?: </span><span class="s1">string</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Ability name, which is case sensitive. 
+     * @since 5 
+     */</span>
+    <span class="s1">abilityName</span><span class="s3">?: </span><span class="s1">string</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * The list of entities to which the FA to be called. If it is not filled in, all entity lists will be found by default. It should be used with action. 
+     * @since 5 
+     */</span>
+    <span class="s1">entities</span><span class="s3">?: </span><span class="s1">Array</span><span class="s3">&lt;</span><span class="s1">string</span><span class="s3">&gt;;</span>
+    <span class="s0">/** 
+     * Without specifying the bundle name and ability name, you can start the application according to other properties with action. 
+     * @since 5 
+     */</span>
+    <span class="s1">action</span><span class="s3">?: </span><span class="s1">string</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * If more than one FA meets the conditions, the user can select the device from the popup. 
+     * 0: Default. Select the FA to start from the local and remote devices. 
+     * 1: start FA from the local device. 
+     * @since 5 
+     */</span>
+    <span class="s1">deviceType</span><span class="s3">?: </span><span class="s1">number</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Data sent to the ability which need to be serializable. 
+     * @since 5 
+     */</span>
+    <span class="s1">data</span><span class="s3">?: </span><span class="s1">object</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Configuration switch when start FA. 
+     * @since 5 
+     */</span>
+    <span class="s1">flag</span><span class="s3">?: </span><span class="s1">number</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Specify the url of the page which the FA to be called. Use home page directly by default. 
+     * @since 5 
+     */</span>
+    <span class="s1">url</span><span class="s3">?: </span><span class="s1">string</span><span class="s3">;</span>
+<span class="s2">}</span>
+<span class="s0">/** 
+ * @since 5 
+ * @deprecated since 8 
+ */</span>
+<span class="s1">declare interface FinishWithResultParams </span><span class="s2">{</span>
+    <span class="s0">/** 
+     * Result code. 
+     * @since 5 
+     */</span>
+    <span class="s1">code</span><span class="s3">: </span><span class="s1">number</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Returned data. 
+     * @since 5 
+     */</span>
+    <span class="s1">result</span><span class="s3">: </span><span class="s1">object</span><span class="s3">;</span>
+<span class="s2">}</span>
+<span class="s0">/** 
+ * @since 5 
+ * @deprecated since 8 
+ * @useinstead ohos.ability.featureAbility.FeatureAbility 
+ */</span>
+<span class="s1">declare class FeatureAbility </span><span class="s2">{</span>
+    <span class="s0">/** 
+     * Start a FA without callback result. 
+     * @param request Indicates the request param. 
+     * @returns A Promise object is returned, which contains the result of whether to call Ability's interface successfully. 
+     * @since 5 
+     * @deprecated since 8 
+     * @useinstead ohos.ability.featureAbility.FeatureAbility#startAbility 
+     */</span>
+    <span class="s1">static startAbility</span><span class="s4">(</span><span class="s1">request</span><span class="s3">: </span><span class="s1">RequestParams</span><span class="s4">)</span><span class="s3">: </span><span class="s1">Promise</span><span class="s3">&lt;</span><span class="s1">Result</span><span class="s3">&gt;;</span>
+    <span class="s0">/** 
+     * Start a FA with callback result. 
+     * @param request Indicates the request param. 
+     * @returns A Promise object is returned, which contains the result of the data FA returned. 
+     * @since 5 
+     * @deprecated since 8 
+     * @useinstead ohos.ability.featureAbility.FeatureAbility#startAbilityForResult 
+     */</span>
+    <span class="s1">static startAbilityForResult</span><span class="s4">(</span><span class="s1">request</span><span class="s3">: </span><span class="s1">RequestParams</span><span class="s4">)</span><span class="s3">: </span><span class="s1">Promise</span><span class="s3">&lt;</span><span class="s1">Result</span><span class="s3">&gt;;</span>
+    <span class="s0">/** 
+     * FA call the interface to destroy itself and set the result as parameters. 
+     * @param request Indicates the request param. 
+     * @returns A Promise object is returned, which contains the result whether to callback successfully. 
+     * @since 5 
+     * @deprecated since 8 
+     * @useinstead ohos.ability.featureAbility.FeatureAbility#terminateSelfWithResult 
+     */</span>
+    <span class="s1">static finishWithResult</span><span class="s4">(</span><span class="s1">param</span><span class="s3">: </span><span class="s1">FinishWithResultParams</span><span class="s4">)</span><span class="s3">: </span><span class="s1">Promise</span><span class="s3">&lt;</span><span class="s1">Result</span><span class="s3">&gt;;</span>
+    <span class="s0">/** 
+     * Get device information list. 
+     * @param flag Default 0, get the information list of all devices in the network. 
+     * @returns A Promise object is returned, which contains the result whether the device information list is obtained successfully. 
+     * @since 5 
+     * @deprecated since 8 
+     */</span>
+    <span class="s1">static getDeviceList</span><span class="s4">(</span><span class="s1">flag</span><span class="s3">: </span><span class="s1">number</span><span class="s4">)</span><span class="s3">: </span><span class="s1">Promise</span><span class="s3">&lt;</span><span class="s1">Result</span><span class="s3">&gt;;</span>
+    <span class="s0">/** 
+   
+     * Calls an AA. 
+     * @param param Indicates the request param. 
+     * @returns A Promise object is returned, which contains the result data returned by the AA. The result is a JSON string. 
+     * @since 5 
+     * @deprecated since 8 
+     */</span>
+    <span class="s1">static callAbility</span><span class="s4">(</span><span class="s1">param</span><span class="s3">: </span><span class="s1">CallAbilityParam</span><span class="s4">)</span><span class="s3">: </span><span class="s1">Promise</span><span class="s3">&lt;</span><span class="s1">string</span><span class="s3">&gt;;</span>
+    <span class="s0">/** 
+     * Start FA migration. 
+     * @returns A Promise object is returned, which contains the result data returned by the AA. The result is a JSON string. 
+     * @since 5 
+     * @deprecated since 8 
+     */</span>
+    <span class="s1">static continueAbility</span><span class="s4">()</span><span class="s3">: </span><span class="s1">Promise</span><span class="s3">&lt;</span><span class="s1">Result</span><span class="s3">&gt;;</span>
+    <span class="s0">/** 
+     * Subscribe to events of an AA. 
+     * @param param Indicates the request param. 
+     * @param func Indicates the event reporting callback. 
+     * @returns A Promise object is returned, which contains the result data returned by the AA. The result is a JSON string. 
+     * @since 5 
+     * @deprecated since 8 
+     */</span>
+    <span class="s1">static subscribeAbilityEvent</span><span class="s4">(</span><span class="s1">param</span><span class="s3">: </span><span class="s1">SubscribeAbilityEventParam</span><span class="s3">, </span><span class="s1">func</span><span class="s3">: </span><span class="s1">Function</span><span class="s4">)</span><span class="s3">: </span><span class="s1">Promise</span><span class="s3">&lt;</span><span class="s1">string</span><span class="s3">&gt;;</span>
+    <span class="s0">/** 
+     * Unsubscribe from events of an AA. 
+     * @param param Indicates the request param. 
+     * @returns A Promise object is returned, which contains the result data returned by the AA. The result is a JSON string. 
+     * @since 5 
+     * @deprecated since 8 
+     */</span>
+    <span class="s1">static unsubscribeAbilityEvent</span><span class="s4">(</span><span class="s1">param</span><span class="s3">: </span><span class="s1">SubscribeAbilityEventParam</span><span class="s4">)</span><span class="s3">: </span><span class="s1">Promise</span><span class="s3">&lt;</span><span class="s1">string</span><span class="s3">&gt;;</span>
+    <span class="s0">/** 
+     * Sends messages to the destination device. 
+     * @param options Options. 
+     * @syscap SystemCapability.ArkUI.ArkUI.Lite 
+     * @since 5 
+     * @deprecated since 8 
+     */</span>
+    <span class="s1">static sendMsg</span><span class="s4">(</span><span class="s1">options</span><span class="s3">: </span><span class="s1">SendMessageOptions</span><span class="s4">)</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Listens for messages sent from other devices. 
+     * @param options Options. 
+     * @syscap SystemCapability.ArkUI.ArkUI.Lite 
+     * @since 5 
+     * @deprecated since 8 
+     */</span>
+    <span class="s1">static subscribeMsg</span><span class="s4">(</span><span class="s1">options</span><span class="s3">: </span><span class="s1">SubscribeMessageOptions</span><span class="s4">)</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+    <span class="s0">/** 
+     * Cancel the listening for messages sent from other devices. 
+     * @syscap SystemCapability.ArkUI.ArkUI.Lite 
+     * @since 5 
+     * @deprecated since 8 
+     */</span>
+    <span class="s1">static unsubscribeMsg</span><span class="s4">()</span><span class="s3">: </span><span class="s1">void</span><span class="s3">;</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

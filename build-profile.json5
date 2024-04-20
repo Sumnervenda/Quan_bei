@@ -1,0 +1,41 @@
+{
+  "app": {
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "C:\\Users\\adimni\\.ohos\\config\\auto_debug_quanbei_com.example.quanbei_30086000771210444.cer",
+          "storePassword": "00000019D2874AB52676439B300926523592E674790AC9CDB8BA322375150561436F22B0B98F9AEDB4",
+          "keyAlias": "debugKey",
+          "keyPassword": "00000019157DF1F00052CD1BF93A986C740F96888D261D1A5C0B23E7F2599C4E2D18B11FAF3A65193E",
+          "profile": "C:\\Users\\adimni\\.ohos\\config\\auto_debug_quanbei_com.example.quanbei_30086000771210444.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "C:\\Users\\adimni\\.ohos\\config\\auto_debug_quanbei_com.example.quanbei_30086000771210444.p12"
+        }
+      }
+    ],
+    "compileSdkVersion": 9,
+    "compatibleSdkVersion": 9,
+    "products": [
+      {
+        "name": "default",
+        "signingConfig": "default",
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "entry",
+      "srcPath": "./entry",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    }
+  ]
+}

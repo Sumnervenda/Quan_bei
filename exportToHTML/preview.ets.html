@@ -1,0 +1,62 @@
+<html>
+<head>
+<title>preview.ets</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #a9b7c6;}
+.s1 { color: #faa23d;}
+.s2 { color: #db7e9b;}
+.s3 { color: #e2da90;}
+.s4 { color: #b3e54c;}
+.s5 { color: #aa7dfc;}
+.s6 { color: #808080;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+preview.ets</font>
+</center></td></tr></table>
+<pre><span class="s0">struct preview</span><span class="s1">{</span><span class="s0">build</span><span class="s2">()</span><span class="s1">{</span><span class="s0">Row</span><span class="s2">(</span><span class="s1">{</span><span class="s0">space</span><span class="s3">:</span><span class="s4">60</span><span class="s1">}</span><span class="s2">)</span><span class="s1">{</span>
+          <span class="s0">Button</span><span class="s2">()</span><span class="s1">{</span>
+            <span class="s0">Text</span><span class="s2">(</span><span class="s5">&quot;账单&quot;</span><span class="s2">)</span>
+              <span class="s3">.</span><span class="s0">fontColor</span><span class="s2">(</span><span class="s5">&quot;#00ffffff&quot;</span><span class="s2">)</span>
+          <span class="s1">}</span>
+          <span class="s3">.</span><span class="s0">backgroundColor</span><span class="s2">(</span><span class="s5">&quot;#00ffffff&quot;</span><span class="s2">)</span>
+          <span class="s3">.</span><span class="s0">onClick</span><span class="s2">(()</span><span class="s3">=&gt;</span><span class="s1">{</span><span class="s0">router</span><span class="s3">.</span><span class="s0">pushUrl</span><span class="s2">(</span><span class="s1">{</span>
+            <span class="s0">url</span><span class="s3">:</span><span class="s5">'pages/Index'</span>
+          <span class="s1">}</span><span class="s2">)</span><span class="s1">}</span><span class="s2">)</span>
+          <span class="s0">Button</span><span class="s2">()</span><span class="s1">{</span>
+            <span class="s0">Text</span><span class="s2">(</span><span class="s5">&quot;理财&quot;</span><span class="s2">)</span>
+              <span class="s3">.</span><span class="s0">fontColor</span><span class="s2">(</span><span class="s5">&quot;#00ffffff&quot;</span><span class="s2">)</span>
+          <span class="s1">}</span>
+          <span class="s3">.</span><span class="s0">backgroundColor</span><span class="s2">(</span><span class="s5">&quot;#00ffffff&quot;</span><span class="s2">)</span>
+          <span class="s3">.</span><span class="s0">onClick</span><span class="s2">(()</span><span class="s3">=&gt;</span><span class="s1">{</span><span class="s0">router</span><span class="s3">.</span><span class="s0">pushUrl</span><span class="s2">(</span><span class="s1">{</span>
+            <span class="s0">url</span><span class="s3">:</span><span class="s5">'pages/licai'</span>
+          <span class="s1">}</span><span class="s2">)</span><span class="s1">}</span><span class="s2">)</span>
+          <span class="s0">Button</span><span class="s2">()</span><span class="s1">{</span>
+            <span class="s0">Text</span><span class="s2">(</span><span class="s5">&quot;规划&quot;</span><span class="s2">)</span>
+              <span class="s3">.</span><span class="s0">fontColor</span><span class="s2">(</span><span class="s5">&quot;#00ffffff&quot;</span><span class="s2">)</span>
+          <span class="s1">}</span>
+          <span class="s3">.</span><span class="s0">backgroundColor</span><span class="s2">(</span><span class="s5">&quot;#00ffffff&quot;</span><span class="s2">)</span>
+          <span class="s3">.</span><span class="s0">onClick</span><span class="s2">(()</span><span class="s3">=&gt;</span><span class="s1">{</span><span class="s0">router</span><span class="s3">.</span><span class="s0">pushUrl</span><span class="s2">(</span><span class="s1">{</span>
+            <span class="s0">url</span><span class="s3">:</span><span class="s5">'pages/tongji'</span>
+          <span class="s1">}</span><span class="s2">)</span><span class="s1">}</span><span class="s2">)</span>
+          <span class="s0">Button</span><span class="s2">()</span><span class="s1">{</span>
+            <span class="s0">Text</span><span class="s2">(</span><span class="s5">&quot;我的&quot;</span><span class="s2">)</span>
+              <span class="s3">.</span><span class="s0">fontColor</span><span class="s2">(</span><span class="s5">&quot;#00ffffff&quot;</span><span class="s2">)</span>
+          <span class="s1">}</span>
+          <span class="s3">.</span><span class="s0">backgroundColor</span><span class="s2">(</span><span class="s5">&quot;#00ffffff&quot;</span><span class="s2">)</span>
+          <span class="s3">.</span><span class="s0">onClick</span><span class="s2">(()</span><span class="s3">=&gt;</span><span class="s1">{</span><span class="s0">router</span><span class="s3">.</span><span class="s0">pushUrl</span><span class="s2">(</span><span class="s1">{</span>
+            <span class="s0">url</span><span class="s3">:</span><span class="s5">'pages/mine'</span>
+          <span class="s1">}</span><span class="s2">)</span><span class="s1">}</span><span class="s2">)</span>
+
+
+        <span class="s1">}</span><span class="s6">//跳转功能</span>
+        <span class="s3">.</span><span class="s0">margin</span><span class="s2">(</span><span class="s1">{</span>
+          <span class="s0">top</span><span class="s3">:-</span><span class="s4">110</span>
+        <span class="s1">}</span><span class="s2">)</span>
+        <span class="s3">.</span><span class="s0">width</span><span class="s2">(</span><span class="s5">&quot;86%&quot;</span><span class="s2">)</span><span class="s1">}}</span></pre>
+</body>
+</html>

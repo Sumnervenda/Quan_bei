@@ -1,0 +1,57 @@
+<html>
+<head>
+<title>Ability.test.ets</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #a9b7c6;}
+.s1 { color: #aa7dfc;}
+.s2 { color: #e2da90;}
+.s3 { color: #faa23d;}
+.s4 { color: #db7e9b;}
+.s5 { color: #808080;}
+.s6 { color: #b3e54c;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Ability.test.ets</font>
+</center></td></tr></table>
+<pre><span class="s0">import hilog from </span><span class="s1">'@ohos.hilog'</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s3">{ </span><span class="s0">describe</span><span class="s2">, </span><span class="s0">beforeAll</span><span class="s2">, </span><span class="s0">beforeEach</span><span class="s2">, </span><span class="s0">afterEach</span><span class="s2">, </span><span class="s0">afterAll</span><span class="s2">, </span><span class="s0">it</span><span class="s2">, </span><span class="s0">expect </span><span class="s3">} </span><span class="s0">from </span><span class="s1">'@ohos/hypium'</span>
+
+<span class="s0">export default function abilityTest</span><span class="s4">() </span><span class="s3">{</span>
+  <span class="s0">describe</span><span class="s4">(</span><span class="s1">'ActsAbilityTest'</span><span class="s2">, </span><span class="s0">function </span><span class="s4">() </span><span class="s3">{</span>
+    <span class="s5">// Defines a test suite. Two parameters are supported: test suite name and test suite function.</span>
+    <span class="s0">beforeAll</span><span class="s4">(</span><span class="s0">function </span><span class="s4">() </span><span class="s3">{</span>
+      <span class="s5">// Presets an action, which is performed only once before all test cases of the test suite start.</span>
+      <span class="s5">// This API supports only one parameter: preset action function.</span>
+    <span class="s3">}</span><span class="s4">)</span>
+    <span class="s0">beforeEach</span><span class="s4">(</span><span class="s0">function </span><span class="s4">() </span><span class="s3">{</span>
+      <span class="s5">// Presets an action, which is performed before each unit test case starts.</span>
+      <span class="s5">// The number of execution times is the same as the number of test cases defined by **it**.</span>
+      <span class="s5">// This API supports only one parameter: preset action function.</span>
+    <span class="s3">}</span><span class="s4">)</span>
+    <span class="s0">afterEach</span><span class="s4">(</span><span class="s0">function </span><span class="s4">() </span><span class="s3">{</span>
+      <span class="s5">// Presets a clear action, which is performed after each unit test case ends.</span>
+      <span class="s5">// The number of execution times is the same as the number of test cases defined by **it**.</span>
+      <span class="s5">// This API supports only one parameter: clear action function.</span>
+    <span class="s3">}</span><span class="s4">)</span>
+    <span class="s0">afterAll</span><span class="s4">(</span><span class="s0">function </span><span class="s4">() </span><span class="s3">{</span>
+      <span class="s5">// Presets a clear action, which is performed after all test cases of the test suite end.</span>
+      <span class="s5">// This API supports only one parameter: clear action function.</span>
+    <span class="s3">}</span><span class="s4">)</span>
+    <span class="s0">it</span><span class="s4">(</span><span class="s1">'assertContain'</span><span class="s2">,</span><span class="s6">0</span><span class="s2">, </span><span class="s0">function </span><span class="s4">() </span><span class="s3">{</span>
+      <span class="s5">// Defines a test case. This API supports three parameters: test case name, filter parameter, and test case function.</span>
+      <span class="s0">hilog</span><span class="s2">.</span><span class="s0">info</span><span class="s4">(0x0000</span><span class="s2">, </span><span class="s1">'testTag'</span><span class="s2">, </span><span class="s1">'%{public}s'</span><span class="s2">, </span><span class="s1">'it begin'</span><span class="s4">)</span><span class="s2">;</span>
+      <span class="s0">let a </span><span class="s2">= </span><span class="s1">'abc'</span>
+      <span class="s0">let b </span><span class="s2">= </span><span class="s1">'b'</span>
+      <span class="s5">// Defines a variety of assertion methods, which are used to declare expected boolean conditions.</span>
+      <span class="s0">expect</span><span class="s4">(</span><span class="s0">a</span><span class="s4">)</span><span class="s2">.</span><span class="s0">assertContain</span><span class="s4">(</span><span class="s0">b</span><span class="s4">)</span>
+      <span class="s0">expect</span><span class="s4">(</span><span class="s0">a</span><span class="s4">)</span><span class="s2">.</span><span class="s0">assertEqual</span><span class="s4">(</span><span class="s0">a</span><span class="s4">)</span>
+    <span class="s3">}</span><span class="s4">)</span>
+  <span class="s3">}</span><span class="s4">)</span>
+<span class="s3">}</span></pre>
+</body>
+</html>

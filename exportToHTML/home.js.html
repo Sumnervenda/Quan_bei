@@ -1,0 +1,115 @@
+<html>
+<head>
+<title>home.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #a9b7c6;}
+.s1 { color: #aa7dfc;}
+.s2 { color: #e2da90;}
+.s3 { color: #faa23d;}
+.s4 { color: #db7e9b;}
+.s5 { color: #b3e54c;}
+.s6 { color: #808080;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+home.js</font>
+</center></td></tr></table>
+<pre><span class="s0">import router from </span><span class="s1">'@ohos:router'</span><span class="s2">;</span>
+<span class="s0">class Home extends ViewPU </span><span class="s3">{</span>
+    <span class="s0">constructor</span><span class="s4">(</span><span class="s0">parent</span><span class="s2">, </span><span class="s0">params</span><span class="s2">, </span><span class="s0">__localStorage</span><span class="s2">, </span><span class="s0">elmtId </span><span class="s2">= -</span><span class="s5">1</span><span class="s4">) </span><span class="s3">{</span>
+        <span class="s0">super</span><span class="s4">(</span><span class="s0">parent</span><span class="s2">, </span><span class="s0">__localStorage</span><span class="s2">, </span><span class="s0">elmtId</span><span class="s4">)</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">__message </span><span class="s2">= </span><span class="s0">new ObservedPropertySimplePU</span><span class="s4">(</span><span class="s1">'这是Home'</span><span class="s2">, </span><span class="s0">this</span><span class="s2">, </span><span class="s1">&quot;message&quot;</span><span class="s4">)</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">setInitiallyProvidedValue</span><span class="s4">(</span><span class="s0">params</span><span class="s4">)</span><span class="s2">;</span>
+    <span class="s3">}</span>
+    <span class="s0">setInitiallyProvidedValue</span><span class="s4">(</span><span class="s0">params</span><span class="s4">) </span><span class="s3">{</span>
+        <span class="s0">if </span><span class="s4">(</span><span class="s0">params</span><span class="s2">.</span><span class="s0">message </span><span class="s2">!== </span><span class="s0">undefined</span><span class="s4">) </span><span class="s3">{</span>
+            <span class="s0">this</span><span class="s2">.</span><span class="s0">message </span><span class="s2">= </span><span class="s0">params</span><span class="s2">.</span><span class="s0">message</span><span class="s2">;</span>
+        <span class="s3">}</span>
+    <span class="s3">}</span>
+    <span class="s0">updateStateVars</span><span class="s4">(</span><span class="s0">params</span><span class="s4">) </span><span class="s3">{</span>
+    <span class="s3">}</span>
+    <span class="s0">purgeVariableDependenciesOnElmtId</span><span class="s4">(</span><span class="s0">rmElmtId</span><span class="s4">) </span><span class="s3">{</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">__message</span><span class="s2">.</span><span class="s0">purgeDependencyOnElmtId</span><span class="s4">(</span><span class="s0">rmElmtId</span><span class="s4">)</span><span class="s2">;</span>
+    <span class="s3">}</span>
+    <span class="s0">aboutToBeDeleted</span><span class="s4">() </span><span class="s3">{</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">__message</span><span class="s2">.</span><span class="s0">aboutToBeDeleted</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s0">SubscriberManager</span><span class="s2">.</span><span class="s0">Get</span><span class="s4">()</span><span class="s2">.</span><span class="s0">delete</span><span class="s4">(</span><span class="s0">this</span><span class="s2">.</span><span class="s0">id__</span><span class="s4">())</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">aboutToBeDeletedInternal</span><span class="s4">()</span><span class="s2">;</span>
+    <span class="s3">}</span>
+    <span class="s0">get message</span><span class="s4">() </span><span class="s3">{</span>
+        <span class="s0">return this</span><span class="s2">.</span><span class="s0">__message</span><span class="s2">.</span><span class="s0">get</span><span class="s4">()</span><span class="s2">;</span>
+    <span class="s3">}</span>
+    <span class="s0">set message</span><span class="s4">(</span><span class="s0">newValue</span><span class="s4">) </span><span class="s3">{</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">__message</span><span class="s2">.</span><span class="s0">set</span><span class="s4">(</span><span class="s0">newValue</span><span class="s4">)</span><span class="s2">;</span>
+    <span class="s3">}</span>
+    <span class="s0">initialRender</span><span class="s4">() </span><span class="s3">{</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">observeComponentCreation</span><span class="s4">((</span><span class="s0">elmtId</span><span class="s2">, </span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s2">=&gt; </span><span class="s3">{</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StartGetAccessRecordingFor</span><span class="s4">(</span><span class="s0">elmtId</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Row</span><span class="s2">.</span><span class="s0">create</span><span class="s4">()</span><span class="s2">;</span>
+            <span class="s0">Row</span><span class="s2">.</span><span class="s0">debugLine</span><span class="s4">(</span><span class="s1">&quot;pages/home.ets(8:5)&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Row</span><span class="s2">.</span><span class="s0">height</span><span class="s4">(</span><span class="s1">'100%'</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">if </span><span class="s4">(</span><span class="s2">!</span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s3">{</span>
+                <span class="s0">Row</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+            <span class="s3">}</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StopGetAccessRecording</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s3">}</span><span class="s4">)</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">observeComponentCreation</span><span class="s4">((</span><span class="s0">elmtId</span><span class="s2">, </span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s2">=&gt; </span><span class="s3">{</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StartGetAccessRecordingFor</span><span class="s4">(</span><span class="s0">elmtId</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Column</span><span class="s2">.</span><span class="s0">create</span><span class="s4">()</span><span class="s2">;</span>
+            <span class="s0">Column</span><span class="s2">.</span><span class="s0">debugLine</span><span class="s4">(</span><span class="s1">&quot;pages/home.ets(9:7)&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Column</span><span class="s2">.</span><span class="s0">width</span><span class="s4">(</span><span class="s1">'100%'</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">if </span><span class="s4">(</span><span class="s2">!</span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s3">{</span>
+                <span class="s0">Column</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+            <span class="s3">}</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StopGetAccessRecording</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s3">}</span><span class="s4">)</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">observeComponentCreation</span><span class="s4">((</span><span class="s0">elmtId</span><span class="s2">, </span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s2">=&gt; </span><span class="s3">{</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StartGetAccessRecordingFor</span><span class="s4">(</span><span class="s0">elmtId</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Text</span><span class="s2">.</span><span class="s0">create</span><span class="s4">(</span><span class="s0">this</span><span class="s2">.</span><span class="s0">message</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Text</span><span class="s2">.</span><span class="s0">debugLine</span><span class="s4">(</span><span class="s1">&quot;pages/home.ets(10:9)&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Text</span><span class="s2">.</span><span class="s0">fontSize</span><span class="s4">(</span><span class="s5">50</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Text</span><span class="s2">.</span><span class="s0">fontWeight</span><span class="s4">(</span><span class="s0">FontWeight</span><span class="s2">.</span><span class="s0">Bold</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">if </span><span class="s4">(</span><span class="s2">!</span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s3">{</span>
+                <span class="s0">Text</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+            <span class="s3">}</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StopGetAccessRecording</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s3">}</span><span class="s4">)</span><span class="s2">;</span>
+        <span class="s0">Text</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">observeComponentCreation</span><span class="s4">((</span><span class="s0">elmtId</span><span class="s2">, </span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s2">=&gt; </span><span class="s3">{</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StartGetAccessRecordingFor</span><span class="s4">(</span><span class="s0">elmtId</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Button</span><span class="s2">.</span><span class="s0">createWithChild</span><span class="s4">()</span><span class="s2">;</span>
+            <span class="s0">Button</span><span class="s2">.</span><span class="s0">debugLine</span><span class="s4">(</span><span class="s1">&quot;pages/home.ets(13:9)&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Button</span><span class="s2">.</span><span class="s0">onClick</span><span class="s4">(() </span><span class="s2">=&gt; </span><span class="s3">{ </span><span class="s0">router</span><span class="s2">.</span><span class="s0">back</span><span class="s4">()</span><span class="s2">; </span><span class="s3">}</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">if </span><span class="s4">(</span><span class="s2">!</span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s3">{</span>
+                <span class="s0">Button</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+            <span class="s3">}</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StopGetAccessRecording</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s3">}</span><span class="s4">)</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">observeComponentCreation</span><span class="s4">((</span><span class="s0">elmtId</span><span class="s2">, </span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s2">=&gt; </span><span class="s3">{</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StartGetAccessRecordingFor</span><span class="s4">(</span><span class="s0">elmtId</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Text</span><span class="s2">.</span><span class="s0">create</span><span class="s4">(</span><span class="s1">&quot;back&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Text</span><span class="s2">.</span><span class="s0">debugLine</span><span class="s4">(</span><span class="s1">&quot;pages/home.ets(14:11)&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">if </span><span class="s4">(</span><span class="s2">!</span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s3">{</span>
+                <span class="s0">Text</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+            <span class="s3">}</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StopGetAccessRecording</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s3">}</span><span class="s4">)</span><span class="s2">;</span>
+        <span class="s0">Text</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s0">Button</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s0">Column</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s0">Row</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+    <span class="s3">}</span>
+    <span class="s0">rerender</span><span class="s4">() </span><span class="s3">{</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">updateDirtyElements</span><span class="s4">()</span><span class="s2">;</span>
+    <span class="s3">}</span>
+<span class="s3">}</span>
+<span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StartGetAccessRecordingFor</span><span class="s4">(</span><span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">AllocateNewElmetIdForNextComponent</span><span class="s4">())</span><span class="s2">;</span>
+<span class="s0">loadDocument</span><span class="s4">(</span><span class="s0">new Home</span><span class="s4">(</span><span class="s0">undefined</span><span class="s2">, </span><span class="s3">{}</span><span class="s4">))</span><span class="s2">;</span>
+<span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StopGetAccessRecording</span><span class="s4">()</span><span class="s2">;</span>
+<span class="s6">//# sourceMappingURL=home.js.map</span></pre>
+</body>
+</html>

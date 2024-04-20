@@ -1,0 +1,63 @@
+<html>
+<head>
+<title>EntryAbility.ts</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #a9b7c6;}
+.s1 { color: #aa7dfc;}
+.s2 { color: #e2da90;}
+.s3 { color: #faa23d;}
+.s4 { color: #db7e9b;}
+.s5 { color: #808080;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+EntryAbility.ts</font>
+</center></td></tr></table>
+<pre><span class="s0">import UIAbility from </span><span class="s1">'@ohos.app.ability.UIAbility'</span><span class="s2">;</span>
+<span class="s0">import hilog from </span><span class="s1">'@ohos.hilog'</span><span class="s2">;</span>
+<span class="s0">import window from </span><span class="s1">'@ohos.window'</span><span class="s2">;</span>
+
+<span class="s0">export default class EntryAbility extends UIAbility </span><span class="s3">{</span>
+  <span class="s0">onCreate</span><span class="s4">(</span><span class="s0">want</span><span class="s2">, </span><span class="s0">launchParam</span><span class="s4">) </span><span class="s3">{</span>
+    <span class="s0">hilog</span><span class="s2">.</span><span class="s0">info</span><span class="s4">(0x0000</span><span class="s2">, </span><span class="s1">'testTag'</span><span class="s2">, </span><span class="s1">'%{public}s'</span><span class="s2">, </span><span class="s1">'Ability onCreate'</span><span class="s4">)</span><span class="s2">;</span>
+  <span class="s3">}</span>
+
+  <span class="s0">onDestroy</span><span class="s4">() </span><span class="s3">{</span>
+    <span class="s0">hilog</span><span class="s2">.</span><span class="s0">info</span><span class="s4">(0x0000</span><span class="s2">, </span><span class="s1">'testTag'</span><span class="s2">, </span><span class="s1">'%{public}s'</span><span class="s2">, </span><span class="s1">'Ability onDestroy'</span><span class="s4">)</span><span class="s2">;</span>
+  <span class="s3">}</span>
+
+  <span class="s0">onWindowStageCreate</span><span class="s4">(</span><span class="s0">windowStage</span><span class="s2">: </span><span class="s0">window</span><span class="s2">.</span><span class="s0">WindowStage</span><span class="s4">) </span><span class="s3">{</span>
+    <span class="s5">// Main window is created, set main page for this ability</span>
+    <span class="s0">hilog</span><span class="s2">.</span><span class="s0">info</span><span class="s4">(0x0000</span><span class="s2">, </span><span class="s1">'testTag'</span><span class="s2">, </span><span class="s1">'%{public}s'</span><span class="s2">, </span><span class="s1">'Ability onWindowStageCreate'</span><span class="s4">)</span><span class="s2">;</span>
+
+    <span class="s0">windowStage</span><span class="s2">.</span><span class="s0">loadContent</span><span class="s4">(</span><span class="s1">'pages/Index'</span><span class="s2">, </span><span class="s4">(</span><span class="s0">err</span><span class="s2">, </span><span class="s0">data</span><span class="s4">) </span><span class="s2">=&gt; </span><span class="s3">{</span>
+      <span class="s0">if </span><span class="s4">(</span><span class="s0">err</span><span class="s2">.</span><span class="s0">code</span><span class="s4">) </span><span class="s3">{</span>
+        <span class="s0">hilog</span><span class="s2">.</span><span class="s0">error</span><span class="s4">(0x0000</span><span class="s2">, </span><span class="s1">'testTag'</span><span class="s2">, </span><span class="s1">'Failed to load the content. Cause: %{public}s'</span><span class="s2">, </span><span class="s0">JSON</span><span class="s2">.</span><span class="s0">stringify</span><span class="s4">(</span><span class="s0">err</span><span class="s4">) </span><span class="s2">?? </span><span class="s1">''</span><span class="s4">)</span><span class="s2">;</span>
+        <span class="s0">return</span><span class="s2">;</span>
+      <span class="s3">}</span>
+      <span class="s0">hilog</span><span class="s2">.</span><span class="s0">info</span><span class="s4">(0x0000</span><span class="s2">, </span><span class="s1">'testTag'</span><span class="s2">, </span><span class="s1">'Succeeded in loading the content. Data: %{public}s'</span><span class="s2">, </span><span class="s0">JSON</span><span class="s2">.</span><span class="s0">stringify</span><span class="s4">(</span><span class="s0">data</span><span class="s4">) </span><span class="s2">?? </span><span class="s1">''</span><span class="s4">)</span><span class="s2">;</span>
+    <span class="s3">}</span><span class="s4">)</span><span class="s2">;</span>
+  <span class="s3">}</span>
+
+  <span class="s0">onWindowStageDestroy</span><span class="s4">() </span><span class="s3">{</span>
+    <span class="s5">// Main window is destroyed, release UI related resources</span>
+    <span class="s0">hilog</span><span class="s2">.</span><span class="s0">info</span><span class="s4">(0x0000</span><span class="s2">, </span><span class="s1">'testTag'</span><span class="s2">, </span><span class="s1">'%{public}s'</span><span class="s2">, </span><span class="s1">'Ability onWindowStageDestroy'</span><span class="s4">)</span><span class="s2">;</span>
+  <span class="s3">}</span>
+
+  <span class="s0">onForeground</span><span class="s4">() </span><span class="s3">{</span>
+    <span class="s5">// Ability has brought to foreground</span>
+    <span class="s0">hilog</span><span class="s2">.</span><span class="s0">info</span><span class="s4">(0x0000</span><span class="s2">, </span><span class="s1">'testTag'</span><span class="s2">, </span><span class="s1">'%{public}s'</span><span class="s2">, </span><span class="s1">'Ability onForeground'</span><span class="s4">)</span><span class="s2">;</span>
+  <span class="s3">}</span>
+
+  <span class="s0">onBackground</span><span class="s4">() </span><span class="s3">{</span>
+    <span class="s5">// Ability has back to background</span>
+    <span class="s0">hilog</span><span class="s2">.</span><span class="s0">info</span><span class="s4">(0x0000</span><span class="s2">, </span><span class="s1">'testTag'</span><span class="s2">, </span><span class="s1">'%{public}s'</span><span class="s2">, </span><span class="s1">'Ability onBackground'</span><span class="s4">)</span><span class="s2">;</span>
+  <span class="s3">}</span>
+<span class="s3">}</span>
+</pre>
+</body>
+</html>

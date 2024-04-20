@@ -1,0 +1,116 @@
+<html>
+<head>
+<title>event.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #808080;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #faa23d;}
+.s3 { color: #db7e9b;}
+.s4 { color: #e2da90;}
+.s5 { color: #aa7dfc;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+event.js</font>
+</center></td></tr></table>
+<pre><span class="s0">/* 
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd. 
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ */</span>
+
+<span class="s1">class SpecEvent </span><span class="s2">{</span>
+    <span class="s1">constructor</span><span class="s3">(</span><span class="s1">attr</span><span class="s3">) </span><span class="s2">{</span>
+        <span class="s1">this</span><span class="s4">.</span><span class="s1">id </span><span class="s4">= </span><span class="s1">attr</span><span class="s4">.</span><span class="s1">id</span><span class="s4">;</span>
+        <span class="s1">this</span><span class="s4">.</span><span class="s1">coreContext </span><span class="s4">= </span><span class="s1">attr</span><span class="s4">.</span><span class="s1">context</span><span class="s4">;</span>
+        <span class="s1">this</span><span class="s4">.</span><span class="s1">eventMonitors </span><span class="s4">= </span><span class="s3">[]</span><span class="s4">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">subscribeEvent</span><span class="s3">(</span><span class="s1">service</span><span class="s3">) </span><span class="s2">{</span>
+        <span class="s1">this</span><span class="s4">.</span><span class="s1">eventMonitors</span><span class="s4">.</span><span class="s1">push</span><span class="s3">(</span><span class="s1">service</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">async specStart</span><span class="s3">() </span><span class="s2">{</span>
+        <span class="s1">for </span><span class="s3">(</span><span class="s1">const monitor of this</span><span class="s4">.</span><span class="s1">eventMonitors</span><span class="s3">) </span><span class="s2">{</span>
+            <span class="s1">await monitor</span><span class="s3">[</span><span class="s5">'specStart'</span><span class="s3">]()</span><span class="s4">;</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">async specDone</span><span class="s3">() </span><span class="s2">{</span>
+        <span class="s1">for </span><span class="s3">(</span><span class="s1">const monitor of this</span><span class="s4">.</span><span class="s1">eventMonitors</span><span class="s3">) </span><span class="s2">{</span>
+            <span class="s1">await monitor</span><span class="s3">[</span><span class="s5">'specDone'</span><span class="s3">]()</span><span class="s4">;</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+<span class="s1">class SuiteEvent </span><span class="s2">{</span>
+    <span class="s1">constructor</span><span class="s3">(</span><span class="s1">attr</span><span class="s3">) </span><span class="s2">{</span>
+        <span class="s1">this</span><span class="s4">.</span><span class="s1">id </span><span class="s4">= </span><span class="s1">attr</span><span class="s4">.</span><span class="s1">id</span><span class="s4">;</span>
+        <span class="s1">this</span><span class="s4">.</span><span class="s1">suiteContext </span><span class="s4">= </span><span class="s1">attr</span><span class="s4">.</span><span class="s1">coreContext</span><span class="s4">;</span>
+        <span class="s1">this</span><span class="s4">.</span><span class="s1">eventMonitors </span><span class="s4">= </span><span class="s3">[]</span><span class="s4">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">subscribeEvent</span><span class="s3">(</span><span class="s1">service</span><span class="s3">) </span><span class="s2">{</span>
+        <span class="s1">this</span><span class="s4">.</span><span class="s1">eventMonitors</span><span class="s4">.</span><span class="s1">push</span><span class="s3">(</span><span class="s1">service</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">async suiteStart</span><span class="s3">() </span><span class="s2">{</span>
+        <span class="s1">for </span><span class="s3">(</span><span class="s1">const monitor of this</span><span class="s4">.</span><span class="s1">eventMonitors</span><span class="s3">) </span><span class="s2">{</span>
+            <span class="s1">await monitor</span><span class="s3">[</span><span class="s5">'suiteStart'</span><span class="s3">]()</span><span class="s4">;</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">async suiteDone</span><span class="s3">() </span><span class="s2">{</span>
+        <span class="s1">for </span><span class="s3">(</span><span class="s1">const monitor of this</span><span class="s4">.</span><span class="s1">eventMonitors</span><span class="s3">) </span><span class="s2">{</span>
+            <span class="s1">await monitor</span><span class="s3">[</span><span class="s5">'suiteDone'</span><span class="s3">]()</span><span class="s4">;</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+<span class="s1">class TaskEvent </span><span class="s2">{</span>
+    <span class="s1">constructor</span><span class="s3">(</span><span class="s1">attr</span><span class="s3">) </span><span class="s2">{</span>
+        <span class="s1">this</span><span class="s4">.</span><span class="s1">id </span><span class="s4">= </span><span class="s1">attr</span><span class="s4">.</span><span class="s1">id</span><span class="s4">;</span>
+        <span class="s1">this</span><span class="s4">.</span><span class="s1">coreContext </span><span class="s4">= </span><span class="s1">attr</span><span class="s4">.</span><span class="s1">coreContext</span><span class="s4">;</span>
+        <span class="s1">this</span><span class="s4">.</span><span class="s1">eventMonitors </span><span class="s4">= </span><span class="s3">[]</span><span class="s4">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">subscribeEvent</span><span class="s3">(</span><span class="s1">service</span><span class="s3">) </span><span class="s2">{</span>
+        <span class="s1">this</span><span class="s4">.</span><span class="s1">eventMonitors</span><span class="s4">.</span><span class="s1">push</span><span class="s3">(</span><span class="s1">service</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">async taskStart</span><span class="s3">() </span><span class="s2">{</span>
+        <span class="s1">for </span><span class="s3">(</span><span class="s1">const monitor of this</span><span class="s4">.</span><span class="s1">eventMonitors</span><span class="s3">) </span><span class="s2">{</span>
+            <span class="s1">await monitor</span><span class="s3">[</span><span class="s5">'taskStart'</span><span class="s3">]()</span><span class="s4">;</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">async taskDone</span><span class="s3">() </span><span class="s2">{</span>
+        <span class="s1">for </span><span class="s3">(</span><span class="s1">const monitor of this</span><span class="s4">.</span><span class="s1">eventMonitors</span><span class="s3">) </span><span class="s2">{</span>
+            <span class="s1">await monitor</span><span class="s3">[</span><span class="s5">'taskDone'</span><span class="s3">]()</span><span class="s4">;</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">incorrectFormat</span><span class="s3">() </span><span class="s2">{</span>
+        <span class="s1">for </span><span class="s3">(</span><span class="s1">const monitor of this</span><span class="s4">.</span><span class="s1">eventMonitors</span><span class="s3">) </span><span class="s2">{</span>
+            <span class="s1">monitor</span><span class="s3">[</span><span class="s5">'incorrectFormat'</span><span class="s3">]()</span><span class="s4">;</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+<span class="s1">export </span><span class="s2">{</span><span class="s1">SpecEvent</span><span class="s4">, </span><span class="s1">TaskEvent</span><span class="s4">, </span><span class="s1">SuiteEvent</span><span class="s2">}</span><span class="s4">;</span>
+</pre>
+</body>
+</html>

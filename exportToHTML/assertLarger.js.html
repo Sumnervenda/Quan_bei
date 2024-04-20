@@ -1,0 +1,46 @@
+<html>
+<head>
+<title>assertLarger.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #808080;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #db7e9b;}
+.s3 { color: #e2da90;}
+.s4 { color: #faa23d;}
+.s5 { color: #b3e54c;}
+.s6 { color: #aa7dfc;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+assertLarger.js</font>
+</center></td></tr></table>
+<pre><span class="s0">/* 
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd. 
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ */</span>
+
+<span class="s1">function assertLarger</span><span class="s2">(</span><span class="s1">actualValue</span><span class="s3">, </span><span class="s1">expected</span><span class="s2">) </span><span class="s4">{</span>
+    <span class="s1">return </span><span class="s4">{</span>
+        <span class="s1">pass</span><span class="s3">: </span><span class="s2">(</span><span class="s1">actualValue</span><span class="s2">) </span><span class="s3">&gt; </span><span class="s1">expected</span><span class="s2">[</span><span class="s5">0</span><span class="s2">]</span><span class="s3">,</span>
+        <span class="s1">message</span><span class="s3">: </span><span class="s2">(</span><span class="s1">actualValue</span><span class="s2">) </span><span class="s3">+ </span><span class="s6">' is not larger than ' </span><span class="s3">+ </span><span class="s1">expected</span><span class="s2">[</span><span class="s5">0</span><span class="s2">]</span>
+    <span class="s4">}</span><span class="s3">;</span>
+<span class="s4">}</span>
+
+<span class="s1">export default assertLarger</span><span class="s3">;</span>
+</pre>
+</body>
+</html>

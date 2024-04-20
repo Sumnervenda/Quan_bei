@@ -1,0 +1,334 @@
+<html>
+<head>
+<title>assertDeepEquals.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #808080;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #aa7dfc;}
+.s3 { color: #db7e9b;}
+.s4 { color: #e2da90;}
+.s5 { color: #faa23d;}
+.s6 { color: #b3e54c;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+assertDeepEquals.js</font>
+</center></td></tr></table>
+<pre><span class="s0">/* 
+ * Copyright (c) 2022 Huawei Device Co., Ltd. 
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ */</span>
+
+<span class="s1">import DeepTypeUtils from </span><span class="s2">'./DeepTypeUtils'</span>
+<span class="s1">function assertDeepEquals</span><span class="s3">(</span><span class="s1">actualValue</span><span class="s4">, </span><span class="s1">expected</span><span class="s3">) </span><span class="s5">{</span>
+    <span class="s1">console</span><span class="s4">.</span><span class="s1">log</span><span class="s3">(</span><span class="s2">'actualValue:' </span><span class="s4">+ </span><span class="s1">actualValue </span><span class="s4">+ </span><span class="s2">',expected:' </span><span class="s4">+ </span><span class="s1">expected</span><span class="s3">[</span><span class="s6">0</span><span class="s3">])</span><span class="s4">;</span>
+    <span class="s1">let result </span><span class="s4">= </span><span class="s1">eq</span><span class="s3">(</span><span class="s1">actualValue</span><span class="s4">, </span><span class="s1">expected</span><span class="s3">[</span><span class="s6">0</span><span class="s3">]</span><span class="s4">,</span><span class="s3">[]</span><span class="s4">, </span><span class="s3">[])</span>
+    <span class="s1">let msg </span><span class="s4">= </span><span class="s1">logMsg</span><span class="s3">(</span><span class="s1">actualValue</span><span class="s4">, </span><span class="s1">expected</span><span class="s3">[</span><span class="s6">0</span><span class="s3">])</span><span class="s4">;</span>
+    <span class="s1">return </span><span class="s5">{</span>
+        <span class="s1">pass</span><span class="s4">: </span><span class="s1">result</span><span class="s4">,</span>
+        <span class="s1">message</span><span class="s4">: </span><span class="s1">msg</span>
+    <span class="s5">}</span><span class="s4">;</span>
+<span class="s5">}</span>
+
+<span class="s0">/** 
+ * 获取失败显示日志 
+ * @param actualValue 实际对象 
+ * @param expected 期待比较对象 
+ */</span>
+<span class="s1">function logMsg</span><span class="s3">(</span><span class="s1">actualValue</span><span class="s4">, </span><span class="s1">expected</span><span class="s3">) </span><span class="s5">{</span>
+    <span class="s0">// 获取a的对象名称</span>
+    <span class="s1">const aClassName </span><span class="s4">= </span><span class="s1">Object</span><span class="s4">.</span><span class="s1">prototype</span><span class="s4">.</span><span class="s1">toString</span><span class="s4">.</span><span class="s1">call</span><span class="s3">(</span><span class="s1">actualValue</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s1">const bClassName </span><span class="s4">= </span><span class="s1">Object</span><span class="s4">.</span><span class="s1">prototype</span><span class="s4">.</span><span class="s1">toString</span><span class="s4">.</span><span class="s1">call</span><span class="s3">(</span><span class="s1">expected</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s1">let actualMsg</span><span class="s4">;</span>
+    <span class="s1">let expectMsg</span><span class="s4">;</span>
+    <span class="s1">if</span><span class="s3">(</span><span class="s1">aClassName </span><span class="s4">== </span><span class="s2">&quot;[object Function]&quot;</span><span class="s3">) </span><span class="s5">{</span>
+        <span class="s1">actualMsg </span><span class="s4">= </span><span class="s2">&quot;actualValue Function&quot;</span>
+    <span class="s5">}</span><span class="s1">else if</span><span class="s3">(</span><span class="s1">aClassName </span><span class="s4">== </span><span class="s2">&quot;[object Promise]&quot;</span><span class="s3">) </span><span class="s5">{</span>
+        <span class="s1">actualMsg </span><span class="s4">= </span><span class="s2">&quot;actualValue Promise&quot;</span>
+    <span class="s5">}</span><span class="s1">else if</span><span class="s3">(</span><span class="s1">aClassName </span><span class="s4">== </span><span class="s2">&quot;[object Set]&quot; </span><span class="s4">|| </span><span class="s1">aClassName </span><span class="s4">== </span><span class="s2">&quot;[object Map]&quot;</span><span class="s3">) </span><span class="s5">{</span>
+        <span class="s1">actualMsg </span><span class="s4">= </span><span class="s1">JSON</span><span class="s4">.</span><span class="s1">stringify</span><span class="s3">(</span><span class="s1">Array</span><span class="s4">.</span><span class="s1">from</span><span class="s3">(</span><span class="s1">actualValue</span><span class="s3">))</span><span class="s4">;;</span>
+    <span class="s5">}</span><span class="s1">else if</span><span class="s3">(</span><span class="s1">aClassName </span><span class="s4">== </span><span class="s2">&quot;[object RegExp]&quot;</span><span class="s3">) </span><span class="s5">{</span>
+        <span class="s1">actualMsg </span><span class="s4">= </span><span class="s1">JSON</span><span class="s4">.</span><span class="s1">stringify</span><span class="s3">(</span><span class="s1">actualValue</span><span class="s4">.</span><span class="s1">source</span><span class="s4">.</span><span class="s1">replace</span><span class="s3">(</span><span class="s2">&quot;\\&quot;</span><span class="s4">,</span><span class="s2">&quot;&quot;</span><span class="s3">))</span><span class="s4">;;</span>
+    <span class="s5">}</span>
+    <span class="s1">else</span><span class="s5">{</span>
+        <span class="s1">actualMsg </span><span class="s4">= </span><span class="s1">JSON</span><span class="s4">.</span><span class="s1">stringify</span><span class="s3">(</span><span class="s1">actualValue</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s5">}</span>
+    <span class="s1">if</span><span class="s3">(</span><span class="s1">bClassName </span><span class="s4">== </span><span class="s2">&quot;[object Function]&quot;</span><span class="s3">) </span><span class="s5">{</span>
+        <span class="s1">expectMsg </span><span class="s4">= </span><span class="s2">&quot;expected Function&quot;</span>
+    <span class="s5">}</span><span class="s1">else if</span><span class="s3">(</span><span class="s1">bClassName </span><span class="s4">== </span><span class="s2">&quot;[object Promise]&quot;</span><span class="s3">) </span><span class="s5">{</span>
+        <span class="s1">expectMsg </span><span class="s4">= </span><span class="s2">&quot;expected Promise&quot;</span>
+    <span class="s5">}</span><span class="s1">else if</span><span class="s3">(</span><span class="s1">aClassName </span><span class="s4">== </span><span class="s2">&quot;[object Set]&quot; </span><span class="s4">|| </span><span class="s1">bClassName </span><span class="s4">== </span><span class="s2">&quot;[object Map]&quot;</span><span class="s3">) </span><span class="s5">{</span>
+        <span class="s1">expectMsg </span><span class="s4">= </span><span class="s1">JSON</span><span class="s4">.</span><span class="s1">stringify</span><span class="s3">(</span><span class="s1">Array</span><span class="s4">.</span><span class="s1">from</span><span class="s3">(</span><span class="s1">expected</span><span class="s3">))</span><span class="s4">;</span>
+    <span class="s5">}</span><span class="s1">else if</span><span class="s3">(</span><span class="s1">aClassName </span><span class="s4">== </span><span class="s2">&quot;[object RegExp]&quot;</span><span class="s3">) </span><span class="s5">{</span>
+        <span class="s1">expectMsg </span><span class="s4">= </span><span class="s1">JSON</span><span class="s4">.</span><span class="s1">stringify</span><span class="s3">(</span><span class="s1">expected</span><span class="s4">.</span><span class="s1">source</span><span class="s4">.</span><span class="s1">replace</span><span class="s3">(</span><span class="s2">&quot;\\&quot;</span><span class="s4">,</span><span class="s2">&quot;&quot;</span><span class="s3">))</span><span class="s4">;;</span>
+    <span class="s5">}</span>
+    <span class="s1">else</span><span class="s5">{</span>
+        <span class="s1">expectMsg </span><span class="s4">= </span><span class="s1">JSON</span><span class="s4">.</span><span class="s1">stringify</span><span class="s3">(</span><span class="s1">expected</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s5">}</span>
+    <span class="s1">return actualMsg </span><span class="s4">+ </span><span class="s2">&quot; is not deep equal &quot; </span><span class="s4">+ </span><span class="s1">expectMsg</span><span class="s4">;</span>
+<span class="s5">}</span>
+
+<span class="s1">function eq</span><span class="s3">(</span><span class="s1">a</span><span class="s4">, </span><span class="s1">b</span><span class="s4">, </span><span class="s1">aStack</span><span class="s4">, </span><span class="s1">bStack</span><span class="s3">) </span><span class="s5">{</span>
+    <span class="s1">let result </span><span class="s4">= </span><span class="s1">true</span><span class="s4">;</span>
+    <span class="s1">console</span><span class="s4">.</span><span class="s1">log</span><span class="s3">(</span><span class="s2">'a is:' </span><span class="s4">+ </span><span class="s1">a </span><span class="s4">+ </span><span class="s2">',b is:' </span><span class="s4">+ </span><span class="s1">b</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s1">const asymmetricResult </span><span class="s4">= </span><span class="s1">asymmetricMatch_</span><span class="s3">(</span><span class="s1">a</span><span class="s4">,</span><span class="s1">b</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s1">if </span><span class="s3">(</span><span class="s4">!</span><span class="s1">DeepTypeUtils</span><span class="s4">.</span><span class="s1">isUndefined</span><span class="s3">(</span><span class="s1">asymmetricResult</span><span class="s3">)) </span><span class="s5">{</span>
+        <span class="s1">return asymmetricResult</span><span class="s4">;</span>
+    <span class="s5">}</span>
+
+    <span class="s1">if </span><span class="s3">(</span><span class="s1">a instanceof Error </span><span class="s4">&amp;&amp; </span><span class="s1">b instanceof Error</span><span class="s3">) </span><span class="s5">{</span>
+        <span class="s1">result </span><span class="s4">= </span><span class="s1">a</span><span class="s4">.</span><span class="s1">message </span><span class="s4">== </span><span class="s1">b</span><span class="s4">.</span><span class="s1">message</span><span class="s4">;</span>
+        <span class="s1">return result</span><span class="s4">;</span>
+    <span class="s5">}</span>
+
+    <span class="s1">if </span><span class="s3">(</span><span class="s1">a </span><span class="s4">=== </span><span class="s1">b</span><span class="s3">) </span><span class="s5">{</span>
+        <span class="s1">result </span><span class="s4">= </span><span class="s1">a </span><span class="s4">!== </span><span class="s6">0 </span><span class="s4">|| </span><span class="s6">1 </span><span class="s4">/ </span><span class="s1">a </span><span class="s4">== </span><span class="s6">1 </span><span class="s4">/ </span><span class="s1">b</span><span class="s4">;</span>
+        <span class="s1">return result</span><span class="s4">;</span>
+    <span class="s5">}</span>
+
+    <span class="s1">if </span><span class="s3">(</span><span class="s1">a </span><span class="s4">=== </span><span class="s1">null </span><span class="s4">|| </span><span class="s1">b </span><span class="s4">=== </span><span class="s1">null</span><span class="s3">) </span><span class="s5">{</span>
+        <span class="s1">result </span><span class="s4">= </span><span class="s1">a </span><span class="s4">=== </span><span class="s1">b</span><span class="s4">;</span>
+        <span class="s1">return result</span><span class="s4">;</span>
+    <span class="s5">}</span>
+    <span class="s0">// 获取a的对象名称</span>
+    <span class="s1">const aClassName </span><span class="s4">= </span><span class="s1">Object</span><span class="s4">.</span><span class="s1">prototype</span><span class="s4">.</span><span class="s1">toString</span><span class="s4">.</span><span class="s1">call</span><span class="s3">(</span><span class="s1">a</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s1">const bClassName </span><span class="s4">= </span><span class="s1">Object</span><span class="s4">.</span><span class="s1">prototype</span><span class="s4">.</span><span class="s1">toString</span><span class="s4">.</span><span class="s1">call</span><span class="s3">(</span><span class="s1">b</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s1">console</span><span class="s4">.</span><span class="s1">log</span><span class="s3">(</span><span class="s2">'aClassName is:' </span><span class="s4">+ </span><span class="s1">aClassName</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s1">console</span><span class="s4">.</span><span class="s1">log</span><span class="s3">(</span><span class="s2">'bClassName is:' </span><span class="s4">+ </span><span class="s1">bClassName</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s0">// 不同类型不同对象</span>
+    <span class="s1">if </span><span class="s3">(</span><span class="s1">aClassName </span><span class="s4">!= </span><span class="s1">bClassName</span><span class="s3">) </span><span class="s5">{</span>
+        <span class="s1">return false</span><span class="s4">;</span>
+    <span class="s5">}</span>
+    <span class="s0">// 俩个string对象</span>
+    <span class="s1">if</span><span class="s3">(</span><span class="s1">aClassName </span><span class="s4">=== </span><span class="s2">'[object String]'</span><span class="s3">) </span><span class="s5">{</span>
+        <span class="s1">result </span><span class="s4">= </span><span class="s1">a </span><span class="s4">== </span><span class="s1">String</span><span class="s3">(</span><span class="s1">b</span><span class="s3">)</span><span class="s4">;</span>
+        <span class="s1">return result</span><span class="s4">;</span>
+    <span class="s5">}</span>
+    <span class="s0">// 俩个Number对象</span>
+    <span class="s1">if</span><span class="s3">(</span><span class="s1">aClassName </span><span class="s4">=== </span><span class="s2">'[object Number]'</span><span class="s3">) </span><span class="s5">{</span>
+        <span class="s1">result </span><span class="s4">= </span><span class="s1">a </span><span class="s4">!= +</span><span class="s1">a </span><span class="s4">? </span><span class="s1">b </span><span class="s4">!= +</span><span class="s1">b </span><span class="s4">: </span><span class="s1">a </span><span class="s4">=== </span><span class="s6">0 </span><span class="s4">&amp;&amp; </span><span class="s1">b </span><span class="s4">=== </span><span class="s6">0 </span><span class="s4">? </span><span class="s6">1 </span><span class="s4">/ </span><span class="s1">a </span><span class="s4">== </span><span class="s6">1 </span><span class="s4">/ </span><span class="s1">b </span><span class="s4">: </span><span class="s1">a </span><span class="s4">== +</span><span class="s1">b</span><span class="s4">;</span>
+        <span class="s1">return result</span><span class="s4">;</span>
+    <span class="s5">}</span>
+
+    <span class="s1">if</span><span class="s3">(</span><span class="s1">aClassName </span><span class="s4">=== </span><span class="s2">'[object Date]' </span><span class="s4">|| </span><span class="s1">aClassName </span><span class="s4">=== </span><span class="s2">'[object Boolean]'</span><span class="s3">) </span><span class="s5">{</span>
+        <span class="s1">result </span><span class="s4">= +</span><span class="s1">a </span><span class="s4">== +</span><span class="s1">b</span><span class="s4">;</span>
+        <span class="s1">return result</span><span class="s4">;</span>
+    <span class="s5">}</span>
+
+    <span class="s0">// 数组</span>
+    <span class="s1">if</span><span class="s3">(</span><span class="s1">aClassName </span><span class="s4">=== </span><span class="s2">'[object ArrayBuffer]'</span><span class="s3">) </span><span class="s5">{</span>
+        <span class="s1">return eq</span><span class="s3">(</span><span class="s1">new Uint8Array</span><span class="s3">(</span><span class="s1">a</span><span class="s3">)</span><span class="s4">, </span><span class="s1">new Uint8Array</span><span class="s3">(</span><span class="s1">b</span><span class="s3">)</span><span class="s4">, </span><span class="s1">aStack</span><span class="s4">, </span><span class="s1">bStack</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s5">}</span>
+
+    <span class="s0">// 正则表达式</span>
+    <span class="s1">if</span><span class="s3">(</span><span class="s1">aClassName </span><span class="s4">=== </span><span class="s2">'[object RegExp]'</span><span class="s3">) </span><span class="s5">{</span>
+        <span class="s1">return </span><span class="s3">(</span>
+            <span class="s1">a</span><span class="s4">.</span><span class="s1">source </span><span class="s4">== </span><span class="s1">b</span><span class="s4">.</span><span class="s1">source </span><span class="s4">&amp;&amp;</span>
+            <span class="s1">a</span><span class="s4">.</span><span class="s1">global </span><span class="s4">== </span><span class="s1">b</span><span class="s4">.</span><span class="s1">global </span><span class="s4">&amp;&amp;</span>
+            <span class="s1">a</span><span class="s4">.</span><span class="s1">multiline </span><span class="s4">== </span><span class="s1">b</span><span class="s4">.</span><span class="s1">multiline </span><span class="s4">&amp;&amp;</span>
+            <span class="s1">a</span><span class="s4">.</span><span class="s1">ignoreCase </span><span class="s4">== </span><span class="s1">b</span><span class="s4">.</span><span class="s1">ignoreCase</span>
+        <span class="s3">)</span><span class="s4">;</span>
+    <span class="s5">}</span>
+
+    <span class="s1">if </span><span class="s3">(</span><span class="s1">typeof a </span><span class="s4">!= </span><span class="s2">'object' </span><span class="s4">|| </span><span class="s1">typeof b </span><span class="s4">!= </span><span class="s2">'object'</span><span class="s3">) </span><span class="s5">{</span>
+        <span class="s1">return false</span><span class="s4">;</span>
+    <span class="s5">}</span>
+
+    <span class="s1">const aIsDomNode </span><span class="s4">= </span><span class="s1">DeepTypeUtils</span><span class="s4">.</span><span class="s1">isDomNode</span><span class="s3">(</span><span class="s1">a</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s1">const bIsDomNode </span><span class="s4">= </span><span class="s1">DeepTypeUtils</span><span class="s4">.</span><span class="s1">isDomNode</span><span class="s3">(</span><span class="s1">b</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s1">if </span><span class="s3">(</span><span class="s1">aIsDomNode </span><span class="s4">&amp;&amp; </span><span class="s1">bIsDomNode</span><span class="s3">) </span><span class="s5">{</span>
+        <span class="s0">// At first try to use DOM3 method isEqualNode</span>
+        <span class="s1">result </span><span class="s4">= </span><span class="s1">a</span><span class="s4">.</span><span class="s1">isEqualNode</span><span class="s3">(</span><span class="s1">b</span><span class="s3">)</span><span class="s4">;</span>
+        <span class="s1">return result</span><span class="s4">;</span>
+    <span class="s5">}</span>
+    <span class="s1">if </span><span class="s3">(</span><span class="s1">aIsDomNode </span><span class="s4">|| </span><span class="s1">bIsDomNode</span><span class="s3">) </span><span class="s5">{</span>
+        <span class="s1">return false</span><span class="s4">;</span>
+    <span class="s5">}</span>
+    <span class="s1">const aIsPromise </span><span class="s4">= </span><span class="s1">DeepTypeUtils</span><span class="s4">.</span><span class="s1">isPromise</span><span class="s3">(</span><span class="s1">a</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s1">const bIsPromise </span><span class="s4">= </span><span class="s1">DeepTypeUtils</span><span class="s4">.</span><span class="s1">isPromise</span><span class="s3">(</span><span class="s1">b</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s1">if </span><span class="s3">(</span><span class="s1">aIsPromise </span><span class="s4">&amp;&amp; </span><span class="s1">bIsPromise</span><span class="s3">) </span><span class="s5">{</span>
+        <span class="s1">return a </span><span class="s4">=== </span><span class="s1">b</span><span class="s4">;</span>
+    <span class="s5">}</span>
+    <span class="s1">let length </span><span class="s4">= </span><span class="s1">aStack</span><span class="s4">.</span><span class="s1">length</span><span class="s4">;</span>
+    <span class="s1">while </span><span class="s3">(</span><span class="s1">length</span><span class="s4">--</span><span class="s3">) </span><span class="s5">{</span>
+        <span class="s1">if </span><span class="s3">(</span><span class="s1">aStack</span><span class="s3">[</span><span class="s1">length</span><span class="s3">] </span><span class="s4">== </span><span class="s1">a</span><span class="s3">) </span><span class="s5">{</span>
+            <span class="s1">return bStack</span><span class="s3">[</span><span class="s1">length</span><span class="s3">] </span><span class="s4">== </span><span class="s1">b</span><span class="s4">;</span>
+        <span class="s5">}</span>
+    <span class="s5">}</span>
+    <span class="s1">aStack</span><span class="s4">.</span><span class="s1">push</span><span class="s3">(</span><span class="s1">a</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s1">bStack</span><span class="s4">.</span><span class="s1">push</span><span class="s3">(</span><span class="s1">b</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s1">let size </span><span class="s4">= </span><span class="s6">0</span><span class="s4">;</span>
+
+    <span class="s0">// 都是数组</span>
+    <span class="s1">if</span><span class="s3">(</span><span class="s1">aClassName </span><span class="s4">== </span><span class="s2">'[object Array]'</span><span class="s3">) </span><span class="s5">{</span>
+        <span class="s1">const aLength </span><span class="s4">= </span><span class="s1">a</span><span class="s4">.</span><span class="s1">length</span><span class="s4">;</span>
+        <span class="s1">const bLength </span><span class="s4">= </span><span class="s1">b</span><span class="s4">.</span><span class="s1">length</span><span class="s4">;</span>
+        <span class="s1">if </span><span class="s3">(</span><span class="s1">aLength </span><span class="s4">!== </span><span class="s1">bLength</span><span class="s3">) </span><span class="s5">{</span>
+            <span class="s0">// 数组长度不同，不是同一个对象</span>
+            <span class="s1">return false</span><span class="s4">;</span>
+            <span class="s5">}</span>
+        <span class="s1">for </span><span class="s3">(</span><span class="s1">let i </span><span class="s4">= </span><span class="s6">0</span><span class="s4">; </span><span class="s1">i </span><span class="s4">&lt; </span><span class="s1">aLength </span><span class="s4">|| </span><span class="s1">i </span><span class="s4">&lt; </span><span class="s1">bLength</span><span class="s4">; </span><span class="s1">i</span><span class="s4">++</span><span class="s3">) </span><span class="s5">{</span>
+            <span class="s0">// 递归每一个元素是否相同</span>
+            <span class="s1">result </span><span class="s4">= </span><span class="s1">eq</span><span class="s3">(</span><span class="s1">i </span><span class="s4">&lt; </span><span class="s1">aLength </span><span class="s4">? </span><span class="s1">a</span><span class="s3">[</span><span class="s1">i</span><span class="s3">] </span><span class="s4">: </span><span class="s1">void </span><span class="s6">0</span><span class="s4">, </span><span class="s1">i </span><span class="s4">&lt; </span><span class="s1">bLength </span><span class="s4">? </span><span class="s1">b</span><span class="s3">[</span><span class="s1">i</span><span class="s3">] </span><span class="s4">: </span><span class="s1">void </span><span class="s6">0</span><span class="s4">, </span><span class="s1">aStack</span><span class="s4">, </span><span class="s1">bStack</span><span class="s3">) </span><span class="s4">&amp;&amp; </span><span class="s1">result</span><span class="s4">;</span>
+        <span class="s5">}</span>
+        <span class="s1">if </span><span class="s3">(</span><span class="s4">!</span><span class="s1">result</span><span class="s3">) </span><span class="s5">{</span>
+            <span class="s1">return false</span><span class="s4">;</span>
+        <span class="s5">}</span>
+    <span class="s5">} </span><span class="s1">else if</span><span class="s3">(</span><span class="s1">DeepTypeUtils</span><span class="s4">.</span><span class="s1">isMap</span><span class="s3">(</span><span class="s1">a</span><span class="s3">) </span><span class="s4">&amp;&amp; </span><span class="s1">DeepTypeUtils</span><span class="s4">.</span><span class="s1">isMap</span><span class="s3">(</span><span class="s1">b</span><span class="s3">)) </span><span class="s5">{</span>
+        <span class="s1">if </span><span class="s3">(</span><span class="s1">a</span><span class="s4">.</span><span class="s1">size </span><span class="s4">!= </span><span class="s1">b</span><span class="s4">.</span><span class="s1">size</span><span class="s3">) </span><span class="s5">{</span>
+            <span class="s1">return false</span><span class="s4">;</span>
+        <span class="s5">}</span>
+        <span class="s1">const keysA </span><span class="s4">= </span><span class="s3">[]</span><span class="s4">;</span>
+        <span class="s1">const keysB </span><span class="s4">= </span><span class="s3">[]</span><span class="s4">;</span>
+        <span class="s1">a</span><span class="s4">.</span><span class="s1">forEach</span><span class="s3">(</span><span class="s1">function</span><span class="s3">(</span><span class="s1">valueA</span><span class="s4">, </span><span class="s1">keyA</span><span class="s3">) </span><span class="s5">{</span>
+            <span class="s1">keysA</span><span class="s4">.</span><span class="s1">push</span><span class="s3">(</span><span class="s1">keyA</span><span class="s3">)</span><span class="s4">;</span>
+        <span class="s5">}</span><span class="s3">)</span><span class="s4">;</span>
+        <span class="s1">b</span><span class="s4">.</span><span class="s1">forEach</span><span class="s3">(</span><span class="s1">function</span><span class="s3">(</span><span class="s1">valueB</span><span class="s4">, </span><span class="s1">keyB</span><span class="s3">) </span><span class="s5">{</span>
+            <span class="s1">keysB</span><span class="s4">.</span><span class="s1">push</span><span class="s3">(</span><span class="s1">keyB</span><span class="s3">)</span><span class="s4">;</span>
+        <span class="s5">}</span><span class="s3">)</span><span class="s4">;</span>
+        <span class="s1">const mapKeys </span><span class="s4">= </span><span class="s3">[</span><span class="s1">keysA</span><span class="s4">, </span><span class="s1">keysB</span><span class="s3">]</span><span class="s4">;</span>
+        <span class="s1">const cmpKeys </span><span class="s4">= </span><span class="s3">[</span><span class="s1">keysB</span><span class="s4">, </span><span class="s1">keysA</span><span class="s3">]</span><span class="s4">;</span>
+        <span class="s1">for </span><span class="s3">(</span><span class="s1">let i </span><span class="s4">= </span><span class="s6">0</span><span class="s4">; </span><span class="s1">result </span><span class="s4">&amp;&amp; </span><span class="s1">i </span><span class="s4">&lt; </span><span class="s1">mapKeys</span><span class="s4">.</span><span class="s1">length</span><span class="s4">; </span><span class="s1">i</span><span class="s4">++</span><span class="s3">) </span><span class="s5">{</span>
+            <span class="s1">const mapIter </span><span class="s4">= </span><span class="s1">mapKeys</span><span class="s3">[</span><span class="s1">i</span><span class="s3">]</span><span class="s4">;</span>
+            <span class="s1">const cmpIter </span><span class="s4">= </span><span class="s1">cmpKeys</span><span class="s3">[</span><span class="s1">i</span><span class="s3">]</span><span class="s4">;</span>
+
+            <span class="s1">for </span><span class="s3">(</span><span class="s1">let j </span><span class="s4">= </span><span class="s6">0</span><span class="s4">; </span><span class="s1">result </span><span class="s4">&amp;&amp; </span><span class="s1">j </span><span class="s4">&lt; </span><span class="s1">mapIter</span><span class="s4">.</span><span class="s1">length</span><span class="s4">; </span><span class="s1">j</span><span class="s4">++</span><span class="s3">) </span><span class="s5">{</span>
+                <span class="s1">const mapKey </span><span class="s4">= </span><span class="s1">mapIter</span><span class="s3">[</span><span class="s1">j</span><span class="s3">]</span><span class="s4">;</span>
+                <span class="s1">const cmpKey </span><span class="s4">= </span><span class="s1">cmpIter</span><span class="s3">[</span><span class="s1">j</span><span class="s3">]</span><span class="s4">;</span>
+                <span class="s1">const mapValueA </span><span class="s4">= </span><span class="s1">a</span><span class="s4">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">mapKey</span><span class="s3">)</span><span class="s4">;</span>
+                <span class="s1">let mapValueB</span><span class="s4">;</span>
+                <span class="s1">if </span><span class="s3">(</span>
+                <span class="s1">DeepTypeUtils</span><span class="s4">.</span><span class="s1">isAsymmetricEqualityTester_</span><span class="s3">(</span><span class="s1">mapKey</span><span class="s3">) </span><span class="s4">||</span>
+                <span class="s3">(</span><span class="s1">DeepTypeUtils</span><span class="s4">.</span><span class="s1">isAsymmetricEqualityTester_</span><span class="s3">(</span><span class="s1">cmpKey</span><span class="s3">) </span><span class="s4">&amp;&amp;</span>
+                <span class="s1">eq</span><span class="s3">(</span><span class="s1">mapKey</span><span class="s4">, </span><span class="s1">cmpKey</span><span class="s3">))</span>
+                <span class="s3">) </span><span class="s5">{</span>
+                    <span class="s1">mapValueB </span><span class="s4">= </span><span class="s1">b</span><span class="s4">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">cmpKey</span><span class="s3">)</span><span class="s4">;</span>
+                <span class="s5">} </span><span class="s1">else </span><span class="s5">{</span>
+                    <span class="s1">mapValueB </span><span class="s4">= </span><span class="s1">b</span><span class="s4">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">mapKey</span><span class="s3">)</span><span class="s4">;</span>
+                <span class="s5">}</span>
+                <span class="s1">result </span><span class="s4">= </span><span class="s1">eq</span><span class="s3">(</span><span class="s1">mapValueA</span><span class="s4">, </span><span class="s1">mapValueB</span><span class="s4">, </span><span class="s1">aStack</span><span class="s4">, </span><span class="s1">bStack</span><span class="s3">)</span><span class="s4">;</span>
+            <span class="s5">}</span>
+        <span class="s5">}</span>
+        <span class="s1">if </span><span class="s3">(</span><span class="s4">!</span><span class="s1">result</span><span class="s3">) </span><span class="s5">{</span>
+            <span class="s1">return false</span><span class="s4">;</span>
+        <span class="s5">}</span>
+    <span class="s5">} </span><span class="s1">else if</span><span class="s3">(</span><span class="s1">DeepTypeUtils</span><span class="s4">.</span><span class="s1">isSet</span><span class="s3">(</span><span class="s1">a</span><span class="s3">) </span><span class="s4">&amp;&amp; </span><span class="s1">DeepTypeUtils</span><span class="s4">.</span><span class="s1">isSet</span><span class="s3">(</span><span class="s1">b</span><span class="s3">)) </span><span class="s5">{</span>
+        <span class="s1">if </span><span class="s3">(</span><span class="s1">a</span><span class="s4">.</span><span class="s1">size </span><span class="s4">!= </span><span class="s1">b</span><span class="s4">.</span><span class="s1">size</span><span class="s3">) </span><span class="s5">{</span>
+            <span class="s1">return false</span><span class="s4">;</span>
+        <span class="s5">}</span>
+        <span class="s1">const valuesA </span><span class="s4">= </span><span class="s3">[]</span><span class="s4">;</span>
+        <span class="s1">a</span><span class="s4">.</span><span class="s1">forEach</span><span class="s3">(</span><span class="s1">function</span><span class="s3">(</span><span class="s1">valueA</span><span class="s3">) </span><span class="s5">{</span>
+            <span class="s1">valuesA</span><span class="s4">.</span><span class="s1">push</span><span class="s3">(</span><span class="s1">valueA</span><span class="s3">)</span><span class="s4">;</span>
+        <span class="s5">}</span><span class="s3">)</span><span class="s4">;</span>
+        <span class="s1">const valuesB </span><span class="s4">= </span><span class="s3">[]</span><span class="s4">;</span>
+        <span class="s1">b</span><span class="s4">.</span><span class="s1">forEach</span><span class="s3">(</span><span class="s1">function</span><span class="s3">(</span><span class="s1">valueB</span><span class="s3">) </span><span class="s5">{</span>
+            <span class="s1">valuesB</span><span class="s4">.</span><span class="s1">push</span><span class="s3">(</span><span class="s1">valueB</span><span class="s3">)</span><span class="s4">;</span>
+        <span class="s5">}</span><span class="s3">)</span><span class="s4">;</span>
+        <span class="s1">const setPairs </span><span class="s4">= </span><span class="s3">[[</span><span class="s1">valuesA</span><span class="s4">, </span><span class="s1">valuesB</span><span class="s3">]</span><span class="s4">, </span><span class="s3">[</span><span class="s1">valuesB</span><span class="s4">, </span><span class="s1">valuesA</span><span class="s3">]]</span><span class="s4">;</span>
+       <span class="s1">const stackPairs </span><span class="s4">= </span><span class="s3">[[</span><span class="s1">aStack</span><span class="s4">, </span><span class="s1">bStack</span><span class="s3">]</span><span class="s4">, </span><span class="s3">[</span><span class="s1">bStack</span><span class="s4">, </span><span class="s1">aStack</span><span class="s3">]]</span><span class="s4">;</span>
+        <span class="s1">for </span><span class="s3">(</span><span class="s1">let i </span><span class="s4">= </span><span class="s6">0</span><span class="s4">; </span><span class="s1">result </span><span class="s4">&amp;&amp; </span><span class="s1">i </span><span class="s4">&lt; </span><span class="s1">setPairs</span><span class="s4">.</span><span class="s1">length</span><span class="s4">; </span><span class="s1">i</span><span class="s4">++</span><span class="s3">) </span><span class="s5">{</span>
+            <span class="s1">const baseValues </span><span class="s4">= </span><span class="s1">setPairs</span><span class="s3">[</span><span class="s1">i</span><span class="s3">][</span><span class="s6">0</span><span class="s3">]</span><span class="s4">;</span>
+            <span class="s1">const otherValues </span><span class="s4">= </span><span class="s1">setPairs</span><span class="s3">[</span><span class="s1">i</span><span class="s3">][</span><span class="s6">1</span><span class="s3">]</span><span class="s4">;</span>
+            <span class="s1">const baseStack </span><span class="s4">= </span><span class="s1">stackPairs</span><span class="s3">[</span><span class="s1">i</span><span class="s3">][</span><span class="s6">0</span><span class="s3">]</span><span class="s4">;</span>
+            <span class="s1">const otherStack </span><span class="s4">= </span><span class="s1">stackPairs</span><span class="s3">[</span><span class="s1">i</span><span class="s3">][</span><span class="s6">1</span><span class="s3">]</span><span class="s4">;</span>
+            <span class="s1">for </span><span class="s3">(</span><span class="s1">const baseValue of baseValues</span><span class="s3">) </span><span class="s5">{</span>
+                <span class="s1">let found </span><span class="s4">= </span><span class="s1">false</span><span class="s4">;</span>
+                <span class="s1">for </span><span class="s3">(</span><span class="s1">let j </span><span class="s4">= </span><span class="s6">0</span><span class="s4">; !</span><span class="s1">found </span><span class="s4">&amp;&amp; </span><span class="s1">j </span><span class="s4">&lt; </span><span class="s1">otherValues</span><span class="s4">.</span><span class="s1">length</span><span class="s4">; </span><span class="s1">j</span><span class="s4">++</span><span class="s3">) </span><span class="s5">{</span>
+                    <span class="s1">const otherValue </span><span class="s4">= </span><span class="s1">otherValues</span><span class="s3">[</span><span class="s1">j</span><span class="s3">]</span><span class="s4">;</span>
+                    <span class="s1">const prevStackSize </span><span class="s4">= </span><span class="s1">baseStack</span><span class="s4">.</span><span class="s1">length</span><span class="s4">;</span>
+                    <span class="s0">// 深度比较对象</span>
+                    <span class="s1">found </span><span class="s4">= </span><span class="s1">eq</span><span class="s3">(</span><span class="s1">baseValue</span><span class="s4">, </span><span class="s1">otherValue</span><span class="s4">, </span><span class="s1">baseStack</span><span class="s4">, </span><span class="s1">otherStack</span><span class="s3">)</span><span class="s4">;</span>
+                    <span class="s1">if </span><span class="s3">(</span><span class="s4">!</span><span class="s1">found </span><span class="s4">&amp;&amp; </span><span class="s1">prevStackSize </span><span class="s4">!== </span><span class="s1">baseStack</span><span class="s4">.</span><span class="s1">length</span><span class="s3">) </span><span class="s5">{</span>
+                        <span class="s1">baseStack</span><span class="s4">.</span><span class="s1">splice</span><span class="s3">(</span><span class="s1">prevStackSize</span><span class="s3">)</span><span class="s4">;</span>
+                        <span class="s1">otherStack</span><span class="s4">.</span><span class="s1">splice</span><span class="s3">(</span><span class="s1">prevStackSize</span><span class="s3">)</span><span class="s4">;</span>
+                    <span class="s5">}</span>
+                <span class="s5">}</span>
+                <span class="s1">result </span><span class="s4">= </span><span class="s1">result </span><span class="s4">&amp;&amp; </span><span class="s1">found</span><span class="s4">;</span>
+            <span class="s5">}</span>
+        <span class="s5">}</span>
+        <span class="s1">if </span><span class="s3">(</span><span class="s4">!</span><span class="s1">result</span><span class="s3">) </span><span class="s5">{</span>
+            <span class="s1">return false</span><span class="s4">;</span>
+        <span class="s5">}</span>
+    <span class="s5">} </span><span class="s1">else </span><span class="s5">{</span>
+        <span class="s1">const aCtor </span><span class="s4">= </span><span class="s1">a</span><span class="s4">.</span><span class="s1">constructor</span><span class="s4">,</span>
+            <span class="s1">bCtor </span><span class="s4">= </span><span class="s1">b</span><span class="s4">.</span><span class="s1">constructor</span><span class="s4">;</span>
+        <span class="s1">if </span><span class="s3">(</span>
+        <span class="s1">aCtor </span><span class="s4">!== </span><span class="s1">bCtor </span><span class="s4">&amp;&amp;</span>
+        <span class="s1">DeepTypeUtils</span><span class="s4">.</span><span class="s1">isFunction_</span><span class="s3">(</span><span class="s1">aCtor</span><span class="s3">) </span><span class="s4">&amp;&amp;</span>
+        <span class="s1">DeepTypeUtils</span><span class="s4">.</span><span class="s1">isFunction_</span><span class="s3">(</span><span class="s1">bCtor</span><span class="s3">) </span><span class="s4">&amp;&amp;</span>
+        <span class="s1">a instanceof aCtor </span><span class="s4">&amp;&amp;</span>
+        <span class="s1">b instanceof bCtor </span><span class="s4">&amp;&amp;</span>
+        <span class="s4">!</span><span class="s3">(</span><span class="s1">aCtor instanceof aCtor </span><span class="s4">&amp;&amp; </span><span class="s1">bCtor instanceof bCtor</span><span class="s3">)</span>
+        <span class="s3">) </span><span class="s5">{</span>
+            <span class="s1">return false</span><span class="s4">;</span>
+        <span class="s5">}</span>
+    <span class="s5">}</span>
+
+    <span class="s0">// 获取对象所有的属性集合</span>
+    <span class="s1">const aKeys </span><span class="s4">= </span><span class="s1">DeepTypeUtils</span><span class="s4">.</span><span class="s1">keys</span><span class="s3">(</span><span class="s1">a</span><span class="s4">, </span><span class="s1">aClassName </span><span class="s4">== </span><span class="s2">'[object Array]'</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s1">size </span><span class="s4">= </span><span class="s1">aKeys</span><span class="s4">.</span><span class="s1">length</span><span class="s4">;</span>
+
+    <span class="s0">// 俩个对象属性长度不一致， 俩对象不相同</span>
+    <span class="s1">if </span><span class="s3">(</span><span class="s1">DeepTypeUtils</span><span class="s4">.</span><span class="s1">keys</span><span class="s3">(</span><span class="s1">b</span><span class="s4">, </span><span class="s1">bClassName </span><span class="s4">== </span><span class="s2">'[object Array]'</span><span class="s3">)</span><span class="s4">.</span><span class="s1">length </span><span class="s4">!== </span><span class="s1">size</span><span class="s3">) </span><span class="s5">{</span>
+        <span class="s1">return false</span><span class="s4">;</span>
+    <span class="s5">}</span>
+
+    <span class="s0">// 俩对象属性数量相同， 递归比较每个属性值得值</span>
+    <span class="s1">for </span><span class="s3">(</span><span class="s1">const key of aKeys</span><span class="s3">) </span><span class="s5">{</span>
+        <span class="s1">console</span><span class="s4">.</span><span class="s1">log</span><span class="s3">(</span><span class="s2">'key is:' </span><span class="s4">+ </span><span class="s1">key</span><span class="s3">)</span><span class="s4">;</span>
+        <span class="s0">// b 没有 key 属性</span>
+        <span class="s1">if</span><span class="s3">(</span><span class="s4">!</span><span class="s1">DeepTypeUtils</span><span class="s4">.</span><span class="s1">has</span><span class="s3">(</span><span class="s1">b</span><span class="s4">, </span><span class="s1">key</span><span class="s3">)) </span><span class="s5">{</span>
+            <span class="s1">result </span><span class="s4">= </span><span class="s1">false</span><span class="s4">;</span>
+            <span class="s1">continue</span><span class="s4">;</span>
+        <span class="s5">}</span>
+        <span class="s1">if </span><span class="s3">(</span><span class="s4">!</span><span class="s1">eq</span><span class="s3">(</span><span class="s1">a</span><span class="s3">[</span><span class="s1">key</span><span class="s3">]</span><span class="s4">, </span><span class="s1">b</span><span class="s3">[</span><span class="s1">key</span><span class="s3">]</span><span class="s4">, </span><span class="s1">aStack</span><span class="s4">, </span><span class="s1">bStack</span><span class="s3">)) </span><span class="s5">{</span>
+            <span class="s1">result </span><span class="s4">= </span><span class="s1">false</span><span class="s4">;</span>
+        <span class="s5">}</span>
+    <span class="s5">}</span>
+    <span class="s1">if </span><span class="s3">(</span><span class="s4">!</span><span class="s1">result</span><span class="s3">) </span><span class="s5">{</span>
+        <span class="s1">return false</span><span class="s4">;</span>
+    <span class="s5">}</span>
+    <span class="s1">aStack</span><span class="s4">.</span><span class="s1">pop</span><span class="s3">()</span><span class="s4">;</span>
+    <span class="s1">bStack</span><span class="s4">.</span><span class="s1">pop</span><span class="s3">()</span><span class="s4">;</span>
+    <span class="s1">return result</span><span class="s4">;</span>
+<span class="s5">}</span>
+
+<span class="s1">function asymmetricMatch_</span><span class="s3">(</span><span class="s1">a</span><span class="s4">, </span><span class="s1">b</span><span class="s3">) </span><span class="s5">{</span>
+    <span class="s1">const asymmetricA </span><span class="s4">= </span><span class="s1">DeepTypeUtils</span><span class="s4">.</span><span class="s1">isAsymmetricEqualityTester_</span><span class="s3">(</span><span class="s1">a</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s1">const asymmetricB </span><span class="s4">= </span><span class="s1">DeepTypeUtils</span><span class="s4">.</span><span class="s1">isAsymmetricEqualityTester_</span><span class="s3">(</span><span class="s1">b</span><span class="s3">)</span><span class="s4">;</span>
+
+    <span class="s1">if </span><span class="s3">(</span><span class="s1">asymmetricA </span><span class="s4">=== </span><span class="s1">asymmetricB</span><span class="s3">) </span><span class="s5">{</span>
+        <span class="s1">return undefined</span><span class="s4">;</span>
+    <span class="s5">}</span>
+
+<span class="s5">}</span>
+
+<span class="s0">/** 
+ * 获取对象的自有属性 
+ * 
+ * @param obj 对象 
+ * @param isArray 是否是一个数组 
+ */</span>
+<span class="s1">function keys</span><span class="s3">(</span><span class="s1">obj</span><span class="s4">, </span><span class="s1">isArray</span><span class="s3">) </span><span class="s5">{</span>
+    <span class="s1">const keys </span><span class="s4">= </span><span class="s3">[]</span><span class="s4">;</span>
+
+<span class="s5">}</span>
+
+<span class="s1">export default assertDeepEquals</span><span class="s4">;</span>
+</pre>
+</body>
+</html>

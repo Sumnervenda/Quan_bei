@@ -1,0 +1,13 @@
+{
+  "src": [
+    "pages/Index",
+    "pages/licai",
+    "pages/splash",
+    "pages/index_jump_to_add",
+    "pages/tongji",
+    "pages/mine",
+    "pages/change",
+    "pages/Share_info",
+    "pages/scrolls"
+  ]
+}

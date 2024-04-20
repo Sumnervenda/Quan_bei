@@ -1,0 +1,81 @@
+<html>
+<head>
+<title>hvigorw.bat</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #a9b7c6;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+hvigorw.bat</font>
+</center></td></tr></table>
+<pre><span class="s0">@if &quot;%DEBUG%&quot; == &quot;&quot; @echo off</span>
+<span class="s0">@rem ##########################################################################</span>
+<span class="s0">@rem</span>
+<span class="s0">@rem  Hvigor startup script for Windows</span>
+<span class="s0">@rem</span>
+<span class="s0">@rem ##########################################################################</span>
+
+<span class="s0">@rem Set local scope for the variables with windows NT shell</span>
+<span class="s0">if &quot;%OS%&quot;==&quot;Windows_NT&quot; setlocal</span>
+
+<span class="s0">set DIRNAME=%~dp0</span>
+<span class="s0">if &quot;%DIRNAME%&quot; == &quot;&quot; set DIRNAME=.</span>
+<span class="s0">set APP_BASE_NAME=%~n0</span>
+<span class="s0">set APP_HOME=%DIRNAME%</span>
+
+<span class="s0">@rem Resolve any &quot;.&quot; and &quot;..&quot; in APP_HOME to make it shorter.</span>
+<span class="s0">for %%i in (&quot;%APP_HOME%&quot;) do set APP_HOME=%%~fi</span>
+
+<span class="s0">set WRAPPER_MODULE_PATH=%APP_HOME%\hvigor\hvigor-wrapper.js</span>
+<span class="s0">set NODE_EXE=node.exe</span>
+
+<span class="s0">goto start</span>
+
+<span class="s0">:start</span>
+<span class="s0">@rem Find node.exe</span>
+<span class="s0">if defined NODE_HOME goto findNodeFromNodeHome</span>
+
+<span class="s0">%NODE_EXE% --version &gt;NUL 2&gt;&amp;1</span>
+<span class="s0">if &quot;%ERRORLEVEL%&quot; == &quot;0&quot; goto execute</span>
+
+<span class="s0">echo.</span>
+<span class="s0">echo ERROR: NODE_HOME is not set and no 'node' command could be found in your PATH.</span>
+<span class="s0">echo.</span>
+<span class="s0">echo Please set the NODE_HOME variable in your environment to match the</span>
+<span class="s0">echo location of your NodeJs installation.</span>
+
+<span class="s0">goto fail</span>
+
+<span class="s0">:findNodeFromNodeHome</span>
+<span class="s0">set NODE_HOME=%NODE_HOME:&quot;=%</span>
+<span class="s0">set NODE_EXE_PATH=%NODE_HOME%/%NODE_EXE%</span>
+
+<span class="s0">if exist &quot;%NODE_EXE_PATH%&quot; goto execute</span>
+<span class="s0">echo.</span>
+<span class="s0">echo ERROR: NODE_HOME is not set and no 'node' command could be found in your PATH.</span>
+<span class="s0">echo.</span>
+<span class="s0">echo Please set the NODE_HOME variable in your environment to match the</span>
+<span class="s0">echo location of your NodeJs installation.</span>
+
+<span class="s0">goto fail</span>
+
+<span class="s0">:execute</span>
+<span class="s0">@rem Execute hvigor</span>
+<span class="s0">&quot;%NODE_EXE%&quot; %WRAPPER_MODULE_PATH% %*</span>
+
+<span class="s0">if &quot;%ERRORLEVEL%&quot; == &quot;0&quot; goto hvigorwEnd</span>
+
+<span class="s0">:fail</span>
+<span class="s0">exit /b 1</span>
+
+<span class="s0">:hvigorwEnd</span>
+<span class="s0">if &quot;%OS%&quot; == &quot;Windows_NT&quot; endlocal</span>
+
+<span class="s0">:end</span>
+</pre>
+</body>
+</html>

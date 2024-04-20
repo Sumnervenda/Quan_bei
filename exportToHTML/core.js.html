@@ -1,0 +1,182 @@
+<html>
+<head>
+<title>core.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #808080;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #faa23d;}
+.s3 { color: #e2da90;}
+.s4 { color: #aa7dfc;}
+.s5 { color: #db7e9b;}
+.s6 { color: #b3e54c;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+core.js</font>
+</center></td></tr></table>
+<pre><span class="s0">/* 
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd. 
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ */</span>
+
+<span class="s1">import </span><span class="s2">{</span><span class="s1">SuiteService</span><span class="s3">, </span><span class="s1">SpecService</span><span class="s3">, </span><span class="s1">ExpectService</span><span class="s3">, </span><span class="s1">ReportService</span><span class="s2">} </span><span class="s1">from </span><span class="s4">'./service'</span><span class="s3">;</span>
+<span class="s1">import </span><span class="s2">{</span><span class="s1">ConfigService</span><span class="s2">} </span><span class="s1">from </span><span class="s4">'./module/config/configService'</span><span class="s3">;</span>
+<span class="s1">import </span><span class="s2">{</span><span class="s1">SpecEvent</span><span class="s3">, </span><span class="s1">TaskEvent</span><span class="s3">, </span><span class="s1">SuiteEvent</span><span class="s2">} </span><span class="s1">from </span><span class="s4">'./event'</span><span class="s3">;</span>
+
+<span class="s0">/** 
+ * core service for execute testcase. 
+ */</span>
+<span class="s1">class Core </span><span class="s2">{</span>
+    <span class="s1">static getInstance</span><span class="s5">() </span><span class="s2">{</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s3">!</span><span class="s1">this</span><span class="s3">.</span><span class="s1">instance</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">instance </span><span class="s3">= </span><span class="s1">new Core</span><span class="s5">()</span><span class="s3">;</span>
+        <span class="s2">}</span>
+        <span class="s1">return this</span><span class="s3">.</span><span class="s1">instance</span><span class="s3">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">constructor</span><span class="s5">() </span><span class="s2">{</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">instance </span><span class="s3">= </span><span class="s1">null</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">services </span><span class="s3">= </span><span class="s2">{</span>
+            <span class="s1">suite</span><span class="s3">: </span><span class="s2">{}</span><span class="s3">,</span>
+            <span class="s1">spec</span><span class="s3">: </span><span class="s2">{}</span><span class="s3">,</span>
+            <span class="s1">config</span><span class="s3">: </span><span class="s2">{}</span><span class="s3">,</span>
+            <span class="s1">expect</span><span class="s3">: </span><span class="s2">{}</span><span class="s3">,</span>
+            <span class="s1">log</span><span class="s3">: </span><span class="s2">{}</span><span class="s3">,</span>
+            <span class="s1">report</span><span class="s3">: </span><span class="s2">{}</span>
+
+        <span class="s2">}</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">events </span><span class="s3">= </span><span class="s2">{</span>
+            <span class="s1">suite</span><span class="s3">: </span><span class="s2">{}</span><span class="s3">,</span>
+            <span class="s1">spec</span><span class="s3">: </span><span class="s2">{}</span><span class="s3">,</span>
+            <span class="s1">task</span><span class="s3">: </span><span class="s2">{}</span>
+        <span class="s2">}</span><span class="s3">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">addService</span><span class="s5">(</span><span class="s1">name</span><span class="s3">, </span><span class="s1">service</span><span class="s5">) </span><span class="s2">{</span>
+        <span class="s1">let serviceObj </span><span class="s3">= </span><span class="s2">{}</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s3">!</span><span class="s1">this</span><span class="s3">.</span><span class="s1">services</span><span class="s5">[</span><span class="s1">name</span><span class="s5">]) </span><span class="s2">{</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">services</span><span class="s5">[</span><span class="s1">name</span><span class="s5">] </span><span class="s3">= </span><span class="s1">serviceObj</span><span class="s3">;</span>
+        <span class="s2">} </span><span class="s1">else </span><span class="s2">{</span>
+            <span class="s1">serviceObj </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">services</span><span class="s5">[</span><span class="s1">name</span><span class="s5">]</span><span class="s3">;</span>
+        <span class="s2">}</span>
+        <span class="s1">serviceObj</span><span class="s5">[</span><span class="s1">service</span><span class="s3">.</span><span class="s1">id</span><span class="s5">] </span><span class="s3">= </span><span class="s1">service</span><span class="s3">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">getDefaultService</span><span class="s5">(</span><span class="s1">name</span><span class="s5">) </span><span class="s2">{</span>
+        <span class="s1">return this</span><span class="s3">.</span><span class="s1">services</span><span class="s5">[</span><span class="s1">name</span><span class="s5">]</span><span class="s3">.</span><span class="s1">default</span><span class="s3">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">getServices</span><span class="s5">(</span><span class="s1">name</span><span class="s5">) </span><span class="s2">{</span>
+        <span class="s1">return this</span><span class="s3">.</span><span class="s1">services</span><span class="s5">[</span><span class="s1">name</span><span class="s5">]</span><span class="s3">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">registerEvent</span><span class="s5">(</span><span class="s1">serviceName</span><span class="s3">, </span><span class="s1">event</span><span class="s5">) </span><span class="s2">{</span>
+        <span class="s1">let eventObj </span><span class="s3">= </span><span class="s2">{}</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s3">!</span><span class="s1">this</span><span class="s3">.</span><span class="s1">events</span><span class="s5">[</span><span class="s1">serviceName</span><span class="s5">]) </span><span class="s2">{</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">events</span><span class="s5">[</span><span class="s1">serviceName</span><span class="s5">] </span><span class="s3">= </span><span class="s1">eventObj</span><span class="s3">;</span>
+        <span class="s2">} </span><span class="s1">else </span><span class="s2">{</span>
+            <span class="s1">eventObj </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">events</span><span class="s5">[</span><span class="s1">serviceName</span><span class="s5">]</span><span class="s3">;</span>
+        <span class="s2">}</span>
+        <span class="s1">eventObj</span><span class="s5">[</span><span class="s1">event</span><span class="s3">.</span><span class="s1">id</span><span class="s5">] </span><span class="s3">= </span><span class="s1">event</span><span class="s3">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">unRegisterEvent</span><span class="s5">(</span><span class="s1">serviceName</span><span class="s3">, </span><span class="s1">eventID</span><span class="s5">) </span><span class="s2">{</span>
+        <span class="s1">const eventObj </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">events</span><span class="s5">[</span><span class="s1">serviceName</span><span class="s5">]</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">eventObj</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">delete eventObj</span><span class="s5">[</span><span class="s1">eventID</span><span class="s5">]</span><span class="s3">;</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">subscribeEvent</span><span class="s5">(</span><span class="s1">serviceName</span><span class="s3">, </span><span class="s1">serviceObj</span><span class="s5">) </span><span class="s2">{</span>
+        <span class="s1">const eventObj </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">events</span><span class="s5">[</span><span class="s1">serviceName</span><span class="s5">]</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">eventObj</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">for </span><span class="s5">(</span><span class="s1">const attr in eventObj</span><span class="s5">) </span><span class="s2">{</span>
+                <span class="s1">eventObj</span><span class="s5">[</span><span class="s1">attr</span><span class="s5">][</span><span class="s4">'subscribeEvent'</span><span class="s5">](</span><span class="s1">serviceObj</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">async fireEvents</span><span class="s5">(</span><span class="s1">serviceName</span><span class="s3">, </span><span class="s1">eventName</span><span class="s5">) </span><span class="s2">{</span>
+        <span class="s1">const eventObj </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">events</span><span class="s5">[</span><span class="s1">serviceName</span><span class="s5">]</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s3">!</span><span class="s1">eventObj</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">return</span><span class="s3">;</span>
+        <span class="s2">}</span>
+        <span class="s1">for </span><span class="s5">(</span><span class="s1">const attr in eventObj</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">await eventObj</span><span class="s5">[</span><span class="s1">attr</span><span class="s5">][</span><span class="s1">eventName</span><span class="s5">]()</span><span class="s3">;</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">addToGlobal</span><span class="s5">(</span><span class="s1">apis</span><span class="s5">) </span><span class="s2">{</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">typeof globalThis </span><span class="s3">!== </span><span class="s4">'undefined'</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">for </span><span class="s5">(</span><span class="s1">let api in apis</span><span class="s5">) </span><span class="s2">{</span>
+                <span class="s1">globalThis</span><span class="s5">[</span><span class="s1">api</span><span class="s5">] </span><span class="s3">= </span><span class="s1">apis</span><span class="s5">[</span><span class="s1">api</span><span class="s5">]</span><span class="s3">;</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+        <span class="s1">for </span><span class="s5">(</span><span class="s1">const api in apis</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">this</span><span class="s5">[</span><span class="s1">api</span><span class="s5">] </span><span class="s3">= </span><span class="s1">apis</span><span class="s5">[</span><span class="s1">api</span><span class="s5">]</span><span class="s3">;</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">init</span><span class="s5">() </span><span class="s2">{</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">addService</span><span class="s5">(</span><span class="s4">'suite'</span><span class="s3">, </span><span class="s1">new SuiteService</span><span class="s5">(</span><span class="s2">{</span><span class="s1">id</span><span class="s3">: </span><span class="s4">'default'</span><span class="s2">}</span><span class="s5">))</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">addService</span><span class="s5">(</span><span class="s4">'spec'</span><span class="s3">, </span><span class="s1">new SpecService</span><span class="s5">(</span><span class="s2">{</span><span class="s1">id</span><span class="s3">: </span><span class="s4">'default'</span><span class="s2">}</span><span class="s5">))</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">addService</span><span class="s5">(</span><span class="s4">'expect'</span><span class="s3">, </span><span class="s1">new ExpectService</span><span class="s5">(</span><span class="s2">{</span><span class="s1">id</span><span class="s3">: </span><span class="s4">'default'</span><span class="s2">}</span><span class="s5">))</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">addService</span><span class="s5">(</span><span class="s4">'report'</span><span class="s3">, </span><span class="s1">new ReportService</span><span class="s5">(</span><span class="s2">{</span><span class="s1">id</span><span class="s3">: </span><span class="s4">'default'</span><span class="s2">}</span><span class="s5">))</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">addService</span><span class="s5">(</span><span class="s4">'config'</span><span class="s3">, </span><span class="s1">new ConfigService</span><span class="s5">(</span><span class="s2">{</span><span class="s1">id</span><span class="s3">: </span><span class="s4">'default'</span><span class="s2">}</span><span class="s5">))</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">registerEvent</span><span class="s5">(</span><span class="s4">'task'</span><span class="s3">, </span><span class="s1">new TaskEvent</span><span class="s5">(</span><span class="s2">{</span><span class="s1">id</span><span class="s3">: </span><span class="s4">'default'</span><span class="s3">, </span><span class="s1">coreContext</span><span class="s3">: </span><span class="s1">this</span><span class="s2">}</span><span class="s5">))</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">registerEvent</span><span class="s5">(</span><span class="s4">'suite'</span><span class="s3">, </span><span class="s1">new SuiteEvent</span><span class="s5">(</span><span class="s2">{</span><span class="s1">id</span><span class="s3">: </span><span class="s4">'default'</span><span class="s3">, </span><span class="s1">coreContext</span><span class="s3">: </span><span class="s1">this</span><span class="s2">}</span><span class="s5">))</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">registerEvent</span><span class="s5">(</span><span class="s4">'spec'</span><span class="s3">, </span><span class="s1">new SpecEvent</span><span class="s5">(</span><span class="s2">{</span><span class="s1">id</span><span class="s3">: </span><span class="s4">'default'</span><span class="s3">, </span><span class="s1">coreContext</span><span class="s3">: </span><span class="s1">this</span><span class="s2">}</span><span class="s5">))</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">subscribeEvent</span><span class="s5">(</span><span class="s4">'spec'</span><span class="s3">, </span><span class="s1">this</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s4">'report'</span><span class="s5">))</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">subscribeEvent</span><span class="s5">(</span><span class="s4">'suite'</span><span class="s3">, </span><span class="s1">this</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s4">'report'</span><span class="s5">))</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">subscribeEvent</span><span class="s5">(</span><span class="s4">'task'</span><span class="s3">, </span><span class="s1">this</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s4">'report'</span><span class="s5">))</span><span class="s3">;</span>
+        <span class="s1">const context </span><span class="s3">= </span><span class="s1">this</span><span class="s3">;</span>
+        <span class="s1">for </span><span class="s5">(</span><span class="s1">const key in this</span><span class="s3">.</span><span class="s1">services</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s1">const serviceObj </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">services</span><span class="s5">[</span><span class="s1">key</span><span class="s5">]</span><span class="s3">;</span>
+            <span class="s1">for </span><span class="s5">(</span><span class="s1">const serviceID in serviceObj</span><span class="s5">) </span><span class="s2">{</span>
+                <span class="s1">const service </span><span class="s3">= </span><span class="s1">serviceObj</span><span class="s5">[</span><span class="s1">serviceID</span><span class="s5">]</span><span class="s3">;</span>
+                <span class="s1">service</span><span class="s3">.</span><span class="s1">init</span><span class="s5">(</span><span class="s1">context</span><span class="s5">)</span><span class="s3">;</span>
+
+                <span class="s1">if </span><span class="s5">(</span><span class="s1">typeof service</span><span class="s3">.</span><span class="s1">apis </span><span class="s3">!== </span><span class="s4">'function'</span><span class="s5">) </span><span class="s2">{</span>
+                    <span class="s1">continue</span><span class="s3">;</span>
+                <span class="s2">}</span>
+                <span class="s1">const apis </span><span class="s3">= </span><span class="s1">service</span><span class="s3">.</span><span class="s1">apis</span><span class="s5">()</span><span class="s3">;</span>
+                <span class="s1">if </span><span class="s5">(</span><span class="s1">apis</span><span class="s5">) </span><span class="s2">{</span>
+                    <span class="s1">this</span><span class="s3">.</span><span class="s1">addToGlobal</span><span class="s5">(</span><span class="s1">apis</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">execute</span><span class="s5">(</span><span class="s1">abilityDelegator</span><span class="s5">) </span><span class="s2">{</span>
+        <span class="s1">const suiteService </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s4">'suite'</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">const configService </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s4">'config'</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">configService</span><span class="s5">[</span><span class="s4">'dryRun'</span><span class="s5">] </span><span class="s3">=== </span><span class="s4">'true'</span><span class="s5">) </span><span class="s2">{</span>
+            <span class="s5">(</span><span class="s1">async function </span><span class="s5">() </span><span class="s2">{</span>
+                <span class="s1">await suiteService</span><span class="s3">.</span><span class="s1">dryRun</span><span class="s5">(</span><span class="s1">abilityDelegator</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s2">}</span><span class="s5">)()</span><span class="s3">;</span>
+            <span class="s1">return</span><span class="s3">;</span>
+        <span class="s2">}</span>
+        <span class="s1">setTimeout</span><span class="s5">(() </span><span class="s3">=&gt; </span><span class="s2">{</span>
+            <span class="s1">suiteService</span><span class="s3">.</span><span class="s1">execute</span><span class="s5">()</span><span class="s3">;</span>
+        <span class="s2">}</span><span class="s3">, </span><span class="s6">10</span><span class="s5">)</span><span class="s3">;</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+<span class="s1">export default Core</span><span class="s3">;</span>
+</pre>
+</body>
+</html>

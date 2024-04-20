@@ -1,0 +1,68 @@
+<html>
+<head>
+<title>Constant.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #808080;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #e2da90;}
+.s3 { color: #b3e54c;}
+.s4 { color: #faa23d;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Constant.js</font>
+</center></td></tr></table>
+<pre><span class="s0">/* 
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd. 
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ */</span>
+
+<span class="s0">/** 
+ * define the testcase type : TestType, Size , Level 
+ */</span>
+<span class="s1">export const DEFAULT </span><span class="s2">= </span><span class="s3">0B0000</span><span class="s2">;</span>
+
+<span class="s1">export class TestType </span><span class="s4">{</span>
+    <span class="s1">static FUNCTION </span><span class="s2">= </span><span class="s3">0B1</span><span class="s2">;</span>
+    <span class="s1">static PERFORMANCE </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">1</span><span class="s2">;</span>
+    <span class="s1">static POWER </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">2</span><span class="s2">;</span>
+    <span class="s1">static RELIABILITY </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">3</span><span class="s2">;</span>
+    <span class="s1">static SECURITY </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">4</span><span class="s2">;</span>
+    <span class="s1">static GLOBAL </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">5</span><span class="s2">;</span>
+    <span class="s1">static COMPATIBILITY </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">6</span><span class="s2">;</span>
+    <span class="s1">static USER </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">7</span><span class="s2">;</span>
+    <span class="s1">static STANDARD </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">8</span><span class="s2">;</span>
+    <span class="s1">static SAFETY </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">9</span><span class="s2">;</span>
+    <span class="s1">static RESILIENCE </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">10</span><span class="s2">;</span>
+<span class="s4">}</span>
+
+<span class="s1">export class Size </span><span class="s4">{</span>
+    <span class="s1">static SMALLTEST </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">16</span><span class="s2">;</span>
+    <span class="s1">static MEDIUMTEST </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">17</span><span class="s2">;</span>
+    <span class="s1">static LARGETEST </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">18</span><span class="s2">;</span>
+<span class="s4">}</span>
+
+<span class="s1">export class Level </span><span class="s4">{</span>
+    <span class="s1">static LEVEL0 </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">24</span><span class="s2">;</span>
+    <span class="s1">static LEVEL1 </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">25</span><span class="s2">;</span>
+    <span class="s1">static LEVEL2 </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">26</span><span class="s2">;</span>
+    <span class="s1">static LEVEL3 </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">27</span><span class="s2">;</span>
+    <span class="s1">static LEVEL4 </span><span class="s2">= </span><span class="s3">0B1 </span><span class="s2">&lt;&lt; </span><span class="s3">28</span><span class="s2">;</span>
+<span class="s4">}</span>
+</pre>
+</body>
+</html>

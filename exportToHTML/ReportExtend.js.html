@@ -1,0 +1,160 @@
+<html>
+<head>
+<title>ReportExtend.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #808080;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #faa23d;}
+.s3 { color: #db7e9b;}
+.s4 { color: #e2da90;}
+.s5 { color: #aa7dfc;}
+.s6 { color: #b3e54c;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+ReportExtend.js</font>
+</center></td></tr></table>
+<pre><span class="s0">/* 
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd. 
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ */</span>
+
+<span class="s1">class ReportExtend </span><span class="s2">{</span>
+    <span class="s1">constructor</span><span class="s3">(</span><span class="s1">fileModule</span><span class="s3">) </span><span class="s2">{</span>
+        <span class="s1">this</span><span class="s4">.</span><span class="s1">id </span><span class="s4">= </span><span class="s5">'extend'</span><span class="s4">;</span>
+        <span class="s1">this</span><span class="s4">.</span><span class="s1">fileModule </span><span class="s4">= </span><span class="s1">fileModule</span><span class="s4">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">init</span><span class="s3">(</span><span class="s1">coreContext</span><span class="s3">) </span><span class="s2">{</span>
+        <span class="s1">this</span><span class="s4">.</span><span class="s1">coreContext </span><span class="s4">= </span><span class="s1">coreContext</span><span class="s4">;</span>
+        <span class="s1">this</span><span class="s4">.</span><span class="s1">suiteService </span><span class="s4">= </span><span class="s1">this</span><span class="s4">.</span><span class="s1">coreContext</span><span class="s4">.</span><span class="s1">getDefaultService</span><span class="s3">(</span><span class="s5">'suite'</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">taskStart</span><span class="s3">() </span><span class="s2">{</span>
+
+    <span class="s2">}</span>
+
+    <span class="s1">taskDone</span><span class="s3">() </span><span class="s2">{</span>
+        <span class="s1">const report </span><span class="s4">= </span><span class="s2">{</span>
+            <span class="s1">tag</span><span class="s4">: </span><span class="s5">'testsuites'</span><span class="s4">,</span>
+            <span class="s1">name</span><span class="s4">: </span><span class="s5">'summary_report'</span><span class="s4">,</span>
+            <span class="s1">timestamp</span><span class="s4">: </span><span class="s1">new Date</span><span class="s3">()</span><span class="s4">.</span><span class="s1">toDateString</span><span class="s3">()</span><span class="s4">,</span>
+            <span class="s1">time</span><span class="s4">: </span><span class="s5">'1'</span><span class="s4">,</span>
+            <span class="s1">errors</span><span class="s4">: </span><span class="s6">0</span><span class="s4">,</span>
+            <span class="s1">failures</span><span class="s4">: </span><span class="s6">0</span><span class="s4">,</span>
+            <span class="s1">tests</span><span class="s4">: </span><span class="s6">0</span><span class="s4">,</span>
+            <span class="s1">children</span><span class="s4">: </span><span class="s3">[]</span>
+        <span class="s2">}</span><span class="s4">;</span>
+        <span class="s1">const rootSuite </span><span class="s4">= </span><span class="s1">this</span><span class="s4">.</span><span class="s1">suiteService</span><span class="s4">.</span><span class="s1">rootSuite</span><span class="s4">;</span>
+        <span class="s1">if </span><span class="s3">(</span><span class="s1">rootSuite </span><span class="s4">&amp;&amp; </span><span class="s1">rootSuite</span><span class="s4">.</span><span class="s1">childSuites</span><span class="s3">) </span><span class="s2">{</span>
+            <span class="s1">for </span><span class="s3">(</span><span class="s1">let testsuite of rootSuite</span><span class="s4">.</span><span class="s1">childSuites</span><span class="s3">) </span><span class="s2">{</span>
+                <span class="s1">let suiteReport </span><span class="s4">= </span><span class="s2">{</span>
+                    <span class="s1">tag</span><span class="s4">: </span><span class="s5">'testsuite'</span><span class="s4">,</span>
+                    <span class="s1">name</span><span class="s4">: </span><span class="s1">testsuite</span><span class="s3">[</span><span class="s5">'description'</span><span class="s3">]</span><span class="s4">,</span>
+                    <span class="s1">errors</span><span class="s4">: </span><span class="s6">0</span><span class="s4">,</span>
+                    <span class="s1">tests</span><span class="s4">: </span><span class="s6">0</span><span class="s4">,</span>
+                    <span class="s1">failures</span><span class="s4">: </span><span class="s6">0</span><span class="s4">,</span>
+                    <span class="s1">time</span><span class="s4">: </span><span class="s5">'0.1'</span><span class="s4">,</span>
+                    <span class="s1">children</span><span class="s4">: </span><span class="s3">[]</span>
+                <span class="s2">}</span><span class="s4">;</span>
+                <span class="s1">let specs </span><span class="s4">= </span><span class="s1">testsuite</span><span class="s3">[</span><span class="s5">'specs'</span><span class="s3">]</span><span class="s4">;</span>
+                <span class="s1">for </span><span class="s3">(</span><span class="s1">let testcase of specs</span><span class="s3">) </span><span class="s2">{</span>
+                    <span class="s1">report</span><span class="s4">.</span><span class="s1">tests</span><span class="s4">++;</span>
+                    <span class="s1">suiteReport</span><span class="s4">.</span><span class="s1">tests</span><span class="s4">++;</span>
+                    <span class="s1">let caseReport </span><span class="s4">= </span><span class="s2">{</span>
+                        <span class="s1">tag</span><span class="s4">: </span><span class="s5">'testcase'</span><span class="s4">,</span>
+                        <span class="s1">name</span><span class="s4">: </span><span class="s1">testcase</span><span class="s3">[</span><span class="s5">'description'</span><span class="s3">]</span><span class="s4">,</span>
+                        <span class="s1">status</span><span class="s4">: </span><span class="s5">'run'</span><span class="s4">,</span>
+                        <span class="s1">time</span><span class="s4">: </span><span class="s5">'0.0'</span><span class="s4">,</span>
+                        <span class="s1">classname</span><span class="s4">: </span><span class="s1">testsuite</span><span class="s3">[</span><span class="s5">'description'</span><span class="s3">]</span>
+                    <span class="s2">}</span><span class="s4">;</span>
+                    <span class="s1">if </span><span class="s3">(</span><span class="s1">testcase</span><span class="s4">.</span><span class="s1">error</span><span class="s3">) </span><span class="s2">{</span>
+                        <span class="s1">caseReport</span><span class="s3">[</span><span class="s5">'result'</span><span class="s3">] </span><span class="s4">= </span><span class="s1">false</span><span class="s4">;</span>
+                        <span class="s1">caseReport</span><span class="s3">[</span><span class="s5">'children'</span><span class="s3">] </span><span class="s4">= </span><span class="s3">[</span><span class="s2">{</span>
+                            <span class="s1">tag</span><span class="s4">: </span><span class="s5">'error'</span><span class="s4">,</span>
+                            <span class="s1">type</span><span class="s4">: </span><span class="s5">''</span><span class="s4">,</span>
+                            <span class="s1">message</span><span class="s4">: </span><span class="s1">testcase</span><span class="s4">.</span><span class="s1">error</span><span class="s4">.</span><span class="s1">message</span>
+                        <span class="s2">}</span><span class="s3">]</span><span class="s4">;</span>
+                        <span class="s1">report</span><span class="s4">.</span><span class="s1">errors</span><span class="s4">++;</span>
+                        <span class="s1">suiteReport</span><span class="s4">.</span><span class="s1">errors</span><span class="s4">++;</span>
+                    <span class="s2">} </span><span class="s1">else if </span><span class="s3">(</span><span class="s1">testcase</span><span class="s4">.</span><span class="s1">result</span><span class="s4">.</span><span class="s1">failExpects</span><span class="s4">.</span><span class="s1">length </span><span class="s4">&gt; </span><span class="s6">0</span><span class="s3">) </span><span class="s2">{</span>
+                        <span class="s1">caseReport</span><span class="s3">[</span><span class="s5">'result'</span><span class="s3">] </span><span class="s4">= </span><span class="s1">false</span><span class="s4">;</span>
+                        <span class="s1">let message </span><span class="s4">= </span><span class="s5">''</span><span class="s4">;</span>
+                        <span class="s1">testcase</span><span class="s4">.</span><span class="s1">result</span><span class="s4">.</span><span class="s1">failExpects</span><span class="s4">.</span><span class="s1">forEach</span><span class="s3">(</span><span class="s1">failExpect </span><span class="s4">=&gt; </span><span class="s2">{</span>
+                            <span class="s1">message </span><span class="s4">+= </span><span class="s1">failExpect</span><span class="s4">.</span><span class="s1">message </span><span class="s4">|| </span><span class="s3">(</span><span class="s5">'expect ' </span><span class="s4">+ </span><span class="s1">failExpect</span><span class="s4">.</span><span class="s1">actualValue </span><span class="s4">+ </span><span class="s5">' ' </span><span class="s4">+ </span><span class="s1">failExpect</span><span class="s4">.</span><span class="s1">checkFunc </span><span class="s4">+ </span><span class="s5">' ' </span><span class="s4">+ </span><span class="s3">(</span><span class="s1">failExpect</span><span class="s4">.</span><span class="s1">expectValue </span><span class="s4">|| </span><span class="s5">''</span><span class="s3">)) </span><span class="s4">+ </span><span class="s5">';'</span><span class="s4">;</span>
+                        <span class="s2">}</span><span class="s3">)</span><span class="s4">;</span>
+                        <span class="s1">caseReport</span><span class="s3">[</span><span class="s5">'children'</span><span class="s3">] </span><span class="s4">= </span><span class="s3">[</span><span class="s2">{</span>
+                            <span class="s1">tag</span><span class="s4">: </span><span class="s5">'failure'</span><span class="s4">,</span>
+                            <span class="s1">type</span><span class="s4">: </span><span class="s5">''</span><span class="s4">,</span>
+                            <span class="s1">message</span><span class="s4">: </span><span class="s1">message</span>
+                        <span class="s2">}</span><span class="s3">]</span><span class="s4">;</span>
+                        <span class="s1">report</span><span class="s4">.</span><span class="s1">failures</span><span class="s4">++;</span>
+                        <span class="s1">suiteReport</span><span class="s4">.</span><span class="s1">failures</span><span class="s4">++;</span>
+                    <span class="s2">} </span><span class="s1">else </span><span class="s2">{</span>
+                        <span class="s1">caseReport</span><span class="s3">[</span><span class="s5">'result'</span><span class="s3">] </span><span class="s4">= </span><span class="s1">true</span><span class="s4">;</span>
+                    <span class="s2">}</span>
+                    <span class="s1">suiteReport</span><span class="s4">.</span><span class="s1">children</span><span class="s4">.</span><span class="s1">push</span><span class="s3">(</span><span class="s1">caseReport</span><span class="s3">)</span><span class="s4">;</span>
+                <span class="s2">}</span>
+                <span class="s1">report</span><span class="s4">.</span><span class="s1">children</span><span class="s4">.</span><span class="s1">push</span><span class="s3">(</span><span class="s1">suiteReport</span><span class="s3">)</span><span class="s4">;</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s1">let reportXml </span><span class="s4">= </span><span class="s5">'&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;\n' </span><span class="s4">+ </span><span class="s1">json2xml</span><span class="s3">(</span><span class="s1">report</span><span class="s3">)</span><span class="s4">;</span>
+        <span class="s1">this</span><span class="s4">.</span><span class="s1">fileModule</span><span class="s4">.</span><span class="s1">writeText</span><span class="s3">(</span><span class="s2">{</span>
+            <span class="s1">uri</span><span class="s4">: </span><span class="s5">'internal://app/report.xml'</span><span class="s4">,</span>
+            <span class="s1">text</span><span class="s4">: </span><span class="s1">reportXml</span><span class="s4">,</span>
+            <span class="s1">success</span><span class="s4">: </span><span class="s1">function </span><span class="s3">() </span><span class="s2">{</span>
+                <span class="s1">console</span><span class="s4">.</span><span class="s1">info</span><span class="s3">(</span><span class="s5">'call success callback success'</span><span class="s3">)</span><span class="s4">;</span>
+            <span class="s2">}</span><span class="s4">,</span>
+            <span class="s1">fail</span><span class="s4">: </span><span class="s1">function </span><span class="s3">(</span><span class="s1">data</span><span class="s4">, </span><span class="s1">code</span><span class="s3">) </span><span class="s2">{</span>
+                <span class="s1">console</span><span class="s4">.</span><span class="s1">info</span><span class="s3">(</span><span class="s5">'call fail callback success:'</span><span class="s3">)</span><span class="s4">;</span>
+            <span class="s2">}</span><span class="s4">,</span>
+            <span class="s1">complete</span><span class="s4">: </span><span class="s1">function </span><span class="s3">() </span><span class="s2">{</span>
+                <span class="s1">console</span><span class="s4">.</span><span class="s1">info</span><span class="s3">(</span><span class="s5">'call complete callback success'</span><span class="s3">)</span><span class="s4">;</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+<span class="s1">function json2xml</span><span class="s3">(</span><span class="s1">json</span><span class="s3">) </span><span class="s2">{</span>
+    <span class="s1">let tagName</span><span class="s4">;</span>
+    <span class="s1">let hasChildren </span><span class="s4">= </span><span class="s1">false</span><span class="s4">;</span>
+    <span class="s1">let childrenStr </span><span class="s4">= </span><span class="s5">''</span><span class="s4">;</span>
+    <span class="s1">let attrStr </span><span class="s4">= </span><span class="s5">''</span><span class="s4">;</span>
+    <span class="s1">for </span><span class="s3">(</span><span class="s1">let key in json</span><span class="s3">) </span><span class="s2">{</span>
+        <span class="s1">if </span><span class="s3">(</span><span class="s1">key </span><span class="s4">=== </span><span class="s5">'tag'</span><span class="s3">) </span><span class="s2">{</span>
+            <span class="s1">tagName </span><span class="s4">= </span><span class="s1">json</span><span class="s3">[</span><span class="s1">key</span><span class="s3">]</span><span class="s4">;</span>
+        <span class="s2">} </span><span class="s1">else if </span><span class="s3">(</span><span class="s1">key </span><span class="s4">=== </span><span class="s5">'children'</span><span class="s3">) </span><span class="s2">{</span>
+            <span class="s1">if </span><span class="s3">(</span><span class="s1">json</span><span class="s3">[</span><span class="s1">key</span><span class="s3">]</span><span class="s4">.</span><span class="s1">length </span><span class="s4">&gt; </span><span class="s6">0</span><span class="s3">) </span><span class="s2">{</span>
+                <span class="s1">hasChildren </span><span class="s4">= </span><span class="s1">true</span><span class="s4">;</span>
+                <span class="s1">for </span><span class="s3">(</span><span class="s1">let child of json</span><span class="s3">[</span><span class="s1">key</span><span class="s3">]) </span><span class="s2">{</span>
+                    <span class="s1">childrenStr </span><span class="s4">+= </span><span class="s1">json2xml</span><span class="s3">(</span><span class="s1">child</span><span class="s3">)</span><span class="s4">;</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">} </span><span class="s1">else </span><span class="s2">{</span>
+            <span class="s1">attrStr </span><span class="s4">+= </span><span class="s5">` </span><span class="s2">${</span><span class="s1">key</span><span class="s2">}</span><span class="s5">=&quot;</span><span class="s2">${</span><span class="s1">json</span><span class="s3">[</span><span class="s1">key</span><span class="s3">]</span><span class="s2">}</span><span class="s5">&quot;`</span><span class="s4">;</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+    <span class="s1">let xml </span><span class="s4">= </span><span class="s5">`&lt;</span><span class="s2">${</span><span class="s1">tagName</span><span class="s2">}${</span><span class="s1">attrStr</span><span class="s2">}</span><span class="s5">`</span><span class="s4">;</span>
+    <span class="s1">xml </span><span class="s4">+= </span><span class="s1">hasChildren </span><span class="s4">? </span><span class="s5">`&gt;</span><span class="s2">${</span><span class="s1">childrenStr</span><span class="s2">}</span><span class="s5">&lt;/</span><span class="s2">${</span><span class="s1">tagName</span><span class="s2">}</span><span class="s5">&gt;` </span><span class="s4">: </span><span class="s5">'/&gt;'</span><span class="s4">;</span>
+    <span class="s1">return xml</span><span class="s4">;</span>
+<span class="s2">}</span>
+
+<span class="s1">export default ReportExtend</span><span class="s4">;</span>
+</pre>
+</body>
+</html>

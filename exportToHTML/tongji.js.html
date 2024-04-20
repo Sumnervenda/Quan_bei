@@ -1,0 +1,213 @@
+<html>
+<head>
+<title>tongji.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #a9b7c6;}
+.s1 { color: #aa7dfc;}
+.s2 { color: #e2da90;}
+.s3 { color: #faa23d;}
+.s4 { color: #db7e9b;}
+.s5 { color: #b3e54c;}
+.s6 { color: #808080;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+tongji.js</font>
+</center></td></tr></table>
+<pre><span class="s0">import router from </span><span class="s1">'@ohos:router'</span><span class="s2">;</span>
+<span class="s0">class Tongji extends ViewPU </span><span class="s3">{</span>
+    <span class="s0">constructor</span><span class="s4">(</span><span class="s0">parent</span><span class="s2">, </span><span class="s0">params</span><span class="s2">, </span><span class="s0">__localStorage</span><span class="s2">, </span><span class="s0">elmtId </span><span class="s2">= -</span><span class="s5">1</span><span class="s4">) </span><span class="s3">{</span>
+        <span class="s0">super</span><span class="s4">(</span><span class="s0">parent</span><span class="s2">, </span><span class="s0">__localStorage</span><span class="s2">, </span><span class="s0">elmtId</span><span class="s4">)</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">__message </span><span class="s2">= </span><span class="s0">new ObservedPropertySimplePU</span><span class="s4">(</span><span class="s1">'Hello World'</span><span class="s2">, </span><span class="s0">this</span><span class="s2">, </span><span class="s1">&quot;message&quot;</span><span class="s4">)</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">setInitiallyProvidedValue</span><span class="s4">(</span><span class="s0">params</span><span class="s4">)</span><span class="s2">;</span>
+    <span class="s3">}</span>
+    <span class="s0">setInitiallyProvidedValue</span><span class="s4">(</span><span class="s0">params</span><span class="s4">) </span><span class="s3">{</span>
+        <span class="s0">if </span><span class="s4">(</span><span class="s0">params</span><span class="s2">.</span><span class="s0">message </span><span class="s2">!== </span><span class="s0">undefined</span><span class="s4">) </span><span class="s3">{</span>
+            <span class="s0">this</span><span class="s2">.</span><span class="s0">message </span><span class="s2">= </span><span class="s0">params</span><span class="s2">.</span><span class="s0">message</span><span class="s2">;</span>
+        <span class="s3">}</span>
+    <span class="s3">}</span>
+    <span class="s0">updateStateVars</span><span class="s4">(</span><span class="s0">params</span><span class="s4">) </span><span class="s3">{</span>
+    <span class="s3">}</span>
+    <span class="s0">purgeVariableDependenciesOnElmtId</span><span class="s4">(</span><span class="s0">rmElmtId</span><span class="s4">) </span><span class="s3">{</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">__message</span><span class="s2">.</span><span class="s0">purgeDependencyOnElmtId</span><span class="s4">(</span><span class="s0">rmElmtId</span><span class="s4">)</span><span class="s2">;</span>
+    <span class="s3">}</span>
+    <span class="s0">aboutToBeDeleted</span><span class="s4">() </span><span class="s3">{</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">__message</span><span class="s2">.</span><span class="s0">aboutToBeDeleted</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s0">SubscriberManager</span><span class="s2">.</span><span class="s0">Get</span><span class="s4">()</span><span class="s2">.</span><span class="s0">delete</span><span class="s4">(</span><span class="s0">this</span><span class="s2">.</span><span class="s0">id__</span><span class="s4">())</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">aboutToBeDeletedInternal</span><span class="s4">()</span><span class="s2">;</span>
+    <span class="s3">}</span>
+    <span class="s0">get message</span><span class="s4">() </span><span class="s3">{</span>
+        <span class="s0">return this</span><span class="s2">.</span><span class="s0">__message</span><span class="s2">.</span><span class="s0">get</span><span class="s4">()</span><span class="s2">;</span>
+    <span class="s3">}</span>
+    <span class="s0">set message</span><span class="s4">(</span><span class="s0">newValue</span><span class="s4">) </span><span class="s3">{</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">__message</span><span class="s2">.</span><span class="s0">set</span><span class="s4">(</span><span class="s0">newValue</span><span class="s4">)</span><span class="s2">;</span>
+    <span class="s3">}</span>
+    <span class="s0">initialRender</span><span class="s4">() </span><span class="s3">{</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">observeComponentCreation</span><span class="s4">((</span><span class="s0">elmtId</span><span class="s2">, </span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s2">=&gt; </span><span class="s3">{</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StartGetAccessRecordingFor</span><span class="s4">(</span><span class="s0">elmtId</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Row</span><span class="s2">.</span><span class="s0">create</span><span class="s4">()</span><span class="s2">;</span>
+            <span class="s0">Row</span><span class="s2">.</span><span class="s0">debugLine</span><span class="s4">(</span><span class="s1">&quot;pages/tongji.ets(8:5)&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Row</span><span class="s2">.</span><span class="s0">height</span><span class="s4">(</span><span class="s1">'100%'</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">if </span><span class="s4">(</span><span class="s2">!</span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s3">{</span>
+                <span class="s0">Row</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+            <span class="s3">}</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StopGetAccessRecording</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s3">}</span><span class="s4">)</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">observeComponentCreation</span><span class="s4">((</span><span class="s0">elmtId</span><span class="s2">, </span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s2">=&gt; </span><span class="s3">{</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StartGetAccessRecordingFor</span><span class="s4">(</span><span class="s0">elmtId</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Column</span><span class="s2">.</span><span class="s0">create</span><span class="s4">()</span><span class="s2">;</span>
+            <span class="s0">Column</span><span class="s2">.</span><span class="s0">debugLine</span><span class="s4">(</span><span class="s1">&quot;pages/tongji.ets(9:7)&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Column</span><span class="s2">.</span><span class="s0">width</span><span class="s4">(</span><span class="s1">'100%'</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">if </span><span class="s4">(</span><span class="s2">!</span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s3">{</span>
+                <span class="s0">Column</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+            <span class="s3">}</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StopGetAccessRecording</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s3">}</span><span class="s4">)</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">observeComponentCreation</span><span class="s4">((</span><span class="s0">elmtId</span><span class="s2">, </span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s2">=&gt; </span><span class="s3">{</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StartGetAccessRecordingFor</span><span class="s4">(</span><span class="s0">elmtId</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Image</span><span class="s2">.</span><span class="s0">create</span><span class="s4">(</span><span class="s1">'assets/tongji.png'</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Image</span><span class="s2">.</span><span class="s0">debugLine</span><span class="s4">(</span><span class="s1">&quot;pages/tongji.ets(10:9)&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">if </span><span class="s4">(</span><span class="s2">!</span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s3">{</span>
+                <span class="s0">Image</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+            <span class="s3">}</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StopGetAccessRecording</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s3">}</span><span class="s4">)</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">observeComponentCreation</span><span class="s4">((</span><span class="s0">elmtId</span><span class="s2">, </span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s2">=&gt; </span><span class="s3">{</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StartGetAccessRecordingFor</span><span class="s4">(</span><span class="s0">elmtId</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Row</span><span class="s2">.</span><span class="s0">create</span><span class="s4">(</span><span class="s3">{ </span><span class="s0">space</span><span class="s2">: </span><span class="s5">60 </span><span class="s3">}</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Row</span><span class="s2">.</span><span class="s0">debugLine</span><span class="s4">(</span><span class="s1">&quot;pages/tongji.ets(11:9)&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Row</span><span class="s2">.</span><span class="s0">margin</span><span class="s4">(</span><span class="s3">{</span>
+                <span class="s0">top</span><span class="s2">: -</span><span class="s5">110</span>
+            <span class="s3">}</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Row</span><span class="s2">.</span><span class="s0">width</span><span class="s4">(</span><span class="s1">&quot;86%&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">if </span><span class="s4">(</span><span class="s2">!</span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s3">{</span>
+                <span class="s0">Row</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+            <span class="s3">}</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StopGetAccessRecording</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s3">}</span><span class="s4">)</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">observeComponentCreation</span><span class="s4">((</span><span class="s0">elmtId</span><span class="s2">, </span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s2">=&gt; </span><span class="s3">{</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StartGetAccessRecordingFor</span><span class="s4">(</span><span class="s0">elmtId</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Button</span><span class="s2">.</span><span class="s0">createWithChild</span><span class="s4">()</span><span class="s2">;</span>
+            <span class="s0">Button</span><span class="s2">.</span><span class="s0">debugLine</span><span class="s4">(</span><span class="s1">&quot;pages/tongji.ets(12:11)&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Button</span><span class="s2">.</span><span class="s0">backgroundColor</span><span class="s4">(</span><span class="s1">&quot;#00ffffff&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Button</span><span class="s2">.</span><span class="s0">onClick</span><span class="s4">(() </span><span class="s2">=&gt; </span><span class="s3">{</span>
+                <span class="s0">router</span><span class="s2">.</span><span class="s0">pushUrl</span><span class="s4">(</span><span class="s3">{</span>
+                    <span class="s0">url</span><span class="s2">: </span><span class="s1">'pages/Index'</span>
+                <span class="s3">}</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s3">}</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">if </span><span class="s4">(</span><span class="s2">!</span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s3">{</span>
+                <span class="s0">Button</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+            <span class="s3">}</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StopGetAccessRecording</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s3">}</span><span class="s4">)</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">observeComponentCreation</span><span class="s4">((</span><span class="s0">elmtId</span><span class="s2">, </span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s2">=&gt; </span><span class="s3">{</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StartGetAccessRecordingFor</span><span class="s4">(</span><span class="s0">elmtId</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Text</span><span class="s2">.</span><span class="s0">create</span><span class="s4">(</span><span class="s1">&quot;账单&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Text</span><span class="s2">.</span><span class="s0">debugLine</span><span class="s4">(</span><span class="s1">&quot;pages/tongji.ets(13:13)&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Text</span><span class="s2">.</span><span class="s0">fontColor</span><span class="s4">(</span><span class="s1">&quot;#00ffffff&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">if </span><span class="s4">(</span><span class="s2">!</span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s3">{</span>
+                <span class="s0">Text</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+            <span class="s3">}</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StopGetAccessRecording</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s3">}</span><span class="s4">)</span><span class="s2">;</span>
+        <span class="s0">Text</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s0">Button</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">observeComponentCreation</span><span class="s4">((</span><span class="s0">elmtId</span><span class="s2">, </span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s2">=&gt; </span><span class="s3">{</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StartGetAccessRecordingFor</span><span class="s4">(</span><span class="s0">elmtId</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Button</span><span class="s2">.</span><span class="s0">createWithChild</span><span class="s4">()</span><span class="s2">;</span>
+            <span class="s0">Button</span><span class="s2">.</span><span class="s0">debugLine</span><span class="s4">(</span><span class="s1">&quot;pages/tongji.ets(20:11)&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Button</span><span class="s2">.</span><span class="s0">backgroundColor</span><span class="s4">(</span><span class="s1">&quot;#00ffffff&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Button</span><span class="s2">.</span><span class="s0">onClick</span><span class="s4">(() </span><span class="s2">=&gt; </span><span class="s3">{</span>
+                <span class="s0">router</span><span class="s2">.</span><span class="s0">pushUrl</span><span class="s4">(</span><span class="s3">{</span>
+                    <span class="s0">url</span><span class="s2">: </span><span class="s1">'pages/licai'</span>
+                <span class="s3">}</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s3">}</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">if </span><span class="s4">(</span><span class="s2">!</span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s3">{</span>
+                <span class="s0">Button</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+            <span class="s3">}</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StopGetAccessRecording</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s3">}</span><span class="s4">)</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">observeComponentCreation</span><span class="s4">((</span><span class="s0">elmtId</span><span class="s2">, </span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s2">=&gt; </span><span class="s3">{</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StartGetAccessRecordingFor</span><span class="s4">(</span><span class="s0">elmtId</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Text</span><span class="s2">.</span><span class="s0">create</span><span class="s4">(</span><span class="s1">&quot;理财&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Text</span><span class="s2">.</span><span class="s0">debugLine</span><span class="s4">(</span><span class="s1">&quot;pages/tongji.ets(21:13)&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Text</span><span class="s2">.</span><span class="s0">fontColor</span><span class="s4">(</span><span class="s1">&quot;#00ffffff&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">if </span><span class="s4">(</span><span class="s2">!</span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s3">{</span>
+                <span class="s0">Text</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+            <span class="s3">}</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StopGetAccessRecording</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s3">}</span><span class="s4">)</span><span class="s2">;</span>
+        <span class="s0">Text</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s0">Button</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">observeComponentCreation</span><span class="s4">((</span><span class="s0">elmtId</span><span class="s2">, </span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s2">=&gt; </span><span class="s3">{</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StartGetAccessRecordingFor</span><span class="s4">(</span><span class="s0">elmtId</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Button</span><span class="s2">.</span><span class="s0">createWithChild</span><span class="s4">()</span><span class="s2">;</span>
+            <span class="s0">Button</span><span class="s2">.</span><span class="s0">debugLine</span><span class="s4">(</span><span class="s1">&quot;pages/tongji.ets(28:11)&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Button</span><span class="s2">.</span><span class="s0">backgroundColor</span><span class="s4">(</span><span class="s1">&quot;#00ffffff&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Button</span><span class="s2">.</span><span class="s0">onClick</span><span class="s4">(() </span><span class="s2">=&gt; </span><span class="s3">{</span>
+                <span class="s0">router</span><span class="s2">.</span><span class="s0">pushUrl</span><span class="s4">(</span><span class="s3">{</span>
+                    <span class="s0">url</span><span class="s2">: </span><span class="s1">'pages/tongji'</span>
+                <span class="s3">}</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s3">}</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">if </span><span class="s4">(</span><span class="s2">!</span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s3">{</span>
+                <span class="s0">Button</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+            <span class="s3">}</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StopGetAccessRecording</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s3">}</span><span class="s4">)</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">observeComponentCreation</span><span class="s4">((</span><span class="s0">elmtId</span><span class="s2">, </span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s2">=&gt; </span><span class="s3">{</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StartGetAccessRecordingFor</span><span class="s4">(</span><span class="s0">elmtId</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Text</span><span class="s2">.</span><span class="s0">create</span><span class="s4">(</span><span class="s1">&quot;规划&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Text</span><span class="s2">.</span><span class="s0">debugLine</span><span class="s4">(</span><span class="s1">&quot;pages/tongji.ets(29:13)&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Text</span><span class="s2">.</span><span class="s0">fontColor</span><span class="s4">(</span><span class="s1">&quot;#00ffffff&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">if </span><span class="s4">(</span><span class="s2">!</span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s3">{</span>
+                <span class="s0">Text</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+            <span class="s3">}</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StopGetAccessRecording</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s3">}</span><span class="s4">)</span><span class="s2">;</span>
+        <span class="s0">Text</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s0">Button</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">observeComponentCreation</span><span class="s4">((</span><span class="s0">elmtId</span><span class="s2">, </span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s2">=&gt; </span><span class="s3">{</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StartGetAccessRecordingFor</span><span class="s4">(</span><span class="s0">elmtId</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Button</span><span class="s2">.</span><span class="s0">createWithChild</span><span class="s4">()</span><span class="s2">;</span>
+            <span class="s0">Button</span><span class="s2">.</span><span class="s0">debugLine</span><span class="s4">(</span><span class="s1">&quot;pages/tongji.ets(36:11)&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Button</span><span class="s2">.</span><span class="s0">backgroundColor</span><span class="s4">(</span><span class="s1">&quot;#00ffffff&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Button</span><span class="s2">.</span><span class="s0">onClick</span><span class="s4">(() </span><span class="s2">=&gt; </span><span class="s3">{</span>
+                <span class="s0">router</span><span class="s2">.</span><span class="s0">pushUrl</span><span class="s4">(</span><span class="s3">{</span>
+                    <span class="s0">url</span><span class="s2">: </span><span class="s1">'pages/mine'</span>
+                <span class="s3">}</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s3">}</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">if </span><span class="s4">(</span><span class="s2">!</span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s3">{</span>
+                <span class="s0">Button</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+            <span class="s3">}</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StopGetAccessRecording</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s3">}</span><span class="s4">)</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">observeComponentCreation</span><span class="s4">((</span><span class="s0">elmtId</span><span class="s2">, </span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s2">=&gt; </span><span class="s3">{</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StartGetAccessRecordingFor</span><span class="s4">(</span><span class="s0">elmtId</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Text</span><span class="s2">.</span><span class="s0">create</span><span class="s4">(</span><span class="s1">&quot;我的&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Text</span><span class="s2">.</span><span class="s0">debugLine</span><span class="s4">(</span><span class="s1">&quot;pages/tongji.ets(37:13)&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">Text</span><span class="s2">.</span><span class="s0">fontColor</span><span class="s4">(</span><span class="s1">&quot;#00ffffff&quot;</span><span class="s4">)</span><span class="s2">;</span>
+            <span class="s0">if </span><span class="s4">(</span><span class="s2">!</span><span class="s0">isInitialRender</span><span class="s4">) </span><span class="s3">{</span>
+                <span class="s0">Text</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+            <span class="s3">}</span>
+            <span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StopGetAccessRecording</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s3">}</span><span class="s4">)</span><span class="s2">;</span>
+        <span class="s0">Text</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s0">Button</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s0">Row</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s0">Column</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+        <span class="s0">Row</span><span class="s2">.</span><span class="s0">pop</span><span class="s4">()</span><span class="s2">;</span>
+    <span class="s3">}</span>
+    <span class="s0">rerender</span><span class="s4">() </span><span class="s3">{</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s0">updateDirtyElements</span><span class="s4">()</span><span class="s2">;</span>
+    <span class="s3">}</span>
+<span class="s3">}</span>
+<span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StartGetAccessRecordingFor</span><span class="s4">(</span><span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">AllocateNewElmetIdForNextComponent</span><span class="s4">())</span><span class="s2">;</span>
+<span class="s0">loadDocument</span><span class="s4">(</span><span class="s0">new Tongji</span><span class="s4">(</span><span class="s0">undefined</span><span class="s2">, </span><span class="s3">{}</span><span class="s4">))</span><span class="s2">;</span>
+<span class="s0">ViewStackProcessor</span><span class="s2">.</span><span class="s0">StopGetAccessRecording</span><span class="s4">()</span><span class="s2">;</span>
+<span class="s6">//# sourceMappingURL=tongji.js.map</span></pre>
+</body>
+</html>

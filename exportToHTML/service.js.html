@@ -1,0 +1,952 @@
+<html>
+<head>
+<title>service.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #808080;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #aa7dfc;}
+.s3 { color: #e2da90;}
+.s4 { color: #faa23d;}
+.s5 { color: #db7e9b;}
+.s6 { color: #b3e54c;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+service.js</font>
+</center></td></tr></table>
+<pre><span class="s0">/* 
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd. 
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ */</span>
+
+<span class="s1">import SysTestKit from </span><span class="s2">&quot;./module/kit/SysTestKit&quot;</span><span class="s3">;</span>
+
+<span class="s1">class AssertException extends Error </span><span class="s4">{</span>
+    <span class="s1">constructor</span><span class="s5">(</span><span class="s1">message</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">super</span><span class="s5">()</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">name </span><span class="s3">= </span><span class="s2">&quot;AssertException&quot;</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">message </span><span class="s3">= </span><span class="s1">message</span><span class="s3">;</span>
+    <span class="s4">}</span>
+<span class="s4">}</span>
+
+<span class="s1">function getFuncWithArgsZero</span><span class="s5">(</span><span class="s1">func</span><span class="s3">, </span><span class="s1">timeout</span><span class="s3">, </span><span class="s1">isStressTest</span><span class="s5">) </span><span class="s4">{</span>
+    <span class="s1">return new Promise</span><span class="s5">(</span><span class="s1">async </span><span class="s5">(</span><span class="s1">resolve</span><span class="s3">, </span><span class="s1">reject</span><span class="s5">) </span><span class="s3">=&gt; </span><span class="s4">{</span>
+        <span class="s1">let timer </span><span class="s3">= </span><span class="s1">null</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s3">!</span><span class="s1">isStressTest</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">timer </span><span class="s3">= </span><span class="s1">setTimeout</span><span class="s5">(() </span><span class="s3">=&gt; </span><span class="s4">{</span>
+                <span class="s1">reject</span><span class="s5">(</span><span class="s1">new Error</span><span class="s5">(</span><span class="s2">'execute timeout ' </span><span class="s3">+ </span><span class="s1">timeout </span><span class="s3">+ </span><span class="s2">'ms'</span><span class="s5">))</span><span class="s3">;</span>
+            <span class="s4">}</span><span class="s3">, </span><span class="s1">timeout</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s4">}</span>
+        <span class="s1">try </span><span class="s4">{</span>
+            <span class="s1">await func</span><span class="s5">()</span><span class="s3">;</span>
+        <span class="s4">} </span><span class="s1">catch </span><span class="s5">(</span><span class="s1">err</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">reject</span><span class="s5">(</span><span class="s1">err</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s4">}</span>
+        <span class="s1">timer </span><span class="s3">!== </span><span class="s1">null </span><span class="s3">? </span><span class="s1">clearTimeout</span><span class="s5">(</span><span class="s1">timer</span><span class="s5">) </span><span class="s3">: </span><span class="s1">null</span><span class="s3">;</span>
+        <span class="s1">resolve</span><span class="s5">()</span><span class="s3">;</span>
+    <span class="s4">}</span><span class="s5">)</span><span class="s3">;</span>
+<span class="s4">}</span>
+
+<span class="s1">function getFuncWithArgsOne</span><span class="s5">(</span><span class="s1">func</span><span class="s3">, </span><span class="s1">timeout</span><span class="s3">, </span><span class="s1">isStressTest</span><span class="s5">) </span><span class="s4">{</span>
+    <span class="s1">return new Promise</span><span class="s5">(</span><span class="s1">async </span><span class="s5">(</span><span class="s1">resolve</span><span class="s3">, </span><span class="s1">reject</span><span class="s5">) </span><span class="s3">=&gt; </span><span class="s4">{</span>
+        <span class="s1">let timer </span><span class="s3">= </span><span class="s1">null</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s3">!</span><span class="s1">isStressTest</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">timer </span><span class="s3">= </span><span class="s1">setTimeout</span><span class="s5">(() </span><span class="s3">=&gt; </span><span class="s4">{</span>
+                <span class="s1">reject</span><span class="s5">(</span><span class="s1">new Error</span><span class="s5">(</span><span class="s2">'execute timeout ' </span><span class="s3">+ </span><span class="s1">timeout </span><span class="s3">+ </span><span class="s2">'ms'</span><span class="s5">))</span><span class="s3">;</span>
+            <span class="s4">}</span><span class="s3">, </span><span class="s1">timeout</span><span class="s5">)</span><span class="s3">;;</span>
+        <span class="s4">}</span>
+
+        <span class="s1">function done</span><span class="s5">() </span><span class="s4">{</span>
+            <span class="s1">timer </span><span class="s3">!== </span><span class="s1">null </span><span class="s3">? </span><span class="s1">clearTimeout</span><span class="s5">(</span><span class="s1">timer</span><span class="s5">) </span><span class="s3">: </span><span class="s1">null</span><span class="s3">;</span>
+            <span class="s1">resolve</span><span class="s5">()</span><span class="s3">;</span>
+        <span class="s4">}</span>
+
+        <span class="s1">try </span><span class="s4">{</span>
+            <span class="s1">await func</span><span class="s5">(</span><span class="s1">done</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s4">} </span><span class="s1">catch </span><span class="s5">(</span><span class="s1">err</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">timer </span><span class="s3">!== </span><span class="s1">null </span><span class="s3">? </span><span class="s1">clearTimeout</span><span class="s5">(</span><span class="s1">timer</span><span class="s5">) </span><span class="s3">: </span><span class="s1">null</span><span class="s3">;</span>
+            <span class="s1">reject</span><span class="s5">(</span><span class="s1">err</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span><span class="s5">)</span><span class="s3">;</span>
+<span class="s4">}</span>
+
+<span class="s1">function getFuncWithArgsTwo</span><span class="s5">(</span><span class="s1">func</span><span class="s3">, </span><span class="s1">timeout</span><span class="s3">, </span><span class="s1">paramItem</span><span class="s3">, </span><span class="s1">isStressTest</span><span class="s5">) </span><span class="s4">{</span>
+    <span class="s1">return new Promise</span><span class="s5">(</span><span class="s1">async </span><span class="s5">(</span><span class="s1">resolve</span><span class="s3">, </span><span class="s1">reject</span><span class="s5">) </span><span class="s3">=&gt; </span><span class="s4">{</span>
+        <span class="s1">let timer </span><span class="s3">= </span><span class="s1">null</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s3">!</span><span class="s1">isStressTest</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">timer </span><span class="s3">= </span><span class="s1">setTimeout</span><span class="s5">(() </span><span class="s3">=&gt; </span><span class="s4">{</span>
+                <span class="s1">reject</span><span class="s5">(</span><span class="s1">new Error</span><span class="s5">(</span><span class="s2">'execute timeout ' </span><span class="s3">+ </span><span class="s1">timeout </span><span class="s3">+ </span><span class="s2">'ms'</span><span class="s5">))</span><span class="s3">;</span>
+            <span class="s4">}</span><span class="s3">, </span><span class="s1">timeout</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s4">}</span>
+
+        <span class="s1">function done</span><span class="s5">() </span><span class="s4">{</span>
+            <span class="s1">timer </span><span class="s3">!== </span><span class="s1">null </span><span class="s3">? </span><span class="s1">clearTimeout</span><span class="s5">(</span><span class="s1">timer</span><span class="s5">) </span><span class="s3">: </span><span class="s1">null</span><span class="s3">;</span>
+            <span class="s1">resolve</span><span class="s5">()</span><span class="s3">;</span>
+        <span class="s4">}</span>
+
+        <span class="s1">try </span><span class="s4">{</span>
+            <span class="s1">await func</span><span class="s5">(</span><span class="s1">done</span><span class="s3">, </span><span class="s1">paramItem</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s4">} </span><span class="s1">catch </span><span class="s5">(</span><span class="s1">err</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">timer </span><span class="s3">!== </span><span class="s1">null </span><span class="s3">? </span><span class="s1">clearTimeout</span><span class="s5">(</span><span class="s1">timer</span><span class="s5">) </span><span class="s3">: </span><span class="s1">null</span><span class="s3">;</span>
+            <span class="s1">reject</span><span class="s5">(</span><span class="s1">err</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span><span class="s5">)</span><span class="s3">;</span>
+<span class="s4">}</span>
+
+<span class="s1">function processFunc</span><span class="s5">(</span><span class="s1">coreContext</span><span class="s3">, </span><span class="s1">func</span><span class="s5">) </span><span class="s4">{</span>
+    <span class="s1">let argNames </span><span class="s3">= </span><span class="s5">((</span><span class="s1">func </span><span class="s3">|| </span><span class="s2">''</span><span class="s5">)</span><span class="s3">.</span><span class="s1">toString</span><span class="s5">()</span>
+        <span class="s3">.</span><span class="s1">replace</span><span class="s5">(</span><span class="s2">/((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg</span><span class="s3">, </span><span class="s2">''</span><span class="s5">)</span>
+        <span class="s3">.</span><span class="s1">match</span><span class="s5">(</span><span class="s2">/^(function)?\s*[^\(]*\(\s*([^\)]*)\)/m</span><span class="s5">) </span><span class="s3">|| </span><span class="s5">[</span><span class="s2">''</span><span class="s3">, </span><span class="s2">''</span><span class="s3">, </span><span class="s2">''</span><span class="s5">])[</span><span class="s6">2</span><span class="s5">]</span>
+        <span class="s3">.</span><span class="s1">split</span><span class="s5">(</span><span class="s2">','</span><span class="s5">) </span><span class="s0">// split parameters</span>
+        <span class="s3">.</span><span class="s1">map</span><span class="s5">(</span><span class="s1">item </span><span class="s3">=&gt; </span><span class="s1">item</span><span class="s3">.</span><span class="s1">replace</span><span class="s5">(</span><span class="s2">/^\s*(_?)(.+?)\1\s*$/</span><span class="s3">, </span><span class="s1">name </span><span class="s3">=&gt; </span><span class="s1">name</span><span class="s3">.</span><span class="s1">split</span><span class="s5">(</span><span class="s2">'='</span><span class="s5">)[</span><span class="s6">0</span><span class="s5">]</span><span class="s3">.</span><span class="s1">trim</span><span class="s5">()))</span>
+        <span class="s3">.</span><span class="s1">filter</span><span class="s5">(</span><span class="s1">String</span><span class="s5">)</span><span class="s3">;</span>
+    <span class="s1">let funcLen </span><span class="s3">= </span><span class="s1">func</span><span class="s3">.</span><span class="s1">length</span><span class="s3">;</span>
+    <span class="s1">let processedFunc</span><span class="s3">;</span>
+    <span class="s1">const config </span><span class="s3">= </span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s2">'config'</span><span class="s5">)</span><span class="s3">;</span>
+    <span class="s1">config</span><span class="s3">.</span><span class="s1">setSupportAsync</span><span class="s5">(</span><span class="s1">true</span><span class="s5">)</span><span class="s3">;</span>
+    <span class="s1">const timeout </span><span class="s3">= + </span><span class="s5">(</span><span class="s1">config</span><span class="s3">.</span><span class="s1">timeout </span><span class="s3">=== </span><span class="s1">undefined </span><span class="s3">? </span><span class="s6">5000 </span><span class="s3">: </span><span class="s1">config</span><span class="s3">.</span><span class="s1">timeout</span><span class="s5">)</span><span class="s3">;</span>
+    <span class="s1">const isStressTest </span><span class="s3">= </span><span class="s5">(</span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getServices</span><span class="s5">(</span><span class="s2">'dataDriver'</span><span class="s5">) </span><span class="s3">!== </span><span class="s1">undefined </span><span class="s3">|| </span><span class="s1">config</span><span class="s3">.</span><span class="s1">getStress</span><span class="s5">() </span><span class="s3">&gt; </span><span class="s6">1</span><span class="s5">)</span><span class="s3">;</span>
+    <span class="s1">switch </span><span class="s5">(</span><span class="s1">funcLen</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">case </span><span class="s6">0</span><span class="s3">: </span><span class="s4">{</span>
+            <span class="s1">processedFunc </span><span class="s3">= </span><span class="s1">function </span><span class="s5">() </span><span class="s4">{</span>
+                <span class="s1">return getFuncWithArgsZero</span><span class="s5">(</span><span class="s1">func</span><span class="s3">, </span><span class="s1">timeout</span><span class="s3">, </span><span class="s1">isStressTest</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">}</span><span class="s3">;</span>
+            <span class="s1">break</span><span class="s3">;</span>
+        <span class="s4">}</span>
+        <span class="s1">case </span><span class="s6">1</span><span class="s3">: </span><span class="s4">{</span>
+            <span class="s1">if </span><span class="s5">(</span><span class="s1">argNames</span><span class="s5">[</span><span class="s6">0</span><span class="s5">] </span><span class="s3">=== </span><span class="s2">'data'</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">processedFunc </span><span class="s3">= </span><span class="s1">function </span><span class="s5">(</span><span class="s1">paramItem</span><span class="s5">) </span><span class="s4">{</span>
+                    <span class="s1">func</span><span class="s5">(</span><span class="s1">paramItem</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s4">}</span><span class="s3">;</span>
+            <span class="s4">} </span><span class="s1">else </span><span class="s4">{</span>
+                <span class="s1">processedFunc </span><span class="s3">= </span><span class="s1">function </span><span class="s5">() </span><span class="s4">{</span>
+                    <span class="s1">return getFuncWithArgsOne</span><span class="s5">(</span><span class="s1">func</span><span class="s3">, </span><span class="s1">timeout</span><span class="s3">, </span><span class="s1">isStressTest</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s4">}</span><span class="s3">;</span>
+            <span class="s4">}</span>
+            <span class="s1">break</span><span class="s3">;</span>
+        <span class="s4">}</span>
+        <span class="s1">default</span><span class="s3">: </span><span class="s4">{</span>
+            <span class="s1">processedFunc </span><span class="s3">= </span><span class="s1">function </span><span class="s5">(</span><span class="s1">paramItem</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">return getFuncWithArgsTwo</span><span class="s5">(</span><span class="s1">func</span><span class="s3">, </span><span class="s1">timeout</span><span class="s3">, </span><span class="s1">paramItem</span><span class="s3">, </span><span class="s1">isStressTest</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">}</span><span class="s3">;</span>
+            <span class="s1">break</span><span class="s3">;</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+    <span class="s1">return processedFunc</span><span class="s3">;</span>
+<span class="s4">}</span>
+
+<span class="s1">function secureRandomNumber</span><span class="s5">() </span><span class="s4">{</span>
+    <span class="s1">return crypto</span><span class="s3">.</span><span class="s1">randomBytes</span><span class="s5">(</span><span class="s6">8</span><span class="s5">)</span><span class="s3">.</span><span class="s1">readUInt32LE</span><span class="s5">() </span><span class="s3">/ </span><span class="s5">0xffffffff</span><span class="s3">;</span>
+<span class="s4">}</span>
+
+<span class="s1">class SuiteService </span><span class="s4">{</span>
+    <span class="s1">constructor</span><span class="s5">(</span><span class="s1">attr</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">id </span><span class="s3">= </span><span class="s1">attr</span><span class="s3">.</span><span class="s1">id</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">rootSuite </span><span class="s3">= </span><span class="s1">new SuiteService</span><span class="s3">.</span><span class="s1">Suite</span><span class="s5">(</span><span class="s4">{}</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">currentRunningSuite </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">rootSuite</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">suitesStack </span><span class="s3">= </span><span class="s5">[</span><span class="s1">this</span><span class="s3">.</span><span class="s1">rootSuite</span><span class="s5">]</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">describe</span><span class="s5">(</span><span class="s1">desc</span><span class="s3">, </span><span class="s1">func</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">const configService </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s2">'config'</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">configService</span><span class="s3">.</span><span class="s1">filterSuite</span><span class="s5">(</span><span class="s1">desc</span><span class="s5">)) </span><span class="s4">{</span>
+            <span class="s1">console</span><span class="s3">.</span><span class="s1">info</span><span class="s5">(</span><span class="s2">'filter suite :' </span><span class="s3">+ </span><span class="s1">desc</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s1">return</span><span class="s3">;</span>
+        <span class="s4">}</span>
+        <span class="s1">const suite </span><span class="s3">= </span><span class="s1">new SuiteService</span><span class="s3">.</span><span class="s1">Suite</span><span class="s5">(</span><span class="s4">{</span><span class="s1">description</span><span class="s3">: </span><span class="s1">desc</span><span class="s4">}</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">typeof this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getServices</span><span class="s5">(</span><span class="s2">'dataDriver'</span><span class="s5">) </span><span class="s3">!== </span><span class="s2">'undefined' </span><span class="s3">&amp;&amp; </span><span class="s1">configService</span><span class="s5">[</span><span class="s2">'dryRun'</span><span class="s5">] </span><span class="s3">!== </span><span class="s2">'true'</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">let suiteStress </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getServices</span><span class="s5">(</span><span class="s2">'dataDriver'</span><span class="s5">)</span><span class="s3">.</span><span class="s1">dataDriver</span><span class="s3">.</span><span class="s1">getSuiteStress</span><span class="s5">(</span><span class="s1">desc</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s1">for </span><span class="s5">(</span><span class="s1">let i </span><span class="s3">= </span><span class="s6">1</span><span class="s3">; </span><span class="s1">i </span><span class="s3">&lt; </span><span class="s1">suiteStress</span><span class="s3">; </span><span class="s1">i</span><span class="s3">++</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">this</span><span class="s3">.</span><span class="s1">currentRunningSuite</span><span class="s3">.</span><span class="s1">childSuites</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s1">suite</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">currentRunningSuite</span><span class="s3">.</span><span class="s1">childSuites</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s1">suite</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">currentRunningSuite </span><span class="s3">= </span><span class="s1">suite</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">suitesStack</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s1">suite</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">func</span><span class="s3">.</span><span class="s1">call</span><span class="s5">()</span><span class="s3">;</span>
+        <span class="s1">let childSuite </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">suitesStack</span><span class="s3">.</span><span class="s1">pop</span><span class="s5">()</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">suitesStack</span><span class="s3">.</span><span class="s1">length </span><span class="s3">=== </span><span class="s6">0</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">currentRunningSuite </span><span class="s3">= </span><span class="s1">childSuite</span><span class="s3">;</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">suitesStack</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s1">childSuite</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s4">}</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">suitesStack</span><span class="s3">.</span><span class="s1">length </span><span class="s3">&gt; </span><span class="s6">1</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">currentRunningSuite </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">suitesStack</span><span class="s3">.</span><span class="s1">pop</span><span class="s5">()</span><span class="s3">;</span>
+        <span class="s4">} </span><span class="s1">else </span><span class="s4">{</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">currentRunningSuite </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">suitesStack</span><span class="s3">.</span><span class="s1">pop</span><span class="s5">()</span><span class="s3">;</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">suitesStack</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">currentRunningSuite</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+
+    <span class="s1">beforeAll</span><span class="s5">(</span><span class="s1">func</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">currentRunningSuite</span><span class="s3">.</span><span class="s1">beforeAll</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s1">processFunc</span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s3">, </span><span class="s1">func</span><span class="s5">))</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">beforeEach</span><span class="s5">(</span><span class="s1">func</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">currentRunningSuite</span><span class="s3">.</span><span class="s1">beforeEach</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s1">processFunc</span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s3">, </span><span class="s1">func</span><span class="s5">))</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">afterAll</span><span class="s5">(</span><span class="s1">func</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">currentRunningSuite</span><span class="s3">.</span><span class="s1">afterAll</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s1">processFunc</span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s3">, </span><span class="s1">func</span><span class="s5">))</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">afterEach</span><span class="s5">(</span><span class="s1">func</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">currentRunningSuite</span><span class="s3">.</span><span class="s1">afterEach</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s1">processFunc</span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s3">, </span><span class="s1">func</span><span class="s5">))</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">getCurrentRunningSuite</span><span class="s5">() </span><span class="s4">{</span>
+        <span class="s1">return this</span><span class="s3">.</span><span class="s1">currentRunningSuite</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">setCurrentRunningSuite</span><span class="s5">(</span><span class="s1">suite</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">currentRunningSuite </span><span class="s3">= </span><span class="s1">suite</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">traversalResults</span><span class="s5">(</span><span class="s1">suite</span><span class="s3">, </span><span class="s1">obj</span><span class="s3">, </span><span class="s1">breakOnError</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">suite</span><span class="s3">.</span><span class="s1">childSuites</span><span class="s3">.</span><span class="s1">length </span><span class="s3">=== </span><span class="s6">0 </span><span class="s3">&amp;&amp; </span><span class="s1">suite</span><span class="s3">.</span><span class="s1">specs</span><span class="s3">.</span><span class="s1">length </span><span class="s3">=== </span><span class="s6">0</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">return obj</span><span class="s3">;</span>
+        <span class="s4">}</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">suite</span><span class="s3">.</span><span class="s1">specs</span><span class="s3">.</span><span class="s1">length </span><span class="s3">&gt; </span><span class="s6">0</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">for </span><span class="s5">(</span><span class="s1">const itItem of suite</span><span class="s3">.</span><span class="s1">specs</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">obj</span><span class="s3">.</span><span class="s1">total</span><span class="s3">++;</span>
+                <span class="s1">if </span><span class="s5">(</span><span class="s1">breakOnError </span><span class="s3">&amp;&amp; </span><span class="s5">(</span><span class="s1">obj</span><span class="s3">.</span><span class="s1">error </span><span class="s3">&gt; </span><span class="s6">0 </span><span class="s3">|| </span><span class="s1">obj</span><span class="s3">.</span><span class="s1">failure </span><span class="s3">&gt; </span><span class="s6">0</span><span class="s5">)) </span><span class="s4">{ </span><span class="s0">// breakOnError模式</span>
+                    <span class="s1">continue</span><span class="s3">;</span>
+                <span class="s4">}</span>
+                <span class="s1">if </span><span class="s5">(</span><span class="s1">itItem</span><span class="s3">.</span><span class="s1">error</span><span class="s5">) </span><span class="s4">{</span>
+                    <span class="s1">obj</span><span class="s3">.</span><span class="s1">error</span><span class="s3">++;</span>
+                <span class="s4">} </span><span class="s1">else if </span><span class="s5">(</span><span class="s1">itItem</span><span class="s3">.</span><span class="s1">result</span><span class="s3">.</span><span class="s1">failExpects</span><span class="s3">.</span><span class="s1">length </span><span class="s3">&gt; </span><span class="s6">0</span><span class="s5">) </span><span class="s4">{</span>
+                    <span class="s1">obj</span><span class="s3">.</span><span class="s1">failure</span><span class="s3">++;</span>
+                <span class="s4">} </span><span class="s1">else if </span><span class="s5">(</span><span class="s1">itItem</span><span class="s3">.</span><span class="s1">result</span><span class="s3">.</span><span class="s1">pass </span><span class="s3">=== </span><span class="s1">true</span><span class="s5">) </span><span class="s4">{</span>
+                    <span class="s1">obj</span><span class="s3">.</span><span class="s1">pass</span><span class="s3">++;</span>
+                <span class="s4">}</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span>
+
+        <span class="s1">obj</span><span class="s3">.</span><span class="s1">duration </span><span class="s3">+= </span><span class="s1">suite</span><span class="s3">.</span><span class="s1">duration</span><span class="s3">;</span>
+
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">suite</span><span class="s3">.</span><span class="s1">childSuites</span><span class="s3">.</span><span class="s1">length </span><span class="s3">&gt; </span><span class="s6">0</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">for </span><span class="s5">(</span><span class="s1">const suiteItem of suite</span><span class="s3">.</span><span class="s1">childSuites</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">this</span><span class="s3">.</span><span class="s1">traversalResults</span><span class="s5">(</span><span class="s1">suiteItem</span><span class="s3">, </span><span class="s1">obj</span><span class="s3">, </span><span class="s1">breakOnError</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+
+    <span class="s1">getSummary</span><span class="s5">() </span><span class="s4">{</span>
+        <span class="s1">let suiteService </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s2">'suite'</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">let rootSuite </span><span class="s3">= </span><span class="s1">suiteService</span><span class="s3">.</span><span class="s1">rootSuite</span><span class="s3">;</span>
+        <span class="s1">const specService </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s2">'spec'</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">const configService </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s2">'config'</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">let breakOnError </span><span class="s3">= </span><span class="s1">configService</span><span class="s3">.</span><span class="s1">isBreakOnError</span><span class="s5">()</span><span class="s3">;</span>
+        <span class="s1">let isError </span><span class="s3">= </span><span class="s1">specService</span><span class="s3">.</span><span class="s1">getStatus</span><span class="s5">()</span><span class="s3">;</span>
+        <span class="s1">let isBreaKOnError </span><span class="s3">= </span><span class="s1">breakOnError </span><span class="s3">&amp;&amp; </span><span class="s1">isError</span><span class="s3">;</span>
+        <span class="s1">let obj </span><span class="s3">= </span><span class="s4">{</span><span class="s1">total</span><span class="s3">: </span><span class="s6">0</span><span class="s3">, </span><span class="s1">failure</span><span class="s3">: </span><span class="s6">0</span><span class="s3">, </span><span class="s1">error</span><span class="s3">: </span><span class="s6">0</span><span class="s3">, </span><span class="s1">pass</span><span class="s3">: </span><span class="s6">0</span><span class="s3">, </span><span class="s1">ignore</span><span class="s3">: </span><span class="s6">0</span><span class="s3">, </span><span class="s1">duration</span><span class="s3">: </span><span class="s6">0</span><span class="s4">}</span><span class="s3">;</span>
+        <span class="s1">for </span><span class="s5">(</span><span class="s1">const suiteItem of rootSuite</span><span class="s3">.</span><span class="s1">childSuites</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">traversalResults</span><span class="s5">(</span><span class="s1">suiteItem</span><span class="s3">, </span><span class="s1">obj</span><span class="s3">, </span><span class="s1">isBreaKOnError</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s4">}</span>
+        <span class="s1">obj</span><span class="s3">.</span><span class="s1">ignore </span><span class="s3">= </span><span class="s1">obj</span><span class="s3">.</span><span class="s1">total </span><span class="s3">- </span><span class="s1">obj</span><span class="s3">.</span><span class="s1">pass </span><span class="s3">- </span><span class="s1">obj</span><span class="s3">.</span><span class="s1">failure </span><span class="s3">- </span><span class="s1">obj</span><span class="s3">.</span><span class="s1">error</span><span class="s3">;</span>
+        <span class="s1">return obj</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">init</span><span class="s5">(</span><span class="s1">coreContext</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext </span><span class="s3">= </span><span class="s1">coreContext</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">traversalSuites</span><span class="s5">(</span><span class="s1">suite</span><span class="s3">, </span><span class="s1">obj</span><span class="s3">, </span><span class="s1">configService</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">suite</span><span class="s3">.</span><span class="s1">childSuites</span><span class="s3">.</span><span class="s1">length </span><span class="s3">=== </span><span class="s6">0 </span><span class="s3">&amp;&amp; </span><span class="s1">suite</span><span class="s3">.</span><span class="s1">specs</span><span class="s3">.</span><span class="s1">length </span><span class="s3">=== </span><span class="s6">0</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">return </span><span class="s5">[]</span><span class="s3">;</span>
+        <span class="s4">}</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">suite</span><span class="s3">.</span><span class="s1">specs</span><span class="s3">.</span><span class="s1">length </span><span class="s3">&gt; </span><span class="s6">0</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">let itArray </span><span class="s3">= </span><span class="s5">[]</span><span class="s3">;</span>
+            <span class="s1">for </span><span class="s5">(</span><span class="s1">const itItem of suite</span><span class="s5">[</span><span class="s2">'specs'</span><span class="s5">]) </span><span class="s4">{</span>
+                <span class="s1">if </span><span class="s5">(</span><span class="s3">!</span><span class="s1">configService</span><span class="s3">.</span><span class="s1">filterDesc</span><span class="s5">(</span><span class="s1">suite</span><span class="s3">.</span><span class="s1">description</span><span class="s3">, </span><span class="s1">itItem</span><span class="s3">.</span><span class="s1">description</span><span class="s3">, </span><span class="s1">itItem</span><span class="s3">.</span><span class="s1">fi</span><span class="s3">, </span><span class="s1">null</span><span class="s5">)) </span><span class="s4">{</span>
+                    <span class="s1">itArray</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s4">{</span><span class="s2">'itName'</span><span class="s3">: </span><span class="s1">itItem</span><span class="s3">.</span><span class="s1">description</span><span class="s4">}</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s4">}</span>
+            <span class="s4">}</span>
+            <span class="s1">obj</span><span class="s5">[</span><span class="s1">suite</span><span class="s3">.</span><span class="s1">description</span><span class="s5">] </span><span class="s3">= </span><span class="s1">itArray</span><span class="s3">;</span>
+        <span class="s4">}</span>
+
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">suite</span><span class="s3">.</span><span class="s1">childSuites</span><span class="s3">.</span><span class="s1">length </span><span class="s3">&gt; </span><span class="s6">0</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">let suiteArray </span><span class="s3">= </span><span class="s5">[]</span><span class="s3">;</span>
+            <span class="s1">for </span><span class="s5">(</span><span class="s1">const suiteItem of suite</span><span class="s3">.</span><span class="s1">childSuites</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">let suiteObj </span><span class="s3">= </span><span class="s4">{}</span><span class="s3">;</span>
+                <span class="s1">this</span><span class="s3">.</span><span class="s1">traversalSuites</span><span class="s5">(</span><span class="s1">suiteItem</span><span class="s3">, </span><span class="s1">suiteObj</span><span class="s3">, </span><span class="s1">configService</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s1">if </span><span class="s5">(</span><span class="s3">!</span><span class="s1">configService</span><span class="s3">.</span><span class="s1">filterSuite</span><span class="s5">(</span><span class="s1">suiteItem</span><span class="s3">.</span><span class="s1">description</span><span class="s5">)) </span><span class="s4">{</span>
+                    <span class="s1">suiteArray</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s1">suiteObj</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s4">}</span>
+            <span class="s4">}</span>
+            <span class="s1">obj</span><span class="s3">.</span><span class="s1">suites </span><span class="s3">= </span><span class="s1">suiteArray</span><span class="s3">;</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+
+    <span class="s1">async dryRun</span><span class="s5">(</span><span class="s1">abilityDelegator</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">const configService </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s2">'config'</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">let testSuitesObj </span><span class="s3">= </span><span class="s4">{}</span><span class="s3">;</span>
+        <span class="s1">let suitesArray </span><span class="s3">= </span><span class="s5">[]</span><span class="s3">;</span>
+        <span class="s1">for </span><span class="s5">(</span><span class="s1">const suiteItem of this</span><span class="s3">.</span><span class="s1">rootSuite</span><span class="s3">.</span><span class="s1">childSuites</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">let obj </span><span class="s3">= </span><span class="s4">{}</span><span class="s3">;</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">traversalSuites</span><span class="s5">(</span><span class="s1">suiteItem</span><span class="s3">, </span><span class="s1">obj</span><span class="s3">, </span><span class="s1">configService</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s1">if </span><span class="s5">(</span><span class="s3">!</span><span class="s1">configService</span><span class="s3">.</span><span class="s1">filterSuite</span><span class="s5">(</span><span class="s1">suiteItem</span><span class="s3">.</span><span class="s1">description</span><span class="s5">)) </span><span class="s4">{</span>
+                <span class="s1">suitesArray</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s1">obj</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span>
+        <span class="s1">testSuitesObj</span><span class="s5">[</span><span class="s2">'suites'</span><span class="s5">] </span><span class="s3">= </span><span class="s1">suitesArray</span><span class="s3">;</span>
+
+        <span class="s1">let strJson </span><span class="s3">= </span><span class="s1">JSON</span><span class="s3">.</span><span class="s1">stringify</span><span class="s5">(</span><span class="s1">testSuitesObj</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">let strLen </span><span class="s3">= </span><span class="s1">strJson</span><span class="s3">.</span><span class="s1">length</span><span class="s3">;</span>
+        <span class="s1">let maxLen </span><span class="s3">= </span><span class="s6">500</span><span class="s3">;</span>
+        <span class="s1">let maxCount </span><span class="s3">= </span><span class="s1">Math</span><span class="s3">.</span><span class="s1">floor</span><span class="s5">(</span><span class="s1">strLen </span><span class="s3">/ </span><span class="s1">maxLen</span><span class="s5">)</span><span class="s3">;</span>
+
+        <span class="s1">for </span><span class="s5">(</span><span class="s1">let count </span><span class="s3">= </span><span class="s6">0</span><span class="s3">; </span><span class="s1">count </span><span class="s3">&lt;= </span><span class="s1">maxCount</span><span class="s3">; </span><span class="s1">count</span><span class="s3">++</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">await SysTestKit</span><span class="s3">.</span><span class="s1">print</span><span class="s5">(</span><span class="s1">strJson</span><span class="s3">.</span><span class="s1">substring</span><span class="s5">(</span><span class="s1">count </span><span class="s3">* </span><span class="s1">maxLen</span><span class="s3">, </span><span class="s5">(</span><span class="s1">count </span><span class="s3">+ </span><span class="s6">1</span><span class="s5">) </span><span class="s3">* </span><span class="s1">maxLen</span><span class="s5">))</span><span class="s3">;</span>
+        <span class="s4">}</span>
+        <span class="s1">console</span><span class="s3">.</span><span class="s1">info</span><span class="s5">(</span><span class="s2">'dryRun print success'</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">abilityDelegator</span><span class="s3">.</span><span class="s1">finishTest</span><span class="s5">(</span><span class="s2">'dry run finished!!!'</span><span class="s3">, </span><span class="s6">0</span><span class="s3">, </span><span class="s5">() </span><span class="s3">=&gt; </span><span class="s4">{ }</span><span class="s5">)</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">execute</span><span class="s5">() </span><span class="s4">{</span>
+        <span class="s1">const configService </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s2">'config'</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">configService</span><span class="s3">.</span><span class="s1">filterValid</span><span class="s3">.</span><span class="s1">length </span><span class="s3">!== </span><span class="s6">0</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">fireEvents</span><span class="s5">(</span><span class="s2">'task'</span><span class="s3">, </span><span class="s2">'incorrectFormat'</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s1">return</span><span class="s3">;</span>
+        <span class="s4">}</span>
+
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">configService</span><span class="s3">.</span><span class="s1">isRandom</span><span class="s5">() </span><span class="s3">&amp;&amp; </span><span class="s1">this</span><span class="s3">.</span><span class="s1">rootSuite</span><span class="s3">.</span><span class="s1">childSuites</span><span class="s3">.</span><span class="s1">length </span><span class="s3">&gt; </span><span class="s6">0</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">rootSuite</span><span class="s3">.</span><span class="s1">childSuites</span><span class="s3">.</span><span class="s1">sort</span><span class="s5">(</span><span class="s1">function </span><span class="s5">() </span><span class="s4">{</span>
+                <span class="s1">return Math</span><span class="s3">.</span><span class="s1">random</span><span class="s5">()</span><span class="s3">.</span><span class="s1">toFixed</span><span class="s5">(</span><span class="s6">1</span><span class="s5">) </span><span class="s3">&gt; </span><span class="s6">0.5 </span><span class="s3">? -</span><span class="s6">1 </span><span class="s3">: </span><span class="s6">1</span><span class="s3">;</span>
+            <span class="s4">}</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">currentRunningSuite </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">rootSuite</span><span class="s3">.</span><span class="s1">childSuites</span><span class="s5">[</span><span class="s6">0</span><span class="s5">]</span><span class="s3">;</span>
+        <span class="s4">}</span>
+
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">configService</span><span class="s3">.</span><span class="s1">isSupportAsync</span><span class="s5">()) </span><span class="s4">{</span>
+            <span class="s1">let asyncExecute </span><span class="s3">= </span><span class="s1">async </span><span class="s5">() </span><span class="s3">=&gt; </span><span class="s4">{</span>
+                <span class="s1">await this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">fireEvents</span><span class="s5">(</span><span class="s2">'task'</span><span class="s3">, </span><span class="s2">'taskStart'</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s1">await this</span><span class="s3">.</span><span class="s1">rootSuite</span><span class="s3">.</span><span class="s1">asyncRun</span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">}</span><span class="s3">;</span>
+            <span class="s1">asyncExecute</span><span class="s5">()</span><span class="s3">.</span><span class="s1">then</span><span class="s5">(</span><span class="s1">async </span><span class="s5">() </span><span class="s3">=&gt; </span><span class="s4">{</span>
+                <span class="s1">await this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">fireEvents</span><span class="s5">(</span><span class="s2">'task'</span><span class="s3">, </span><span class="s2">'taskDone'</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">}</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s4">} </span><span class="s1">else </span><span class="s4">{</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">fireEvents</span><span class="s5">(</span><span class="s2">'task'</span><span class="s3">, </span><span class="s2">'taskStart'</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">rootSuite</span><span class="s3">.</span><span class="s1">run</span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">fireEvents</span><span class="s5">(</span><span class="s2">'task'</span><span class="s3">, </span><span class="s2">'taskDone'</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+
+    <span class="s1">apis</span><span class="s5">() </span><span class="s4">{</span>
+        <span class="s1">const _this </span><span class="s3">= </span><span class="s1">this</span><span class="s3">;</span>
+        <span class="s1">return </span><span class="s4">{</span>
+            <span class="s1">describe</span><span class="s3">: </span><span class="s1">function </span><span class="s5">(</span><span class="s1">desc</span><span class="s3">, </span><span class="s1">func</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">return _this</span><span class="s3">.</span><span class="s1">describe</span><span class="s5">(</span><span class="s1">desc</span><span class="s3">, </span><span class="s1">func</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">}</span><span class="s3">,</span>
+            <span class="s1">beforeAll</span><span class="s3">: </span><span class="s1">function </span><span class="s5">(</span><span class="s1">func</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">return _this</span><span class="s3">.</span><span class="s1">beforeAll</span><span class="s5">(</span><span class="s1">func</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">}</span><span class="s3">,</span>
+            <span class="s1">beforeEach</span><span class="s3">: </span><span class="s1">function </span><span class="s5">(</span><span class="s1">func</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">return _this</span><span class="s3">.</span><span class="s1">beforeEach</span><span class="s5">(</span><span class="s1">func</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">}</span><span class="s3">,</span>
+            <span class="s1">afterAll</span><span class="s3">: </span><span class="s1">function </span><span class="s5">(</span><span class="s1">func</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">return _this</span><span class="s3">.</span><span class="s1">afterAll</span><span class="s5">(</span><span class="s1">func</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">}</span><span class="s3">,</span>
+            <span class="s1">afterEach</span><span class="s3">: </span><span class="s1">function </span><span class="s5">(</span><span class="s1">func</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">return _this</span><span class="s3">.</span><span class="s1">afterEach</span><span class="s5">(</span><span class="s1">func</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span><span class="s3">;</span>
+    <span class="s4">}</span>
+<span class="s4">}</span>
+
+<span class="s1">SuiteService</span><span class="s3">.</span><span class="s1">Suite </span><span class="s3">= </span><span class="s1">class </span><span class="s4">{</span>
+    <span class="s1">constructor</span><span class="s5">(</span><span class="s1">attrs</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">description </span><span class="s3">= </span><span class="s1">attrs</span><span class="s3">.</span><span class="s1">description </span><span class="s3">|| </span><span class="s2">''</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">childSuites </span><span class="s3">= </span><span class="s5">[]</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">specs </span><span class="s3">= </span><span class="s5">[]</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">beforeAll </span><span class="s3">= </span><span class="s5">[]</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">afterAll </span><span class="s3">= </span><span class="s5">[]</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">beforeEach </span><span class="s3">= </span><span class="s5">[]</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">afterEach </span><span class="s3">= </span><span class="s5">[]</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">duration </span><span class="s3">= </span><span class="s6">0</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">pushSpec</span><span class="s5">(</span><span class="s1">spec</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">specs</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s1">spec</span><span class="s5">)</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">removeSpec</span><span class="s5">(</span><span class="s1">desc</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">specs </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">specs</span><span class="s3">.</span><span class="s1">filter</span><span class="s5">((</span><span class="s1">item</span><span class="s3">, </span><span class="s1">index</span><span class="s5">) </span><span class="s3">=&gt; </span><span class="s4">{</span>
+            <span class="s1">return item</span><span class="s3">.</span><span class="s1">description </span><span class="s3">!== </span><span class="s1">desc</span><span class="s3">;</span>
+        <span class="s4">}</span><span class="s5">)</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">getSpecsNum</span><span class="s5">() </span><span class="s4">{</span>
+        <span class="s1">return this</span><span class="s3">.</span><span class="s1">specs</span><span class="s3">.</span><span class="s1">length</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">isRun</span><span class="s5">(</span><span class="s1">coreContext</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">const configService </span><span class="s3">= </span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s2">'config'</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">const suiteService </span><span class="s3">= </span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s2">'suite'</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">const specService </span><span class="s3">= </span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s2">'spec'</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">let breakOnError </span><span class="s3">= </span><span class="s1">configService</span><span class="s3">.</span><span class="s1">isBreakOnError</span><span class="s5">()</span><span class="s3">;</span>
+        <span class="s1">let isError </span><span class="s3">= </span><span class="s1">specService</span><span class="s3">.</span><span class="s1">getStatus</span><span class="s5">()</span><span class="s3">;</span>
+        <span class="s1">return breakOnError </span><span class="s3">&amp;&amp; </span><span class="s1">isError</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">run</span><span class="s5">(</span><span class="s1">coreContext</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">const suiteService </span><span class="s3">= </span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s2">'suite'</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">suiteService</span><span class="s3">.</span><span class="s1">setCurrentRunningSuite</span><span class="s5">(</span><span class="s1">this</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">description </span><span class="s3">!== </span><span class="s2">''</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">coreContext</span><span class="s3">.</span><span class="s1">fireEvents</span><span class="s5">(</span><span class="s2">'suite'</span><span class="s3">, </span><span class="s2">'suiteStart'</span><span class="s3">, </span><span class="s1">this</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s4">}</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">runHookFunc</span><span class="s5">(</span><span class="s2">'beforeAll'</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">specs</span><span class="s3">.</span><span class="s1">length </span><span class="s3">&gt; </span><span class="s6">0</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">const configService </span><span class="s3">= </span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s2">'config'</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s1">if </span><span class="s5">(</span><span class="s1">configService</span><span class="s3">.</span><span class="s1">isRandom</span><span class="s5">()) </span><span class="s4">{</span>
+                <span class="s1">this</span><span class="s3">.</span><span class="s1">specs</span><span class="s3">.</span><span class="s1">sort</span><span class="s5">(</span><span class="s1">function </span><span class="s5">() </span><span class="s4">{</span>
+                    <span class="s1">return Math</span><span class="s3">.</span><span class="s1">random</span><span class="s5">()</span><span class="s3">.</span><span class="s1">toFixed</span><span class="s5">(</span><span class="s6">1</span><span class="s5">) </span><span class="s3">&gt; </span><span class="s6">0.5 </span><span class="s3">? -</span><span class="s6">1 </span><span class="s3">: </span><span class="s6">1</span><span class="s3">;</span>
+                <span class="s4">}</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">}</span>
+            <span class="s1">for </span><span class="s5">(</span><span class="s1">let spec in this</span><span class="s3">.</span><span class="s1">specs</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">let isBreakOnError </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">isRun</span><span class="s5">(</span><span class="s1">coreContext</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s1">if </span><span class="s5">(</span><span class="s1">isBreakOnError</span><span class="s5">) </span><span class="s4">{</span>
+                    <span class="s1">break</span><span class="s3">;</span>
+                <span class="s4">}</span>
+                <span class="s1">this</span><span class="s3">.</span><span class="s1">runHookFunc</span><span class="s5">(</span><span class="s2">'beforeEach'</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s1">spec</span><span class="s3">.</span><span class="s1">run</span><span class="s5">(</span><span class="s1">coreContext</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s1">this</span><span class="s3">.</span><span class="s1">runHookFunc</span><span class="s5">(</span><span class="s2">'afterEach'</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">childSuites</span><span class="s3">.</span><span class="s1">length </span><span class="s3">&gt; </span><span class="s6">0</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">for </span><span class="s5">(</span><span class="s1">let suite in this</span><span class="s3">.</span><span class="s1">childSuites</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">let isBreakOnError </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">isRun</span><span class="s5">(</span><span class="s1">coreContext</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s1">if </span><span class="s5">(</span><span class="s1">isBreakOnError</span><span class="s5">) </span><span class="s4">{</span>
+                    <span class="s1">break</span><span class="s3">;</span>
+                <span class="s4">}</span>
+                <span class="s1">suite</span><span class="s3">.</span><span class="s1">run</span><span class="s5">(</span><span class="s1">coreContext</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s1">suiteService</span><span class="s3">.</span><span class="s1">setCurrentRunningSuite</span><span class="s5">(</span><span class="s1">suite</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">runHookFunc</span><span class="s5">(</span><span class="s2">'afterAll'</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">description </span><span class="s3">!== </span><span class="s2">''</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">coreContext</span><span class="s3">.</span><span class="s1">fireEvents</span><span class="s5">(</span><span class="s2">'suite'</span><span class="s3">, </span><span class="s2">'suiteDone'</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+
+    <span class="s1">async asyncRun</span><span class="s5">(</span><span class="s1">coreContext</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">const suiteService </span><span class="s3">= </span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s2">'suite'</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">suiteService</span><span class="s3">.</span><span class="s1">setCurrentRunningSuite</span><span class="s5">(</span><span class="s1">this</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">suiteService</span><span class="s3">.</span><span class="s1">suitesStack</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s1">this</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">description </span><span class="s3">!== </span><span class="s2">''</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">await coreContext</span><span class="s3">.</span><span class="s1">fireEvents</span><span class="s5">(</span><span class="s2">'suite'</span><span class="s3">, </span><span class="s2">'suiteStart'</span><span class="s3">, </span><span class="s1">this</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s4">}</span>
+        <span class="s1">await this</span><span class="s3">.</span><span class="s1">runAsyncHookFunc</span><span class="s5">(</span><span class="s2">'beforeAll'</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">specs</span><span class="s3">.</span><span class="s1">length </span><span class="s3">&gt; </span><span class="s6">0</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">const configService </span><span class="s3">= </span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s2">'config'</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s1">if </span><span class="s5">(</span><span class="s1">configService</span><span class="s3">.</span><span class="s1">isRandom</span><span class="s5">()) </span><span class="s4">{</span>
+                <span class="s1">this</span><span class="s3">.</span><span class="s1">specs</span><span class="s3">.</span><span class="s1">sort</span><span class="s5">(</span><span class="s1">function </span><span class="s5">() </span><span class="s4">{</span>
+                    <span class="s1">return Math</span><span class="s3">.</span><span class="s1">random</span><span class="s5">()</span><span class="s3">.</span><span class="s1">toFixed</span><span class="s5">(</span><span class="s6">1</span><span class="s5">) </span><span class="s3">&gt; </span><span class="s6">0.5 </span><span class="s3">? -</span><span class="s6">1 </span><span class="s3">: </span><span class="s6">1</span><span class="s3">;</span>
+                <span class="s4">}</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">}</span>
+            <span class="s1">for </span><span class="s5">(</span><span class="s1">let i </span><span class="s3">= </span><span class="s6">0</span><span class="s3">; </span><span class="s1">i </span><span class="s3">&lt; </span><span class="s1">this</span><span class="s3">.</span><span class="s1">specs</span><span class="s3">.</span><span class="s1">length</span><span class="s3">; </span><span class="s1">i</span><span class="s3">++</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s0">// 遇错即停模式,发现用例有问题，直接返回，不在执行后面的it</span>
+                <span class="s1">let isBreakOnError </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">isRun</span><span class="s5">(</span><span class="s1">coreContext</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s1">if </span><span class="s5">(</span><span class="s1">isBreakOnError</span><span class="s5">) </span><span class="s4">{</span>
+                    <span class="s1">console</span><span class="s3">.</span><span class="s1">log</span><span class="s5">(</span><span class="s2">&quot;break description :&quot; </span><span class="s3">+ </span><span class="s1">this</span><span class="s3">.</span><span class="s1">description</span><span class="s5">)</span><span class="s3">;</span>
+                    <span class="s1">break</span><span class="s3">;</span>
+                <span class="s4">}</span>
+                <span class="s1">await this</span><span class="s3">.</span><span class="s1">runAsyncHookFunc</span><span class="s5">(</span><span class="s2">'beforeEach'</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s1">await this</span><span class="s3">.</span><span class="s1">specs</span><span class="s5">[</span><span class="s1">i</span><span class="s5">]</span><span class="s3">.</span><span class="s1">asyncRun</span><span class="s5">(</span><span class="s1">coreContext</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s1">await this</span><span class="s3">.</span><span class="s1">runAsyncHookFunc</span><span class="s5">(</span><span class="s2">'afterEach'</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span>
+
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">childSuites</span><span class="s3">.</span><span class="s1">length </span><span class="s3">&gt; </span><span class="s6">0</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">for </span><span class="s5">(</span><span class="s1">let i </span><span class="s3">= </span><span class="s6">0</span><span class="s3">; </span><span class="s1">i </span><span class="s3">&lt; </span><span class="s1">this</span><span class="s3">.</span><span class="s1">childSuites</span><span class="s3">.</span><span class="s1">length</span><span class="s3">; </span><span class="s1">i</span><span class="s3">++</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s0">// 遇错即停模式, 发现用例有问题，直接返回，不在执行后面的description</span>
+                <span class="s1">let isBreakOnError </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">isRun</span><span class="s5">(</span><span class="s1">coreContext</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s1">if </span><span class="s5">(</span><span class="s1">isBreakOnError</span><span class="s5">) </span><span class="s4">{</span>
+                    <span class="s1">console</span><span class="s3">.</span><span class="s1">log</span><span class="s5">(</span><span class="s2">&quot;break description :&quot; </span><span class="s3">+ </span><span class="s1">this</span><span class="s3">.</span><span class="s1">description</span><span class="s5">)</span><span class="s3">;</span>
+                    <span class="s1">break</span><span class="s3">;</span>
+                <span class="s4">}</span>
+                <span class="s1">await this</span><span class="s3">.</span><span class="s1">childSuites</span><span class="s5">[</span><span class="s1">i</span><span class="s5">]</span><span class="s3">.</span><span class="s1">asyncRun</span><span class="s5">(</span><span class="s1">coreContext</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span>
+
+        <span class="s1">await this</span><span class="s3">.</span><span class="s1">runAsyncHookFunc</span><span class="s5">(</span><span class="s2">'afterAll'</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">description </span><span class="s3">!== </span><span class="s2">''</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">await coreContext</span><span class="s3">.</span><span class="s1">fireEvents</span><span class="s5">(</span><span class="s2">'suite'</span><span class="s3">, </span><span class="s2">'suiteDone'</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s1">let childSuite </span><span class="s3">= </span><span class="s1">suiteService</span><span class="s3">.</span><span class="s1">suitesStack</span><span class="s3">.</span><span class="s1">pop</span><span class="s5">()</span><span class="s3">;</span>
+            <span class="s1">if </span><span class="s5">(</span><span class="s1">suiteService</span><span class="s3">.</span><span class="s1">suitesStack</span><span class="s3">.</span><span class="s1">length </span><span class="s3">=== </span><span class="s6">0</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">suiteService</span><span class="s3">.</span><span class="s1">suitesStack</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s1">childSuite</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">}</span>
+            <span class="s1">if </span><span class="s5">(</span><span class="s1">suiteService</span><span class="s3">.</span><span class="s1">suitesStack</span><span class="s3">.</span><span class="s1">length </span><span class="s3">&gt; </span><span class="s6">1</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">suiteService</span><span class="s3">.</span><span class="s1">setCurrentRunningSuite</span><span class="s5">(</span><span class="s1">suiteService</span><span class="s3">.</span><span class="s1">suitesStack</span><span class="s3">.</span><span class="s1">pop</span><span class="s5">())</span><span class="s3">;</span>
+            <span class="s4">} </span><span class="s1">else </span><span class="s4">{</span>
+                <span class="s1">let currentRunningSuite </span><span class="s3">= </span><span class="s1">suiteService</span><span class="s3">.</span><span class="s1">suitesStack</span><span class="s3">.</span><span class="s1">pop</span><span class="s5">()</span><span class="s3">;</span>
+                <span class="s1">suiteService</span><span class="s3">.</span><span class="s1">setCurrentRunningSuite</span><span class="s5">(</span><span class="s1">currentRunningSuite</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s1">suiteService</span><span class="s3">.</span><span class="s1">suitesStack</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s1">currentRunningSuite</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+
+    <span class="s1">runHookFunc</span><span class="s5">(</span><span class="s1">hookName</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">this</span><span class="s5">[</span><span class="s1">hookName</span><span class="s5">] </span><span class="s3">&amp;&amp; </span><span class="s1">this</span><span class="s5">[</span><span class="s1">hookName</span><span class="s5">]</span><span class="s3">.</span><span class="s1">length </span><span class="s3">&gt; </span><span class="s6">0</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">this</span><span class="s5">[</span><span class="s1">hookName</span><span class="s5">]</span><span class="s3">.</span><span class="s1">forEach</span><span class="s5">(</span><span class="s1">func </span><span class="s3">=&gt; </span><span class="s4">{</span>
+                <span class="s1">try </span><span class="s4">{</span>
+                    <span class="s1">func</span><span class="s5">()</span><span class="s3">;</span>
+                <span class="s4">} </span><span class="s1">catch </span><span class="s5">(</span><span class="s1">e</span><span class="s5">) </span><span class="s4">{</span>
+                    <span class="s1">console</span><span class="s3">.</span><span class="s1">error</span><span class="s5">(</span><span class="s1">e</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s4">}</span>
+            <span class="s4">}</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+
+    <span class="s1">runAsyncHookFunc</span><span class="s5">(</span><span class="s1">hookName</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">this</span><span class="s5">[</span><span class="s1">hookName</span><span class="s5">] </span><span class="s3">&amp;&amp; </span><span class="s1">this</span><span class="s5">[</span><span class="s1">hookName</span><span class="s5">]</span><span class="s3">.</span><span class="s1">length </span><span class="s3">&gt; </span><span class="s6">0</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">return new Promise</span><span class="s5">(</span><span class="s1">async resolve </span><span class="s3">=&gt; </span><span class="s4">{</span>
+                <span class="s1">for </span><span class="s5">(</span><span class="s1">let i </span><span class="s3">= </span><span class="s6">0</span><span class="s3">; </span><span class="s1">i </span><span class="s3">&lt; </span><span class="s1">this</span><span class="s5">[</span><span class="s1">hookName</span><span class="s5">]</span><span class="s3">.</span><span class="s1">length</span><span class="s3">; </span><span class="s1">i</span><span class="s3">++</span><span class="s5">) </span><span class="s4">{</span>
+                    <span class="s1">try </span><span class="s4">{</span>
+                        <span class="s1">await this</span><span class="s5">[</span><span class="s1">hookName</span><span class="s5">][</span><span class="s1">i</span><span class="s5">]()</span><span class="s3">;</span>
+                    <span class="s4">} </span><span class="s1">catch </span><span class="s5">(</span><span class="s1">e</span><span class="s5">) </span><span class="s4">{</span>
+                        <span class="s1">console</span><span class="s3">.</span><span class="s1">error</span><span class="s5">(</span><span class="s1">e</span><span class="s5">)</span><span class="s3">;</span>
+                    <span class="s4">}</span>
+                <span class="s4">}</span>
+                <span class="s1">resolve</span><span class="s5">()</span><span class="s3">;</span>
+            <span class="s4">}</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+<span class="s4">}</span><span class="s3">;</span>
+
+<span class="s1">class SpecService </span><span class="s4">{</span>
+    <span class="s1">constructor</span><span class="s5">(</span><span class="s1">attr</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">id </span><span class="s3">= </span><span class="s1">attr</span><span class="s3">.</span><span class="s1">id</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">totalTest </span><span class="s3">= </span><span class="s6">0</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">hasError </span><span class="s3">= </span><span class="s1">false</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">init</span><span class="s5">(</span><span class="s1">coreContext</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext </span><span class="s3">= </span><span class="s1">coreContext</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">setCurrentRunningSpec</span><span class="s5">(</span><span class="s1">spec</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">currentRunningSpec </span><span class="s3">= </span><span class="s1">spec</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">setStatus</span><span class="s5">(</span><span class="s1">obj</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">hasError </span><span class="s3">= </span><span class="s1">obj</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">getStatus</span><span class="s5">() </span><span class="s4">{</span>
+        <span class="s1">return this</span><span class="s3">.</span><span class="s1">hasError</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">getTestTotal</span><span class="s5">() </span><span class="s4">{</span>
+        <span class="s1">return this</span><span class="s3">.</span><span class="s1">totalTest</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">getCurrentRunningSpec</span><span class="s5">() </span><span class="s4">{</span>
+        <span class="s1">return this</span><span class="s3">.</span><span class="s1">currentRunningSpec</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">it</span><span class="s5">(</span><span class="s1">desc</span><span class="s3">, </span><span class="s1">filter</span><span class="s3">, </span><span class="s1">func</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">const configService </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s2">'config'</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">const currentSuiteName </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s2">'suite'</span><span class="s5">)</span><span class="s3">.</span><span class="s1">getCurrentRunningSuite</span><span class="s5">()</span><span class="s3">.</span><span class="s1">description</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">configService</span><span class="s3">.</span><span class="s1">filterDesc</span><span class="s5">(</span><span class="s1">currentSuiteName</span><span class="s3">, </span><span class="s1">desc</span><span class="s3">, </span><span class="s1">filter</span><span class="s3">, </span><span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s5">)) </span><span class="s4">{</span>
+            <span class="s1">console</span><span class="s3">.</span><span class="s1">info</span><span class="s5">(</span><span class="s2">'filter it :' </span><span class="s3">+ </span><span class="s1">desc</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s4">} </span><span class="s1">else </span><span class="s4">{</span>
+            <span class="s1">let processedFunc </span><span class="s3">= </span><span class="s1">processFunc</span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s3">, </span><span class="s1">func</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s1">const spec </span><span class="s3">= </span><span class="s1">new SpecService</span><span class="s3">.</span><span class="s1">Spec</span><span class="s5">(</span><span class="s4">{</span><span class="s1">description</span><span class="s3">: </span><span class="s1">desc</span><span class="s3">, </span><span class="s1">fi</span><span class="s3">: </span><span class="s1">filter</span><span class="s3">, </span><span class="s1">fn</span><span class="s3">: </span><span class="s1">processedFunc</span><span class="s4">}</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s1">const suiteService </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s2">'suite'</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s1">if </span><span class="s5">(</span><span class="s1">typeof this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getServices</span><span class="s5">(</span><span class="s2">'dataDriver'</span><span class="s5">) </span><span class="s3">!== </span><span class="s2">'undefined' </span><span class="s3">&amp;&amp; </span><span class="s1">configService</span><span class="s5">[</span><span class="s2">'dryRun'</span><span class="s5">] </span><span class="s3">!== </span><span class="s2">'true'</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">let specStress </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getServices</span><span class="s5">(</span><span class="s2">'dataDriver'</span><span class="s5">)</span><span class="s3">.</span><span class="s1">dataDriver</span><span class="s3">.</span><span class="s1">getSpecStress</span><span class="s5">(</span><span class="s1">desc</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s1">for </span><span class="s5">(</span><span class="s1">let i </span><span class="s3">= </span><span class="s6">1</span><span class="s3">; </span><span class="s1">i </span><span class="s3">&lt; </span><span class="s1">specStress</span><span class="s3">; </span><span class="s1">i</span><span class="s3">++</span><span class="s5">) </span><span class="s4">{</span>
+                    <span class="s1">this</span><span class="s3">.</span><span class="s1">totalTest</span><span class="s3">++;</span>
+                    <span class="s1">suiteService</span><span class="s3">.</span><span class="s1">getCurrentRunningSuite</span><span class="s5">()</span><span class="s3">.</span><span class="s1">pushSpec</span><span class="s5">(</span><span class="s1">spec</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s4">}</span>
+            <span class="s4">}</span>
+
+            <span class="s0">// dryRun 状态下不统计压力测试重复数据</span>
+            <span class="s1">if </span><span class="s5">(</span><span class="s1">configService</span><span class="s5">[</span><span class="s2">'dryRun'</span><span class="s5">] </span><span class="s3">!== </span><span class="s2">'true'</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">let stress </span><span class="s3">= </span><span class="s1">configService</span><span class="s3">.</span><span class="s1">getStress</span><span class="s5">()</span><span class="s3">; </span><span class="s0">// 命令配置压力测试</span>
+                <span class="s1">console</span><span class="s3">.</span><span class="s1">info</span><span class="s5">(</span><span class="s2">'stress length :' </span><span class="s3">+ </span><span class="s1">stress</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s1">for </span><span class="s5">(</span><span class="s1">let i </span><span class="s3">= </span><span class="s6">1</span><span class="s3">; </span><span class="s1">i </span><span class="s3">&lt; </span><span class="s1">stress</span><span class="s3">; </span><span class="s1">i</span><span class="s3">++</span><span class="s5">) </span><span class="s4">{</span>
+                    <span class="s1">this</span><span class="s3">.</span><span class="s1">totalTest</span><span class="s3">++;</span>
+                    <span class="s1">suiteService</span><span class="s3">.</span><span class="s1">getCurrentRunningSuite</span><span class="s5">()</span><span class="s3">.</span><span class="s1">pushSpec</span><span class="s5">(</span><span class="s1">spec</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s4">}</span>
+            <span class="s4">}</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">totalTest</span><span class="s3">++;</span>
+            <span class="s1">suiteService</span><span class="s3">.</span><span class="s1">getCurrentRunningSuite</span><span class="s5">()</span><span class="s3">.</span><span class="s1">pushSpec</span><span class="s5">(</span><span class="s1">spec</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+
+    <span class="s1">apis</span><span class="s5">() </span><span class="s4">{</span>
+        <span class="s1">const _this </span><span class="s3">= </span><span class="s1">this</span><span class="s3">;</span>
+        <span class="s1">return </span><span class="s4">{</span>
+            <span class="s1">it</span><span class="s3">: </span><span class="s1">function </span><span class="s5">(</span><span class="s1">desc</span><span class="s3">, </span><span class="s1">filter</span><span class="s3">, </span><span class="s1">func</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">return _this</span><span class="s3">.</span><span class="s1">it</span><span class="s5">(</span><span class="s1">desc</span><span class="s3">, </span><span class="s1">filter</span><span class="s3">, </span><span class="s1">func</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span><span class="s3">;</span>
+    <span class="s4">}</span>
+<span class="s4">}</span>
+
+<span class="s1">SpecService</span><span class="s3">.</span><span class="s1">Spec </span><span class="s3">= </span><span class="s1">class </span><span class="s4">{</span>
+    <span class="s1">constructor</span><span class="s5">(</span><span class="s1">attrs</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">description </span><span class="s3">= </span><span class="s1">attrs</span><span class="s3">.</span><span class="s1">description </span><span class="s3">|| </span><span class="s2">''</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">fi </span><span class="s3">= </span><span class="s1">attrs</span><span class="s3">.</span><span class="s1">fi</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">fn </span><span class="s3">= </span><span class="s1">attrs</span><span class="s3">.</span><span class="s1">fn </span><span class="s3">|| </span><span class="s1">function </span><span class="s5">() </span><span class="s4">{</span>
+        <span class="s4">}</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">result </span><span class="s3">= </span><span class="s4">{</span>
+            <span class="s1">failExpects</span><span class="s3">: </span><span class="s5">[]</span><span class="s3">,</span>
+            <span class="s1">passExpects</span><span class="s3">: </span><span class="s5">[]</span>
+        <span class="s4">}</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">error </span><span class="s3">= </span><span class="s1">undefined</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">duration </span><span class="s3">= </span><span class="s6">0</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">startTime </span><span class="s3">= </span><span class="s6">0</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">isExecuted </span><span class="s3">= </span><span class="s1">false</span><span class="s3">; </span><span class="s0">// 当前用例是否执行</span>
+    <span class="s4">}</span>
+
+    <span class="s1">setResult</span><span class="s5">(</span><span class="s1">coreContext</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">const specService </span><span class="s3">= </span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s2">'spec'</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">result</span><span class="s3">.</span><span class="s1">failExpects</span><span class="s3">.</span><span class="s1">length </span><span class="s3">&gt; </span><span class="s6">0</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">result</span><span class="s3">.</span><span class="s1">pass </span><span class="s3">= </span><span class="s1">false</span><span class="s3">;</span>
+            <span class="s1">specService</span><span class="s3">.</span><span class="s1">setStatus</span><span class="s5">(</span><span class="s1">true</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s4">} </span><span class="s1">else </span><span class="s4">{</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">result</span><span class="s3">.</span><span class="s1">pass </span><span class="s3">= </span><span class="s1">true</span><span class="s3">;</span>
+        <span class="s4">}</span>
+        <span class="s1">console</span><span class="s3">.</span><span class="s1">info</span><span class="s5">(</span><span class="s2">'testcase ' </span><span class="s3">+ </span><span class="s1">this</span><span class="s3">.</span><span class="s1">description </span><span class="s3">+ </span><span class="s2">' result:' </span><span class="s3">+ </span><span class="s1">this</span><span class="s3">.</span><span class="s1">result</span><span class="s3">.</span><span class="s1">pass</span><span class="s5">)</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">run</span><span class="s5">(</span><span class="s1">coreContext</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">const specService </span><span class="s3">= </span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s2">'spec'</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">specService</span><span class="s3">.</span><span class="s1">setCurrentRunningSpec</span><span class="s5">(</span><span class="s1">this</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">coreContext</span><span class="s3">.</span><span class="s1">fireEvents</span><span class="s5">(</span><span class="s2">'spec'</span><span class="s3">, </span><span class="s2">'specStart'</span><span class="s3">, </span><span class="s1">this</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">isExecuted </span><span class="s3">= </span><span class="s1">true</span><span class="s3">;</span>
+        <span class="s1">try </span><span class="s4">{</span>
+            <span class="s1">let dataDriver </span><span class="s3">= </span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getServices</span><span class="s5">(</span><span class="s2">'dataDriver'</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s1">if </span><span class="s5">(</span><span class="s1">typeof dataDriver </span><span class="s3">=== </span><span class="s2">'undefined'</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">this</span><span class="s3">.</span><span class="s1">fn</span><span class="s5">()</span><span class="s3">;</span>
+            <span class="s4">} </span><span class="s1">else </span><span class="s4">{</span>
+                <span class="s1">let suiteParams </span><span class="s3">= </span><span class="s1">dataDriver</span><span class="s3">.</span><span class="s1">dataDriver</span><span class="s3">.</span><span class="s1">getSuiteParams</span><span class="s5">()</span><span class="s3">;</span>
+                <span class="s1">let specParams </span><span class="s3">= </span><span class="s1">dataDriver</span><span class="s3">.</span><span class="s1">dataDriver</span><span class="s3">.</span><span class="s1">getSpecParams</span><span class="s5">()</span><span class="s3">;</span>
+                <span class="s1">console</span><span class="s3">.</span><span class="s1">info</span><span class="s5">(</span><span class="s2">'[suite params] ' </span><span class="s3">+ </span><span class="s1">JSON</span><span class="s3">.</span><span class="s1">stringify</span><span class="s5">(</span><span class="s1">suiteParams</span><span class="s5">))</span><span class="s3">;</span>
+                <span class="s1">console</span><span class="s3">.</span><span class="s1">info</span><span class="s5">(</span><span class="s2">'[spec params] ' </span><span class="s3">+ </span><span class="s1">JSON</span><span class="s3">.</span><span class="s1">stringify</span><span class="s5">(</span><span class="s1">specParams</span><span class="s5">))</span><span class="s3">;</span>
+                <span class="s1">if </span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">fn</span><span class="s3">.</span><span class="s1">length </span><span class="s3">=== </span><span class="s6">0</span><span class="s5">) </span><span class="s4">{</span>
+                    <span class="s1">this</span><span class="s3">.</span><span class="s1">fn</span><span class="s5">()</span><span class="s3">;</span>
+                <span class="s4">} </span><span class="s1">else if </span><span class="s5">(</span><span class="s1">specParams</span><span class="s3">.</span><span class="s1">length </span><span class="s3">=== </span><span class="s6">0</span><span class="s5">) </span><span class="s4">{</span>
+                    <span class="s1">this</span><span class="s3">.</span><span class="s1">fn</span><span class="s5">(</span><span class="s1">suiteParams</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s4">} </span><span class="s1">else </span><span class="s4">{</span>
+                    <span class="s1">specParams</span><span class="s3">.</span><span class="s1">forEach</span><span class="s5">(</span><span class="s1">paramItem </span><span class="s3">=&gt; </span><span class="s1">this</span><span class="s3">.</span><span class="s1">fn</span><span class="s5">(</span><span class="s1">Object</span><span class="s3">.</span><span class="s1">assign</span><span class="s5">(</span><span class="s4">{}</span><span class="s3">, </span><span class="s1">paramItem</span><span class="s3">, </span><span class="s1">suiteParams</span><span class="s5">)))</span><span class="s3">;</span>
+                <span class="s4">}</span>
+            <span class="s4">}</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">setResult</span><span class="s5">(</span><span class="s1">coreContext</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s4">} </span><span class="s1">catch </span><span class="s5">(</span><span class="s1">e</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">error </span><span class="s3">= </span><span class="s1">e</span><span class="s3">;</span>
+            <span class="s1">specService</span><span class="s3">.</span><span class="s1">setStatus</span><span class="s5">(</span><span class="s1">true</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s4">}</span>
+        <span class="s1">coreContext</span><span class="s3">.</span><span class="s1">fireEvents</span><span class="s5">(</span><span class="s2">'spec'</span><span class="s3">, </span><span class="s2">'specDone'</span><span class="s3">, </span><span class="s1">this</span><span class="s5">)</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">async asyncRun</span><span class="s5">(</span><span class="s1">coreContext</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">const specService </span><span class="s3">= </span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s2">'spec'</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">specService</span><span class="s3">.</span><span class="s1">setCurrentRunningSpec</span><span class="s5">(</span><span class="s1">this</span><span class="s5">)</span><span class="s3">;</span>
+
+        <span class="s1">await coreContext</span><span class="s3">.</span><span class="s1">fireEvents</span><span class="s5">(</span><span class="s2">'spec'</span><span class="s3">, </span><span class="s2">'specStart'</span><span class="s3">, </span><span class="s1">this</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">try </span><span class="s4">{</span>
+            <span class="s1">let dataDriver </span><span class="s3">= </span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getServices</span><span class="s5">(</span><span class="s2">'dataDriver'</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s1">if </span><span class="s5">(</span><span class="s1">typeof dataDriver </span><span class="s3">=== </span><span class="s2">'undefined'</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">await this</span><span class="s3">.</span><span class="s1">fn</span><span class="s5">()</span><span class="s3">;</span>
+                <span class="s1">this</span><span class="s3">.</span><span class="s1">setResult</span><span class="s5">(</span><span class="s1">coreContext</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">} </span><span class="s1">else </span><span class="s4">{</span>
+                <span class="s1">let suiteParams </span><span class="s3">= </span><span class="s1">dataDriver</span><span class="s3">.</span><span class="s1">dataDriver</span><span class="s3">.</span><span class="s1">getSuiteParams</span><span class="s5">()</span><span class="s3">;</span>
+                <span class="s1">let specParams </span><span class="s3">= </span><span class="s1">dataDriver</span><span class="s3">.</span><span class="s1">dataDriver</span><span class="s3">.</span><span class="s1">getSpecParams</span><span class="s5">()</span><span class="s3">;</span>
+                <span class="s1">console</span><span class="s3">.</span><span class="s1">info</span><span class="s5">(</span><span class="s2">'[suite params] ' </span><span class="s3">+ </span><span class="s1">JSON</span><span class="s3">.</span><span class="s1">stringify</span><span class="s5">(</span><span class="s1">suiteParams</span><span class="s5">))</span><span class="s3">;</span>
+                <span class="s1">console</span><span class="s3">.</span><span class="s1">info</span><span class="s5">(</span><span class="s2">'[spec params] ' </span><span class="s3">+ </span><span class="s1">JSON</span><span class="s3">.</span><span class="s1">stringify</span><span class="s5">(</span><span class="s1">specParams</span><span class="s5">))</span><span class="s3">;</span>
+                <span class="s1">if </span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">fn</span><span class="s3">.</span><span class="s1">length </span><span class="s3">=== </span><span class="s6">0</span><span class="s5">) </span><span class="s4">{</span>
+                    <span class="s1">await this</span><span class="s3">.</span><span class="s1">fn</span><span class="s5">()</span><span class="s3">;</span>
+                    <span class="s1">this</span><span class="s3">.</span><span class="s1">setResult</span><span class="s5">(</span><span class="s1">coreContext</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s4">} </span><span class="s1">else if </span><span class="s5">(</span><span class="s1">specParams</span><span class="s3">.</span><span class="s1">length </span><span class="s3">=== </span><span class="s6">0</span><span class="s5">) </span><span class="s4">{</span>
+                    <span class="s1">await this</span><span class="s3">.</span><span class="s1">fn</span><span class="s5">(</span><span class="s1">suiteParams</span><span class="s5">)</span><span class="s3">;</span>
+                    <span class="s1">this</span><span class="s3">.</span><span class="s1">setResult</span><span class="s5">(</span><span class="s1">coreContext</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s4">} </span><span class="s1">else </span><span class="s4">{</span>
+                    <span class="s1">for </span><span class="s5">(</span><span class="s1">const paramItem of specParams</span><span class="s5">) </span><span class="s4">{</span>
+                        <span class="s1">await this</span><span class="s3">.</span><span class="s1">fn</span><span class="s5">(</span><span class="s1">Object</span><span class="s3">.</span><span class="s1">assign</span><span class="s5">(</span><span class="s4">{}</span><span class="s3">, </span><span class="s1">paramItem</span><span class="s3">, </span><span class="s1">suiteParams</span><span class="s5">))</span><span class="s3">;</span>
+                        <span class="s1">this</span><span class="s3">.</span><span class="s1">setResult</span><span class="s5">(</span><span class="s1">coreContext</span><span class="s5">)</span><span class="s3">;</span>
+                    <span class="s4">}</span>
+                <span class="s4">}</span>
+            <span class="s4">}</span>
+        <span class="s4">} </span><span class="s1">catch </span><span class="s5">(</span><span class="s1">e</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">if </span><span class="s5">(</span><span class="s1">e instanceof AssertException</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">this</span><span class="s3">.</span><span class="s1">fail </span><span class="s3">= </span><span class="s1">e</span><span class="s3">;</span>
+                <span class="s1">specService</span><span class="s3">.</span><span class="s1">setStatus</span><span class="s5">(</span><span class="s1">true</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">} </span><span class="s1">else </span><span class="s4">{</span>
+                <span class="s1">this</span><span class="s3">.</span><span class="s1">error </span><span class="s3">= </span><span class="s1">e</span><span class="s3">;</span>
+                <span class="s1">specService</span><span class="s3">.</span><span class="s1">setStatus</span><span class="s5">(</span><span class="s1">true</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">isExecuted </span><span class="s3">= </span><span class="s1">true</span><span class="s3">;</span>
+        <span class="s1">await coreContext</span><span class="s3">.</span><span class="s1">fireEvents</span><span class="s5">(</span><span class="s2">'spec'</span><span class="s3">, </span><span class="s2">'specDone'</span><span class="s3">, </span><span class="s1">this</span><span class="s5">)</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">filterCheck</span><span class="s5">(</span><span class="s1">coreContext</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">const specService </span><span class="s3">= </span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s2">'spec'</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">specService</span><span class="s3">.</span><span class="s1">setCurrentRunningSpec</span><span class="s5">(</span><span class="s1">this</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">return true</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">addExpectationResult</span><span class="s5">(</span><span class="s1">expectResult</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">result</span><span class="s3">.</span><span class="s1">failExpects</span><span class="s3">.</span><span class="s1">length </span><span class="s3">=== </span><span class="s6">0</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">result</span><span class="s3">.</span><span class="s1">failExpects</span><span class="s3">.</span><span class="s1">push</span><span class="s5">(</span><span class="s1">expectResult</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s4">}</span>
+        <span class="s1">throw new AssertException</span><span class="s5">(</span><span class="s1">expectResult</span><span class="s3">.</span><span class="s1">message</span><span class="s5">)</span><span class="s3">;</span>
+    <span class="s4">}</span>
+<span class="s4">}</span><span class="s3">;</span>
+
+<span class="s1">class ExpectService </span><span class="s4">{</span>
+    <span class="s1">constructor</span><span class="s5">(</span><span class="s1">attr</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">id </span><span class="s3">= </span><span class="s1">attr</span><span class="s3">.</span><span class="s1">id</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">matchers </span><span class="s3">= </span><span class="s4">{}</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">expect</span><span class="s5">(</span><span class="s1">actualValue</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">return this</span><span class="s3">.</span><span class="s1">wrapMatchers</span><span class="s5">(</span><span class="s1">actualValue</span><span class="s5">)</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">init</span><span class="s5">(</span><span class="s1">coreContext</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext </span><span class="s3">= </span><span class="s1">coreContext</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">addMatchers</span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">basicMatchers</span><span class="s5">())</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">addMatchers</span><span class="s5">(</span><span class="s1">matchers</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">for </span><span class="s5">(</span><span class="s1">const matcherName in matchers</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">if </span><span class="s5">(</span><span class="s1">Object</span><span class="s3">.</span><span class="s1">prototype</span><span class="s3">.</span><span class="s1">hasOwnProperty</span><span class="s3">.</span><span class="s1">call</span><span class="s5">(</span><span class="s1">matchers</span><span class="s3">, </span><span class="s1">matcherName</span><span class="s5">)) </span><span class="s4">{</span>
+                <span class="s1">this</span><span class="s3">.</span><span class="s1">matchers</span><span class="s5">[</span><span class="s1">matcherName</span><span class="s5">] </span><span class="s3">= </span><span class="s1">matchers</span><span class="s5">[</span><span class="s1">matcherName</span><span class="s5">]</span><span class="s3">;</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+
+    <span class="s1">basicMatchers</span><span class="s5">() </span><span class="s4">{</span>
+        <span class="s1">return </span><span class="s4">{</span>
+            <span class="s1">assertTrue</span><span class="s3">: </span><span class="s1">function </span><span class="s5">(</span><span class="s1">actualValue</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">return </span><span class="s4">{</span>
+                    <span class="s1">pass</span><span class="s3">: </span><span class="s5">(</span><span class="s1">actualValue</span><span class="s5">) </span><span class="s3">=== </span><span class="s1">true</span><span class="s3">,</span>
+                    <span class="s1">message</span><span class="s3">: </span><span class="s2">'expect true, actualValue is ' </span><span class="s3">+ </span><span class="s1">actualValue</span>
+                <span class="s4">}</span><span class="s3">;</span>
+            <span class="s4">}</span><span class="s3">,</span>
+            <span class="s1">assertEqual</span><span class="s3">: </span><span class="s1">function </span><span class="s5">(</span><span class="s1">actualValue</span><span class="s3">, </span><span class="s1">args</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">return </span><span class="s4">{</span>
+                    <span class="s1">pass</span><span class="s3">: </span><span class="s5">(</span><span class="s1">actualValue</span><span class="s5">) </span><span class="s3">=== </span><span class="s1">args</span><span class="s5">[</span><span class="s6">0</span><span class="s5">]</span><span class="s3">,</span>
+                    <span class="s1">expectValue</span><span class="s3">: </span><span class="s1">args</span><span class="s5">[</span><span class="s6">0</span><span class="s5">]</span><span class="s3">,</span>
+                    <span class="s1">message</span><span class="s3">: </span><span class="s2">'expect ' </span><span class="s3">+ </span><span class="s1">actualValue </span><span class="s3">+ </span><span class="s2">' equals ' </span><span class="s3">+ </span><span class="s1">args</span><span class="s5">[</span><span class="s6">0</span><span class="s5">]</span>
+                <span class="s4">}</span><span class="s3">;</span>
+            <span class="s4">}</span><span class="s3">,</span>
+            <span class="s1">assertThrow</span><span class="s3">: </span><span class="s1">function </span><span class="s5">(</span><span class="s1">actual</span><span class="s3">, </span><span class="s1">args</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">const result </span><span class="s3">= </span><span class="s4">{</span>
+                    <span class="s1">pass</span><span class="s3">: </span><span class="s1">false</span>
+                <span class="s4">}</span><span class="s3">;</span>
+                <span class="s1">if </span><span class="s5">(</span><span class="s1">typeof actual </span><span class="s3">!== </span><span class="s2">'function'</span><span class="s5">) </span><span class="s4">{</span>
+                    <span class="s1">result</span><span class="s3">.</span><span class="s1">message </span><span class="s3">= </span><span class="s2">'toThrow\'s Actual should be a Function'</span><span class="s3">;</span>
+                <span class="s4">} </span><span class="s1">else </span><span class="s4">{</span>
+                    <span class="s1">let hasThrow </span><span class="s3">= </span><span class="s1">false</span><span class="s3">;</span>
+                    <span class="s1">let throwError</span><span class="s3">;</span>
+                    <span class="s1">try </span><span class="s4">{</span>
+                        <span class="s1">actual</span><span class="s5">()</span><span class="s3">;</span>
+                    <span class="s4">} </span><span class="s1">catch </span><span class="s5">(</span><span class="s1">e</span><span class="s5">) </span><span class="s4">{</span>
+                        <span class="s1">hasThrow </span><span class="s3">= </span><span class="s1">true</span><span class="s3">;</span>
+                        <span class="s1">throwError </span><span class="s3">= </span><span class="s1">e</span><span class="s3">;</span>
+                    <span class="s4">}</span>
+                    <span class="s1">if </span><span class="s5">(</span><span class="s3">!</span><span class="s1">hasThrow</span><span class="s5">) </span><span class="s4">{</span>
+                        <span class="s1">result</span><span class="s3">.</span><span class="s1">message </span><span class="s3">= </span><span class="s2">'function did not throw an exception'</span><span class="s3">;</span>
+                    <span class="s4">} </span><span class="s1">else if </span><span class="s5">(</span><span class="s1">throwError </span><span class="s3">&amp;&amp; </span><span class="s1">throwError</span><span class="s3">.</span><span class="s1">message </span><span class="s3">=== </span><span class="s1">args</span><span class="s5">[</span><span class="s6">0</span><span class="s5">]) </span><span class="s4">{</span>
+                        <span class="s1">result</span><span class="s3">.</span><span class="s1">pass </span><span class="s3">= </span><span class="s1">true</span><span class="s3">;</span>
+                    <span class="s4">} </span><span class="s1">else </span><span class="s4">{</span>
+                        <span class="s1">result</span><span class="s3">.</span><span class="s1">message </span><span class="s3">= </span><span class="s2">`expect to throw </span><span class="s4">${</span><span class="s1">args</span><span class="s5">[</span><span class="s6">0</span><span class="s5">]</span><span class="s4">} </span><span class="s2">, actual throw </span><span class="s4">${</span><span class="s1">throwError</span><span class="s3">.</span><span class="s1">message</span><span class="s4">}</span><span class="s2">`</span><span class="s3">;</span>
+                    <span class="s4">}</span>
+                <span class="s4">}</span>
+                <span class="s1">return result</span><span class="s3">;</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">wrapMatchers</span><span class="s5">(</span><span class="s1">actualValue</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">const _this </span><span class="s3">= </span><span class="s1">this</span><span class="s3">;</span>
+        <span class="s1">const wrappedMatchers </span><span class="s3">= </span><span class="s4">{</span>
+            <span class="s0">// 翻转标识</span>
+            <span class="s1">isNot</span><span class="s3">: </span><span class="s1">false</span><span class="s3">,</span>
+
+            <span class="s0">// 翻转方法</span>
+            <span class="s1">not</span><span class="s3">: </span><span class="s1">function </span><span class="s5">() </span><span class="s4">{</span>
+                <span class="s1">this</span><span class="s3">.</span><span class="s1">isNot </span><span class="s3">= </span><span class="s1">true</span><span class="s3">;</span>
+                <span class="s1">return this</span><span class="s3">;</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span><span class="s3">;</span>
+        <span class="s1">const specService </span><span class="s3">= </span><span class="s1">_this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s2">'spec'</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">const currentRunningSpec </span><span class="s3">= </span><span class="s1">specService</span><span class="s3">.</span><span class="s1">getCurrentRunningSpec</span><span class="s5">()</span><span class="s3">;</span>
+        <span class="s1">for </span><span class="s5">(</span><span class="s1">const matcherName in this</span><span class="s3">.</span><span class="s1">matchers</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">let result </span><span class="s3">= </span><span class="s1">Object</span><span class="s3">.</span><span class="s1">prototype</span><span class="s3">.</span><span class="s1">hasOwnProperty</span><span class="s3">.</span><span class="s1">call</span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">matchers</span><span class="s3">, </span><span class="s1">matcherName</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s1">if </span><span class="s5">(</span><span class="s3">!</span><span class="s1">result</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">continue</span><span class="s3">;</span>
+            <span class="s4">}</span>
+            <span class="s1">if </span><span class="s5">(</span><span class="s1">matcherName</span><span class="s3">.</span><span class="s1">search</span><span class="s5">(</span><span class="s2">'assertPromise'</span><span class="s5">) </span><span class="s3">== </span><span class="s6">0</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">wrappedMatchers</span><span class="s5">[</span><span class="s1">matcherName</span><span class="s5">] </span><span class="s3">= </span><span class="s1">async function </span><span class="s5">() </span><span class="s4">{</span>
+                    <span class="s1">await _this</span><span class="s3">.</span><span class="s1">matchers</span><span class="s5">[</span><span class="s1">matcherName</span><span class="s5">](</span><span class="s1">actualValue</span><span class="s3">, </span><span class="s1">arguments</span><span class="s5">)</span><span class="s3">.</span><span class="s1">then</span><span class="s5">(</span><span class="s1">function </span><span class="s5">(</span><span class="s1">result</span><span class="s5">) </span><span class="s4">{</span>
+                        <span class="s1">if </span><span class="s5">(</span><span class="s1">wrappedMatchers</span><span class="s3">.</span><span class="s1">isNot</span><span class="s5">) </span><span class="s4">{</span>
+                            <span class="s1">result</span><span class="s3">.</span><span class="s1">pass </span><span class="s3">= !</span><span class="s1">result</span><span class="s3">.</span><span class="s1">pass</span><span class="s3">;</span>
+                        <span class="s4">}</span>
+                        <span class="s1">result</span><span class="s3">.</span><span class="s1">actualValue </span><span class="s3">= </span><span class="s1">actualValue</span><span class="s3">;</span>
+                        <span class="s1">result</span><span class="s3">.</span><span class="s1">checkFunc </span><span class="s3">= </span><span class="s1">matcherName</span><span class="s3">;</span>
+                        <span class="s1">if </span><span class="s5">(</span><span class="s3">!</span><span class="s1">result</span><span class="s3">.</span><span class="s1">pass</span><span class="s5">) </span><span class="s4">{</span>
+                            <span class="s1">currentRunningSpec</span><span class="s3">.</span><span class="s1">addExpectationResult</span><span class="s5">(</span><span class="s1">result</span><span class="s5">)</span><span class="s3">;</span>
+                        <span class="s4">}</span>
+                    <span class="s4">}</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s4">}</span><span class="s3">;</span>
+            <span class="s4">} </span><span class="s1">else </span><span class="s4">{</span>
+                <span class="s1">wrappedMatchers</span><span class="s5">[</span><span class="s1">matcherName</span><span class="s5">] </span><span class="s3">= </span><span class="s1">function </span><span class="s5">() </span><span class="s4">{</span>
+                    <span class="s1">const result </span><span class="s3">= </span><span class="s1">_this</span><span class="s3">.</span><span class="s1">matchers</span><span class="s5">[</span><span class="s1">matcherName</span><span class="s5">](</span><span class="s1">actualValue</span><span class="s3">, </span><span class="s1">arguments</span><span class="s5">)</span><span class="s3">;</span>
+                    <span class="s1">if </span><span class="s5">(</span><span class="s1">wrappedMatchers</span><span class="s3">.</span><span class="s1">isNot</span><span class="s5">) </span><span class="s4">{</span>
+                        <span class="s1">result</span><span class="s3">.</span><span class="s1">pass </span><span class="s3">= !</span><span class="s1">result</span><span class="s3">.</span><span class="s1">pass</span><span class="s3">;</span>
+                    <span class="s4">}</span>
+                    <span class="s1">result</span><span class="s3">.</span><span class="s1">actualValue </span><span class="s3">= </span><span class="s1">actualValue</span><span class="s3">;</span>
+                    <span class="s1">result</span><span class="s3">.</span><span class="s1">checkFunc </span><span class="s3">= </span><span class="s1">matcherName</span><span class="s3">;</span>
+                    <span class="s1">if </span><span class="s5">(</span><span class="s3">!</span><span class="s1">result</span><span class="s3">.</span><span class="s1">pass</span><span class="s5">) </span><span class="s4">{</span>
+                        <span class="s1">currentRunningSpec</span><span class="s3">.</span><span class="s1">addExpectationResult</span><span class="s5">(</span><span class="s1">result</span><span class="s5">)</span><span class="s3">;</span>
+                    <span class="s4">}</span>
+                <span class="s4">}</span><span class="s3">;</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span>
+        <span class="s1">return wrappedMatchers</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">apis</span><span class="s5">() </span><span class="s4">{</span>
+        <span class="s1">const _this </span><span class="s3">= </span><span class="s1">this</span><span class="s3">;</span>
+        <span class="s1">return </span><span class="s4">{</span>
+            <span class="s1">expect</span><span class="s3">: </span><span class="s1">function </span><span class="s5">(</span><span class="s1">actualValue</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">return _this</span><span class="s3">.</span><span class="s1">expect</span><span class="s5">(</span><span class="s1">actualValue</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span><span class="s3">;</span>
+    <span class="s4">}</span>
+<span class="s4">}</span>
+
+<span class="s1">class ReportService </span><span class="s4">{</span>
+    <span class="s1">constructor</span><span class="s5">(</span><span class="s1">attr</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">id </span><span class="s3">= </span><span class="s1">attr</span><span class="s3">.</span><span class="s1">id</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">init</span><span class="s5">(</span><span class="s1">coreContext</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext </span><span class="s3">= </span><span class="s1">coreContext</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">specService </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s2">'spec'</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">suiteService </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s2">'suite'</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">duration </span><span class="s3">= </span><span class="s6">0</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">taskStart</span><span class="s5">() </span><span class="s4">{</span>
+        <span class="s1">console</span><span class="s3">.</span><span class="s1">info</span><span class="s5">(</span><span class="s2">'[start] start run suites'</span><span class="s5">)</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">async suiteStart</span><span class="s5">() </span><span class="s4">{</span>
+        <span class="s1">console</span><span class="s3">.</span><span class="s1">info</span><span class="s5">(</span><span class="s2">'[suite start]' </span><span class="s3">+ </span><span class="s1">this</span><span class="s3">.</span><span class="s1">suiteService</span><span class="s3">.</span><span class="s1">getCurrentRunningSuite</span><span class="s5">()</span><span class="s3">.</span><span class="s1">description</span><span class="s5">)</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">async specStart</span><span class="s5">() </span><span class="s4">{</span>
+        <span class="s1">console</span><span class="s3">.</span><span class="s1">info</span><span class="s5">(</span><span class="s2">'start running case \'' </span><span class="s3">+ </span><span class="s1">this</span><span class="s3">.</span><span class="s1">specService</span><span class="s3">.</span><span class="s1">currentRunningSpec</span><span class="s3">.</span><span class="s1">description </span><span class="s3">+ </span><span class="s2">'\''</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">index </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">index </span><span class="s3">+ </span><span class="s6">1</span><span class="s3">;</span>
+        <span class="s1">let spec </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">specService</span><span class="s3">.</span><span class="s1">currentRunningSpec</span><span class="s3">;</span>
+        <span class="s1">spec</span><span class="s3">.</span><span class="s1">startTime </span><span class="s3">= </span><span class="s1">await SysTestKit</span><span class="s3">.</span><span class="s1">getRealTime</span><span class="s5">()</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">async specDone</span><span class="s5">() </span><span class="s4">{</span>
+        <span class="s1">let msg </span><span class="s3">= </span><span class="s2">''</span><span class="s3">;</span>
+        <span class="s1">let spec </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">specService</span><span class="s3">.</span><span class="s1">currentRunningSpec</span><span class="s3">;</span>
+        <span class="s1">let suite </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">suiteService</span><span class="s3">.</span><span class="s1">currentRunningSuite</span><span class="s3">;</span>
+        <span class="s1">spec</span><span class="s3">.</span><span class="s1">duration </span><span class="s3">= </span><span class="s1">await SysTestKit</span><span class="s3">.</span><span class="s1">getRealTime</span><span class="s5">() </span><span class="s3">- </span><span class="s1">spec</span><span class="s3">.</span><span class="s1">startTime</span><span class="s3">;</span>
+        <span class="s1">suite</span><span class="s3">.</span><span class="s1">duration </span><span class="s3">+= </span><span class="s1">spec</span><span class="s3">.</span><span class="s1">duration</span><span class="s3">;</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">spec</span><span class="s3">.</span><span class="s1">error</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">formatPrint</span><span class="s5">(</span><span class="s2">'error'</span><span class="s3">, </span><span class="s1">spec</span><span class="s3">.</span><span class="s1">description </span><span class="s3">+ </span><span class="s2">' ; consuming ' </span><span class="s3">+ </span><span class="s1">spec</span><span class="s3">.</span><span class="s1">duration </span><span class="s3">+ </span><span class="s2">'ms'</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">formatPrint</span><span class="s5">(</span><span class="s2">'errorDetail'</span><span class="s3">, </span><span class="s1">spec</span><span class="s3">.</span><span class="s1">error</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s4">} </span><span class="s1">else if </span><span class="s5">(</span><span class="s1">spec</span><span class="s3">.</span><span class="s1">result</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">if </span><span class="s5">(</span><span class="s1">spec</span><span class="s3">.</span><span class="s1">result</span><span class="s3">.</span><span class="s1">failExpects</span><span class="s3">.</span><span class="s1">length </span><span class="s3">&gt; </span><span class="s6">0</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">this</span><span class="s3">.</span><span class="s1">formatPrint</span><span class="s5">(</span><span class="s2">'fail'</span><span class="s3">, </span><span class="s1">spec</span><span class="s3">.</span><span class="s1">description </span><span class="s3">+ </span><span class="s2">' ; consuming ' </span><span class="s3">+ </span><span class="s1">spec</span><span class="s3">.</span><span class="s1">duration </span><span class="s3">+ </span><span class="s2">'ms'</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s1">spec</span><span class="s3">.</span><span class="s1">result</span><span class="s3">.</span><span class="s1">failExpects</span><span class="s3">.</span><span class="s1">forEach</span><span class="s5">(</span><span class="s1">failExpect </span><span class="s3">=&gt; </span><span class="s4">{</span>
+                    <span class="s1">msg </span><span class="s3">= </span><span class="s1">failExpect</span><span class="s3">.</span><span class="s1">message </span><span class="s3">|| </span><span class="s5">(</span><span class="s2">'expect ' </span><span class="s3">+ </span><span class="s1">failExpect</span><span class="s3">.</span><span class="s1">actualValue </span><span class="s3">+ </span><span class="s2">' '</span>
+                        <span class="s3">+ </span><span class="s1">failExpect</span><span class="s3">.</span><span class="s1">checkFunc </span><span class="s3">+ </span><span class="s2">' ' </span><span class="s3">+ </span><span class="s5">(</span><span class="s1">failExpect</span><span class="s3">.</span><span class="s1">expectValue</span><span class="s5">))</span><span class="s3">;</span>
+                    <span class="s1">this</span><span class="s3">.</span><span class="s1">formatPrint</span><span class="s5">(</span><span class="s2">'failDetail'</span><span class="s3">, </span><span class="s1">msg</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s4">}</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">} </span><span class="s1">else </span><span class="s4">{</span>
+                <span class="s1">this</span><span class="s3">.</span><span class="s1">formatPrint</span><span class="s5">(</span><span class="s2">'pass'</span><span class="s3">, </span><span class="s1">spec</span><span class="s3">.</span><span class="s1">description </span><span class="s3">+ </span><span class="s2">' ; consuming ' </span><span class="s3">+ </span><span class="s1">spec</span><span class="s3">.</span><span class="s1">duration </span><span class="s3">+ </span><span class="s2">'ms'</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span>
+        <span class="s1">this</span><span class="s3">.</span><span class="s1">formatPrint</span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">specService</span><span class="s3">.</span><span class="s1">currentRunningSpec</span><span class="s3">.</span><span class="s1">error</span><span class="s3">, </span><span class="s1">msg</span><span class="s5">)</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">suiteDone</span><span class="s5">() </span><span class="s4">{</span>
+        <span class="s1">let suite </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">suiteService</span><span class="s3">.</span><span class="s1">currentRunningSuite</span><span class="s3">;</span>
+        <span class="s1">console</span><span class="s3">.</span><span class="s1">info</span><span class="s5">(</span><span class="s2">`[suite end] </span><span class="s4">${</span><span class="s1">suite</span><span class="s3">.</span><span class="s1">description</span><span class="s4">} </span><span class="s2">consuming </span><span class="s4">${</span><span class="s1">suite</span><span class="s3">.</span><span class="s1">duration</span><span class="s4">} </span><span class="s2">ms`</span><span class="s5">)</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">taskDone</span><span class="s5">() </span><span class="s4">{</span>
+        <span class="s1">let msg </span><span class="s3">= </span><span class="s2">''</span><span class="s3">;</span>
+        <span class="s1">let summary </span><span class="s3">= </span><span class="s1">this</span><span class="s3">.</span><span class="s1">suiteService</span><span class="s3">.</span><span class="s1">getSummary</span><span class="s5">()</span><span class="s3">;</span>
+        <span class="s1">msg </span><span class="s3">= </span><span class="s2">'total cases:' </span><span class="s3">+ </span><span class="s1">summary</span><span class="s3">.</span><span class="s1">total </span><span class="s3">+ </span><span class="s2">';failure ' </span><span class="s3">+ </span><span class="s1">summary</span><span class="s3">.</span><span class="s1">failure </span><span class="s3">+ </span><span class="s2">',' </span><span class="s3">+ </span><span class="s2">'error ' </span><span class="s3">+ </span><span class="s1">summary</span><span class="s3">.</span><span class="s1">error</span><span class="s3">;</span>
+        <span class="s1">msg </span><span class="s3">+= </span><span class="s2">',pass ' </span><span class="s3">+ </span><span class="s1">summary</span><span class="s3">.</span><span class="s1">pass </span><span class="s3">+ </span><span class="s2">'; consuming ' </span><span class="s3">+ </span><span class="s1">summary</span><span class="s3">.</span><span class="s1">duration </span><span class="s3">+ </span><span class="s2">'ms'</span><span class="s3">;</span>
+        <span class="s1">console</span><span class="s3">.</span><span class="s1">info</span><span class="s5">(</span><span class="s1">msg</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s1">console</span><span class="s3">.</span><span class="s1">info</span><span class="s5">(</span><span class="s2">'[end] run suites end'</span><span class="s5">)</span><span class="s3">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">incorrectFormat</span><span class="s5">() </span><span class="s4">{</span>
+        <span class="s1">if </span><span class="s5">(</span><span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s2">'config'</span><span class="s5">)</span><span class="s3">.</span><span class="s1">filterValid</span><span class="s3">.</span><span class="s1">length </span><span class="s3">!== </span><span class="s6">0</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">this</span><span class="s3">.</span><span class="s1">coreContext</span><span class="s3">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s2">'config'</span><span class="s5">)</span><span class="s3">.</span><span class="s1">filterValid</span><span class="s3">.</span><span class="s1">forEach</span><span class="s5">(</span><span class="s1">function </span><span class="s5">(</span><span class="s1">item</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">console</span><span class="s3">.</span><span class="s1">info</span><span class="s5">(</span><span class="s2">'this param ' </span><span class="s3">+ </span><span class="s1">item </span><span class="s3">+ </span><span class="s2">' is invalid'</span><span class="s5">)</span><span class="s3">;</span>
+            <span class="s4">}</span><span class="s5">)</span><span class="s3">;</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+
+    <span class="s1">formatPrint</span><span class="s5">(</span><span class="s1">type</span><span class="s3">, </span><span class="s1">msg</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">switch </span><span class="s5">(</span><span class="s1">type</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">case </span><span class="s2">'pass'</span><span class="s3">:</span>
+                <span class="s1">console</span><span class="s3">.</span><span class="s1">info</span><span class="s5">(</span><span class="s2">'[pass]' </span><span class="s3">+ </span><span class="s1">msg</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s1">break</span><span class="s3">;</span>
+            <span class="s1">case </span><span class="s2">'fail'</span><span class="s3">:</span>
+                <span class="s1">console</span><span class="s3">.</span><span class="s1">info</span><span class="s5">(</span><span class="s2">'[fail]' </span><span class="s3">+ </span><span class="s1">msg</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s1">break</span><span class="s3">;</span>
+            <span class="s1">case </span><span class="s2">'failDetail'</span><span class="s3">:</span>
+                <span class="s1">console</span><span class="s3">.</span><span class="s1">info</span><span class="s5">(</span><span class="s2">'[failDetail]' </span><span class="s3">+ </span><span class="s1">msg</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s1">break</span><span class="s3">;</span>
+            <span class="s1">case </span><span class="s2">'error'</span><span class="s3">:</span>
+                <span class="s1">console</span><span class="s3">.</span><span class="s1">info</span><span class="s5">(</span><span class="s2">'[error]' </span><span class="s3">+ </span><span class="s1">msg</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s1">break</span><span class="s3">;</span>
+            <span class="s1">case </span><span class="s2">'errorDetail'</span><span class="s3">:</span>
+                <span class="s1">console</span><span class="s3">.</span><span class="s1">info</span><span class="s5">(</span><span class="s2">'[errorDetail]' </span><span class="s3">+ </span><span class="s1">msg</span><span class="s5">)</span><span class="s3">;</span>
+                <span class="s1">break</span><span class="s3">;</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+
+    <span class="s1">sleep</span><span class="s5">(</span><span class="s1">numberMillis</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">var now </span><span class="s3">= </span><span class="s1">new Date</span><span class="s5">()</span><span class="s3">;</span>
+        <span class="s1">var exitTime </span><span class="s3">= </span><span class="s1">now</span><span class="s3">.</span><span class="s1">getTime</span><span class="s5">() </span><span class="s3">+ </span><span class="s1">numberMillis</span><span class="s3">;</span>
+        <span class="s1">while </span><span class="s5">(</span><span class="s1">true</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">now </span><span class="s3">= </span><span class="s1">new Date</span><span class="s5">()</span><span class="s3">;</span>
+            <span class="s1">if </span><span class="s5">(</span><span class="s1">now</span><span class="s3">.</span><span class="s1">getTime</span><span class="s5">() </span><span class="s3">&gt; </span><span class="s1">exitTime</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">return</span><span class="s3">;</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span>
+    <span class="s4">}</span>
+<span class="s4">}</span>
+
+<span class="s1">export </span><span class="s4">{</span>
+    <span class="s1">SuiteService</span><span class="s3">,</span>
+    <span class="s1">SpecService</span><span class="s3">,</span>
+    <span class="s1">ExpectService</span><span class="s3">,</span>
+    <span class="s1">ReportService</span>
+<span class="s4">}</span><span class="s3">;</span>
+</pre>
+</body>
+</html>

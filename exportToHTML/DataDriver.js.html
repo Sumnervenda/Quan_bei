@@ -1,0 +1,139 @@
+<html>
+<head>
+<title>DataDriver.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #808080;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #e2da90;}
+.s3 { color: #aa7dfc;}
+.s4 { color: #faa23d;}
+.s5 { color: #db7e9b;}
+.s6 { color: #b3e54c;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+DataDriver.js</font>
+</center></td></tr></table>
+<pre><span class="s0">/* 
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd. 
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ */</span>
+
+<span class="s1">const SUITES_KEY </span><span class="s2">= </span><span class="s3">'suites'</span><span class="s2">;</span>
+<span class="s1">const SPECS_KEY </span><span class="s2">= </span><span class="s3">'items'</span><span class="s2">;</span>
+<span class="s1">const DESCRIBE_KEY </span><span class="s2">= </span><span class="s3">'describe'</span><span class="s2">;</span>
+<span class="s1">const IT_KEY </span><span class="s2">= </span><span class="s3">'it'</span><span class="s2">;</span>
+<span class="s1">const PARAMS_KEY </span><span class="s2">= </span><span class="s3">'params'</span><span class="s2">;</span>
+<span class="s1">const STRESS_KEY </span><span class="s2">= </span><span class="s3">'stress'</span><span class="s2">;</span>
+
+<span class="s1">class ObjectUtils </span><span class="s4">{</span>
+    <span class="s1">static get</span><span class="s5">(</span><span class="s1">object</span><span class="s2">, </span><span class="s1">name</span><span class="s2">, </span><span class="s1">defaultValue</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">let result </span><span class="s2">= </span><span class="s1">defaultValue</span><span class="s2">;</span>
+        <span class="s1">for </span><span class="s5">(</span><span class="s1">const key in object</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">if </span><span class="s5">(</span><span class="s1">key </span><span class="s2">=== </span><span class="s1">name</span><span class="s5">) </span><span class="s4">{</span>
+                <span class="s1">return object</span><span class="s5">[</span><span class="s1">key</span><span class="s5">]</span><span class="s2">;</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span>
+        <span class="s1">return result</span><span class="s2">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">static has</span><span class="s5">(</span><span class="s1">object</span><span class="s2">, </span><span class="s1">key</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">return Object</span><span class="s2">.</span><span class="s1">prototype</span><span class="s2">.</span><span class="s1">hasOwnProperty</span><span class="s2">.</span><span class="s1">call</span><span class="s5">(</span><span class="s1">object</span><span class="s2">, </span><span class="s1">key</span><span class="s5">)</span><span class="s2">;</span>
+    <span class="s4">}</span>
+<span class="s4">}</span>
+
+<span class="s1">class DataDriver </span><span class="s4">{</span>
+    <span class="s1">constructor</span><span class="s5">(</span><span class="s1">attr</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">this</span><span class="s2">.</span><span class="s1">id </span><span class="s2">= </span><span class="s3">'dataDriver'</span><span class="s2">;</span>
+        <span class="s1">this</span><span class="s2">.</span><span class="s1">data </span><span class="s2">= </span><span class="s1">attr</span><span class="s2">.</span><span class="s1">data </span><span class="s2">|| </span><span class="s4">{}</span><span class="s2">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">init</span><span class="s5">(</span><span class="s1">coreContext</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">this</span><span class="s2">.</span><span class="s1">coreContext </span><span class="s2">= </span><span class="s1">coreContext</span><span class="s2">;</span>
+        <span class="s1">this</span><span class="s2">.</span><span class="s1">suiteService </span><span class="s2">= </span><span class="s1">this</span><span class="s2">.</span><span class="s1">coreContext</span><span class="s2">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s3">'suite'</span><span class="s5">)</span><span class="s2">;</span>
+        <span class="s1">this</span><span class="s2">.</span><span class="s1">specService </span><span class="s2">= </span><span class="s1">this</span><span class="s2">.</span><span class="s1">coreContext</span><span class="s2">.</span><span class="s1">getDefaultService</span><span class="s5">(</span><span class="s3">'spec'</span><span class="s5">)</span><span class="s2">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">getSpecParams</span><span class="s5">() </span><span class="s4">{</span>
+        <span class="s1">let specParams </span><span class="s2">= </span><span class="s5">[]</span><span class="s2">;</span>
+        <span class="s1">let suiteDesc </span><span class="s2">= </span><span class="s1">this</span><span class="s2">.</span><span class="s1">suiteService</span><span class="s2">.</span><span class="s1">getCurrentRunningSuite</span><span class="s5">()</span><span class="s2">.</span><span class="s1">description</span><span class="s2">;</span>
+        <span class="s1">let specDesc </span><span class="s2">= </span><span class="s1">this</span><span class="s2">.</span><span class="s1">specService</span><span class="s2">.</span><span class="s1">getCurrentRunningSpec</span><span class="s5">()</span><span class="s2">.</span><span class="s1">description</span><span class="s2">;</span>
+        <span class="s1">let suites </span><span class="s2">= </span><span class="s1">ObjectUtils</span><span class="s2">.</span><span class="s1">get</span><span class="s5">(</span><span class="s1">this</span><span class="s2">.</span><span class="s1">data</span><span class="s2">, </span><span class="s1">SUITES_KEY</span><span class="s2">, </span><span class="s5">[])</span><span class="s2">;</span>
+        <span class="s1">for </span><span class="s5">(</span><span class="s1">const suiteItem of suites</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">let describeValue </span><span class="s2">= </span><span class="s1">ObjectUtils</span><span class="s2">.</span><span class="s1">get</span><span class="s5">(</span><span class="s1">suiteItem</span><span class="s2">, </span><span class="s1">DESCRIBE_KEY</span><span class="s2">, </span><span class="s3">''</span><span class="s5">)</span><span class="s2">;</span>
+            <span class="s1">if </span><span class="s5">(</span><span class="s1">ObjectUtils</span><span class="s2">.</span><span class="s1">has</span><span class="s5">(</span><span class="s1">suiteItem</span><span class="s2">, </span><span class="s1">DESCRIBE_KEY</span><span class="s5">) </span><span class="s2">&amp;&amp; </span><span class="s5">(</span><span class="s1">typeof describeValue </span><span class="s2">=== </span><span class="s3">'object'</span><span class="s5">) </span><span class="s2">&amp;&amp; </span><span class="s1">describeValue</span><span class="s2">.</span><span class="s1">constructor </span><span class="s2">=== </span><span class="s1">Array </span><span class="s2">&amp;&amp; </span><span class="s1">describeValue</span><span class="s2">.</span><span class="s1">includes</span><span class="s5">(</span><span class="s1">suiteDesc</span><span class="s5">)) </span><span class="s4">{</span>
+                <span class="s1">let specs </span><span class="s2">= </span><span class="s1">ObjectUtils</span><span class="s2">.</span><span class="s1">get</span><span class="s5">(</span><span class="s1">suiteItem</span><span class="s2">, </span><span class="s1">SPECS_KEY</span><span class="s2">, </span><span class="s5">[])</span><span class="s2">;</span>
+                <span class="s1">for </span><span class="s5">(</span><span class="s1">const specItem of specs</span><span class="s5">) </span><span class="s4">{</span>
+                    <span class="s1">if </span><span class="s5">(</span><span class="s1">ObjectUtils</span><span class="s2">.</span><span class="s1">has</span><span class="s5">(</span><span class="s1">specItem</span><span class="s2">, </span><span class="s1">IT_KEY</span><span class="s5">) </span><span class="s2">&amp;&amp; </span><span class="s1">ObjectUtils</span><span class="s2">.</span><span class="s1">get</span><span class="s5">(</span><span class="s1">specItem</span><span class="s2">, </span><span class="s1">IT_KEY</span><span class="s5">) </span><span class="s2">=== </span><span class="s1">specDesc</span><span class="s5">) </span><span class="s4">{</span>
+                        <span class="s1">return ObjectUtils</span><span class="s2">.</span><span class="s1">get</span><span class="s5">(</span><span class="s1">specItem</span><span class="s2">, </span><span class="s1">PARAMS_KEY</span><span class="s2">, </span><span class="s1">specParams</span><span class="s5">)</span><span class="s2">;</span>
+                    <span class="s4">}</span>
+                <span class="s4">}</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span>
+        <span class="s1">return specParams</span><span class="s2">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">getSuiteParams</span><span class="s5">() </span><span class="s4">{</span>
+        <span class="s1">let suiteParams </span><span class="s2">= </span><span class="s4">{}</span><span class="s2">;</span>
+        <span class="s1">let suiteDesc </span><span class="s2">= </span><span class="s1">this</span><span class="s2">.</span><span class="s1">suiteService</span><span class="s2">.</span><span class="s1">getCurrentRunningSuite</span><span class="s5">()</span><span class="s2">.</span><span class="s1">description</span><span class="s2">;</span>
+        <span class="s1">let suites </span><span class="s2">= </span><span class="s1">ObjectUtils</span><span class="s2">.</span><span class="s1">get</span><span class="s5">(</span><span class="s1">this</span><span class="s2">.</span><span class="s1">data</span><span class="s2">, </span><span class="s1">SUITES_KEY</span><span class="s2">, </span><span class="s5">[])</span><span class="s2">;</span>
+        <span class="s1">for </span><span class="s5">(</span><span class="s1">const suiteItem of suites</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">let describeValue </span><span class="s2">= </span><span class="s1">ObjectUtils</span><span class="s2">.</span><span class="s1">get</span><span class="s5">(</span><span class="s1">suiteItem</span><span class="s2">, </span><span class="s1">DESCRIBE_KEY</span><span class="s2">, </span><span class="s5">[])</span><span class="s2">;</span>
+            <span class="s1">if </span><span class="s5">(</span><span class="s1">ObjectUtils</span><span class="s2">.</span><span class="s1">has</span><span class="s5">(</span><span class="s1">suiteItem</span><span class="s2">, </span><span class="s1">DESCRIBE_KEY</span><span class="s5">) </span><span class="s2">&amp;&amp; </span><span class="s5">(</span><span class="s1">typeof describeValue </span><span class="s2">=== </span><span class="s3">'object'</span><span class="s5">) </span><span class="s2">&amp;&amp; </span><span class="s1">describeValue</span><span class="s2">.</span><span class="s1">constructor </span><span class="s2">=== </span><span class="s1">Array </span><span class="s2">&amp;&amp; </span><span class="s1">describeValue</span><span class="s2">.</span><span class="s1">includes</span><span class="s5">(</span><span class="s1">suiteDesc</span><span class="s5">)) </span><span class="s4">{</span>
+                <span class="s1">suiteParams </span><span class="s2">= </span><span class="s1">Object</span><span class="s2">.</span><span class="s1">assign</span><span class="s5">(</span><span class="s4">{}</span><span class="s2">, </span><span class="s1">suiteParams</span><span class="s2">, </span><span class="s1">ObjectUtils</span><span class="s2">.</span><span class="s1">get</span><span class="s5">(</span><span class="s1">suiteItem</span><span class="s2">, </span><span class="s1">PARAMS_KEY</span><span class="s2">, </span><span class="s1">suiteParams</span><span class="s5">))</span><span class="s2">;</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span>
+        <span class="s1">return suiteParams</span><span class="s2">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">getSpecStress</span><span class="s5">(</span><span class="s1">specDesc</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">let stress </span><span class="s2">= </span><span class="s6">1</span><span class="s2">;</span>
+        <span class="s1">let suiteDesc </span><span class="s2">= </span><span class="s1">this</span><span class="s2">.</span><span class="s1">suiteService</span><span class="s2">.</span><span class="s1">getCurrentRunningSuite</span><span class="s5">()</span><span class="s2">.</span><span class="s1">description</span><span class="s2">;</span>
+        <span class="s1">let suites </span><span class="s2">= </span><span class="s1">ObjectUtils</span><span class="s2">.</span><span class="s1">get</span><span class="s5">(</span><span class="s1">this</span><span class="s2">.</span><span class="s1">data</span><span class="s2">, </span><span class="s1">SUITES_KEY</span><span class="s2">, </span><span class="s5">[])</span><span class="s2">;</span>
+        <span class="s1">for </span><span class="s5">(</span><span class="s1">const suiteItem of suites</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">let describeValue </span><span class="s2">= </span><span class="s1">ObjectUtils</span><span class="s2">.</span><span class="s1">get</span><span class="s5">(</span><span class="s1">suiteItem</span><span class="s2">, </span><span class="s1">DESCRIBE_KEY</span><span class="s2">, </span><span class="s3">''</span><span class="s5">)</span><span class="s2">;</span>
+            <span class="s1">if </span><span class="s5">(</span><span class="s1">ObjectUtils</span><span class="s2">.</span><span class="s1">has</span><span class="s5">(</span><span class="s1">suiteItem</span><span class="s2">, </span><span class="s1">DESCRIBE_KEY</span><span class="s5">) </span><span class="s2">&amp;&amp; </span><span class="s5">(</span><span class="s1">typeof describeValue </span><span class="s2">=== </span><span class="s3">'object'</span><span class="s5">) </span><span class="s2">&amp;&amp; </span><span class="s1">describeValue</span><span class="s2">.</span><span class="s1">constructor </span><span class="s2">=== </span><span class="s1">Array </span><span class="s2">&amp;&amp; </span><span class="s1">describeValue</span><span class="s2">.</span><span class="s1">includes</span><span class="s5">(</span><span class="s1">suiteDesc</span><span class="s5">)) </span><span class="s4">{</span>
+                <span class="s1">let specs </span><span class="s2">= </span><span class="s1">ObjectUtils</span><span class="s2">.</span><span class="s1">get</span><span class="s5">(</span><span class="s1">suiteItem</span><span class="s2">, </span><span class="s1">SPECS_KEY</span><span class="s2">, </span><span class="s5">[])</span><span class="s2">;</span>
+                <span class="s1">for </span><span class="s5">(</span><span class="s1">const specItem of specs</span><span class="s5">) </span><span class="s4">{</span>
+                    <span class="s1">if </span><span class="s5">(</span><span class="s1">ObjectUtils</span><span class="s2">.</span><span class="s1">has</span><span class="s5">(</span><span class="s1">specItem</span><span class="s2">, </span><span class="s1">IT_KEY</span><span class="s5">) </span><span class="s2">&amp;&amp; </span><span class="s1">ObjectUtils</span><span class="s2">.</span><span class="s1">get</span><span class="s5">(</span><span class="s1">specItem</span><span class="s2">, </span><span class="s1">IT_KEY</span><span class="s5">) </span><span class="s2">=== </span><span class="s1">specDesc</span><span class="s5">) </span><span class="s4">{</span>
+                        <span class="s1">let tempStress </span><span class="s2">= </span><span class="s1">ObjectUtils</span><span class="s2">.</span><span class="s1">get</span><span class="s5">(</span><span class="s1">specItem</span><span class="s2">, </span><span class="s1">STRESS_KEY</span><span class="s2">, </span><span class="s1">stress</span><span class="s5">)</span><span class="s2">;</span>
+                        <span class="s1">return </span><span class="s5">(</span><span class="s1">Number</span><span class="s2">.</span><span class="s1">isInteger</span><span class="s5">(</span><span class="s1">tempStress</span><span class="s5">) </span><span class="s2">&amp;&amp; </span><span class="s1">tempStress </span><span class="s2">&gt;= </span><span class="s6">1</span><span class="s5">) </span><span class="s2">? </span><span class="s1">tempStress </span><span class="s2">: </span><span class="s1">stress</span><span class="s2">;</span>
+                    <span class="s4">}</span>
+                <span class="s4">}</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span>
+        <span class="s1">return stress</span><span class="s2">;</span>
+    <span class="s4">}</span>
+
+    <span class="s1">getSuiteStress</span><span class="s5">(</span><span class="s1">suiteDesc</span><span class="s5">) </span><span class="s4">{</span>
+        <span class="s1">let stress </span><span class="s2">= </span><span class="s6">1</span><span class="s2">;</span>
+        <span class="s1">let suites </span><span class="s2">= </span><span class="s1">ObjectUtils</span><span class="s2">.</span><span class="s1">get</span><span class="s5">(</span><span class="s1">this</span><span class="s2">.</span><span class="s1">data</span><span class="s2">, </span><span class="s1">SUITES_KEY</span><span class="s2">, </span><span class="s5">[])</span><span class="s2">;</span>
+        <span class="s1">for </span><span class="s5">(</span><span class="s1">const suiteItem of suites</span><span class="s5">) </span><span class="s4">{</span>
+            <span class="s1">let describeValue </span><span class="s2">= </span><span class="s1">ObjectUtils</span><span class="s2">.</span><span class="s1">get</span><span class="s5">(</span><span class="s1">suiteItem</span><span class="s2">, </span><span class="s1">DESCRIBE_KEY</span><span class="s2">, </span><span class="s5">[])</span><span class="s2">;</span>
+            <span class="s1">if </span><span class="s5">(</span><span class="s1">ObjectUtils</span><span class="s2">.</span><span class="s1">has</span><span class="s5">(</span><span class="s1">suiteItem</span><span class="s2">, </span><span class="s1">DESCRIBE_KEY</span><span class="s5">) </span><span class="s2">&amp;&amp; </span><span class="s5">(</span><span class="s1">typeof describeValue </span><span class="s2">=== </span><span class="s3">'object'</span><span class="s5">) </span><span class="s2">&amp;&amp; </span><span class="s1">describeValue</span><span class="s2">.</span><span class="s1">constructor </span><span class="s2">=== </span><span class="s1">Array </span><span class="s2">&amp;&amp; </span><span class="s1">describeValue</span><span class="s2">.</span><span class="s1">includes</span><span class="s5">(</span><span class="s1">suiteDesc</span><span class="s5">)) </span><span class="s4">{</span>
+                <span class="s1">let tempStress </span><span class="s2">= </span><span class="s1">ObjectUtils</span><span class="s2">.</span><span class="s1">get</span><span class="s5">(</span><span class="s1">suiteItem</span><span class="s2">, </span><span class="s1">STRESS_KEY</span><span class="s2">, </span><span class="s1">stress</span><span class="s5">)</span><span class="s2">;</span>
+                <span class="s1">return </span><span class="s5">(</span><span class="s1">Number</span><span class="s2">.</span><span class="s1">isInteger</span><span class="s5">(</span><span class="s1">tempStress</span><span class="s5">) </span><span class="s2">&amp;&amp; </span><span class="s1">tempStress </span><span class="s2">&gt;= </span><span class="s6">1</span><span class="s5">) </span><span class="s2">? </span><span class="s1">tempStress </span><span class="s2">: </span><span class="s1">stress</span><span class="s2">;</span>
+            <span class="s4">}</span>
+        <span class="s4">}</span>
+        <span class="s1">return stress</span><span class="s2">;</span>
+    <span class="s4">}</span>
+<span class="s4">}</span>
+
+<span class="s1">export default DataDriver</span><span class="s2">;</span>
+</pre>
+</body>
+</html>

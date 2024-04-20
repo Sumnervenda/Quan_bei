@@ -1,0 +1,104 @@
+<html>
+<head>
+<title>Filter.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #808080;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #faa23d;}
+.s3 { color: #db7e9b;}
+.s4 { color: #e2da90;}
+.s5 { color: #aa7dfc;}
+.s6 { color: #b3e54c;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Filter.js</font>
+</center></td></tr></table>
+<pre><span class="s0">/* 
+ * Copyright (c) 2021-2022 Huawei Device Co., Ltd. 
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ */</span>
+
+<span class="s1">class ClassFilter </span><span class="s2">{</span>
+    <span class="s1">constructor</span><span class="s3">(</span><span class="s1">suiteName</span><span class="s4">, </span><span class="s1">itName</span><span class="s4">, </span><span class="s1">params</span><span class="s3">) </span><span class="s2">{</span>
+        <span class="s1">this</span><span class="s4">.</span><span class="s1">suiteName </span><span class="s4">= </span><span class="s1">suiteName</span><span class="s4">;</span>
+        <span class="s1">this</span><span class="s4">.</span><span class="s1">itName </span><span class="s4">= </span><span class="s1">itName</span><span class="s4">;</span>
+        <span class="s1">this</span><span class="s4">.</span><span class="s1">params </span><span class="s4">= </span><span class="s1">params</span><span class="s4">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">filterSuite</span><span class="s3">() </span><span class="s2">{</span>
+        <span class="s1">return </span><span class="s4">!</span><span class="s1">this</span><span class="s4">.</span><span class="s1">params</span><span class="s4">.</span><span class="s1">split</span><span class="s3">(</span><span class="s5">','</span><span class="s3">)</span><span class="s4">.</span><span class="s1">map</span><span class="s3">(</span><span class="s1">item </span><span class="s4">=&gt; </span><span class="s1">item</span><span class="s4">.</span><span class="s1">split</span><span class="s3">(</span><span class="s5">'#'</span><span class="s3">)[</span><span class="s6">0</span><span class="s3">])</span><span class="s4">.</span><span class="s1">map</span><span class="s3">(</span><span class="s1">item </span><span class="s4">=&gt; </span><span class="s1">item </span><span class="s4">== </span><span class="s1">this</span><span class="s4">.</span><span class="s1">suiteName</span><span class="s3">)</span><span class="s4">.</span><span class="s1">reduce</span><span class="s3">((</span><span class="s1">pre</span><span class="s4">, </span><span class="s1">cur</span><span class="s3">) </span><span class="s4">=&gt; </span><span class="s1">pre </span><span class="s4">|| </span><span class="s1">cur</span><span class="s4">, </span><span class="s1">false</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">filterIt</span><span class="s3">() </span><span class="s2">{</span>
+        <span class="s1">let classArray </span><span class="s4">= </span><span class="s1">this</span><span class="s4">.</span><span class="s1">params</span><span class="s4">.</span><span class="s1">split</span><span class="s3">(</span><span class="s5">','</span><span class="s3">) </span><span class="s4">|| </span><span class="s3">[]</span><span class="s4">;</span>
+        <span class="s1">let suiteFilterResult </span><span class="s4">= </span><span class="s1">classArray</span><span class="s4">.</span><span class="s1">filter</span><span class="s3">(</span><span class="s1">item </span><span class="s4">=&gt; !</span><span class="s1">item</span><span class="s4">.</span><span class="s1">includes</span><span class="s3">(</span><span class="s5">'#'</span><span class="s3">))</span><span class="s4">.</span><span class="s1">map</span><span class="s3">(</span><span class="s1">item </span><span class="s4">=&gt; </span><span class="s1">item </span><span class="s4">== </span><span class="s1">this</span><span class="s4">.</span><span class="s1">suiteName</span><span class="s3">)</span><span class="s4">.</span><span class="s1">reduce</span><span class="s3">((</span><span class="s1">pre</span><span class="s4">, </span><span class="s1">cur</span><span class="s3">) </span><span class="s4">=&gt; </span><span class="s1">pre </span><span class="s4">|| </span><span class="s1">cur</span><span class="s4">, </span><span class="s1">false</span><span class="s3">)</span><span class="s4">;</span>
+        <span class="s1">let itFilterResult </span><span class="s4">= </span><span class="s1">classArray</span><span class="s4">.</span><span class="s1">filter</span><span class="s3">(</span><span class="s1">item </span><span class="s4">=&gt; </span><span class="s1">item</span><span class="s4">.</span><span class="s1">includes</span><span class="s3">(</span><span class="s5">'#'</span><span class="s3">))</span><span class="s4">.</span><span class="s1">map</span><span class="s3">(</span><span class="s1">item </span><span class="s4">=&gt; </span><span class="s1">item </span><span class="s4">== </span><span class="s3">(</span><span class="s1">this</span><span class="s4">.</span><span class="s1">suiteName </span><span class="s4">+ </span><span class="s5">'#' </span><span class="s4">+ </span><span class="s1">this</span><span class="s4">.</span><span class="s1">itName</span><span class="s3">))</span><span class="s4">.</span><span class="s1">reduce</span><span class="s3">((</span><span class="s1">pre</span><span class="s4">, </span><span class="s1">cur</span><span class="s3">) </span><span class="s4">=&gt; </span><span class="s1">pre </span><span class="s4">|| </span><span class="s1">cur</span><span class="s4">, </span><span class="s1">false</span><span class="s3">)</span><span class="s4">;</span>
+        <span class="s1">return </span><span class="s4">!</span><span class="s3">(</span><span class="s1">suiteFilterResult </span><span class="s4">|| </span><span class="s1">itFilterResult</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+<span class="s1">class NotClassFilter </span><span class="s2">{</span>
+    <span class="s1">constructor</span><span class="s3">(</span><span class="s1">suiteName</span><span class="s4">, </span><span class="s1">itName</span><span class="s4">, </span><span class="s1">params</span><span class="s3">) </span><span class="s2">{</span>
+        <span class="s1">this</span><span class="s4">.</span><span class="s1">suiteName </span><span class="s4">= </span><span class="s1">suiteName</span><span class="s4">;</span>
+        <span class="s1">this</span><span class="s4">.</span><span class="s1">itName </span><span class="s4">= </span><span class="s1">itName</span><span class="s4">;</span>
+        <span class="s1">this</span><span class="s4">.</span><span class="s1">params </span><span class="s4">= </span><span class="s1">params</span><span class="s4">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">filterSuite</span><span class="s3">() </span><span class="s2">{</span>
+        <span class="s1">return this</span><span class="s4">.</span><span class="s1">params</span><span class="s4">.</span><span class="s1">split</span><span class="s3">(</span><span class="s5">','</span><span class="s3">)</span><span class="s4">.</span><span class="s1">map</span><span class="s3">(</span><span class="s1">item </span><span class="s4">=&gt; </span><span class="s1">item </span><span class="s4">== </span><span class="s1">this</span><span class="s4">.</span><span class="s1">suiteName</span><span class="s3">)</span><span class="s4">.</span><span class="s1">reduce</span><span class="s3">((</span><span class="s1">pre</span><span class="s4">, </span><span class="s1">cur</span><span class="s3">) </span><span class="s4">=&gt; </span><span class="s1">pre </span><span class="s4">|| </span><span class="s1">cur</span><span class="s4">, </span><span class="s1">false</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">filterIt</span><span class="s3">() </span><span class="s2">{</span>
+        <span class="s1">return this</span><span class="s4">.</span><span class="s1">params</span><span class="s4">.</span><span class="s1">split</span><span class="s3">(</span><span class="s5">','</span><span class="s3">)</span><span class="s4">.</span><span class="s1">some</span><span class="s3">(</span><span class="s1">item </span><span class="s4">=&gt; </span><span class="s1">item </span><span class="s4">== </span><span class="s3">(</span><span class="s1">this</span><span class="s4">.</span><span class="s1">suiteName </span><span class="s4">+ </span><span class="s5">'#' </span><span class="s4">+ </span><span class="s1">this</span><span class="s4">.</span><span class="s1">itName</span><span class="s3">))</span><span class="s4">;</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+<span class="s1">class SuiteAndItNameFilter </span><span class="s2">{</span>
+    <span class="s1">constructor</span><span class="s3">(</span><span class="s1">suiteName</span><span class="s4">, </span><span class="s1">itName</span><span class="s4">, </span><span class="s1">params</span><span class="s3">) </span><span class="s2">{</span>
+        <span class="s1">this</span><span class="s4">.</span><span class="s1">suiteName </span><span class="s4">= </span><span class="s1">suiteName</span><span class="s4">;</span>
+        <span class="s1">this</span><span class="s4">.</span><span class="s1">itName </span><span class="s4">= </span><span class="s1">itName</span><span class="s4">;</span>
+        <span class="s1">this</span><span class="s4">.</span><span class="s1">params </span><span class="s4">= </span><span class="s1">params</span><span class="s4">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">filterSuite</span><span class="s3">() </span><span class="s2">{</span>
+        <span class="s1">return </span><span class="s4">!</span><span class="s1">this</span><span class="s4">.</span><span class="s1">params</span><span class="s4">.</span><span class="s1">split</span><span class="s3">(</span><span class="s5">','</span><span class="s3">)</span><span class="s4">.</span><span class="s1">map</span><span class="s3">(</span><span class="s1">item </span><span class="s4">=&gt; </span><span class="s1">item </span><span class="s4">== </span><span class="s1">this</span><span class="s4">.</span><span class="s1">suiteName</span><span class="s3">)</span><span class="s4">.</span><span class="s1">reduce</span><span class="s3">((</span><span class="s1">pre</span><span class="s4">, </span><span class="s1">cur</span><span class="s3">) </span><span class="s4">=&gt; </span><span class="s1">pre </span><span class="s4">|| </span><span class="s1">cur</span><span class="s4">, </span><span class="s1">false</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">filterIt</span><span class="s3">() </span><span class="s2">{</span>
+        <span class="s1">return </span><span class="s4">!</span><span class="s1">this</span><span class="s4">.</span><span class="s1">params</span><span class="s4">.</span><span class="s1">split</span><span class="s3">(</span><span class="s5">','</span><span class="s3">)</span><span class="s4">.</span><span class="s1">map</span><span class="s3">(</span><span class="s1">item </span><span class="s4">=&gt; </span><span class="s1">item </span><span class="s4">== </span><span class="s1">this</span><span class="s4">.</span><span class="s1">itName</span><span class="s3">)</span><span class="s4">.</span><span class="s1">reduce</span><span class="s3">((</span><span class="s1">pre</span><span class="s4">, </span><span class="s1">cur</span><span class="s3">) </span><span class="s4">=&gt; </span><span class="s1">pre </span><span class="s4">|| </span><span class="s1">cur</span><span class="s4">, </span><span class="s1">false</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+
+<span class="s1">class TestTypesFilter </span><span class="s2">{</span>
+    <span class="s1">constructor</span><span class="s3">(</span><span class="s1">suiteName</span><span class="s4">, </span><span class="s1">itName</span><span class="s4">, </span><span class="s1">fi</span><span class="s4">, </span><span class="s1">params</span><span class="s3">) </span><span class="s2">{</span>
+        <span class="s1">this</span><span class="s4">.</span><span class="s1">suiteName </span><span class="s4">= </span><span class="s1">suiteName</span><span class="s4">;</span>
+        <span class="s1">this</span><span class="s4">.</span><span class="s1">itName </span><span class="s4">= </span><span class="s1">itName</span><span class="s4">;</span>
+        <span class="s1">this</span><span class="s4">.</span><span class="s1">params </span><span class="s4">= </span><span class="s1">params</span><span class="s4">;</span>
+        <span class="s1">this</span><span class="s4">.</span><span class="s1">fi </span><span class="s4">= </span><span class="s1">fi</span><span class="s4">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">filterIt</span><span class="s3">() </span><span class="s2">{</span>
+        <span class="s1">return </span><span class="s4">!</span><span class="s3">((</span><span class="s1">this</span><span class="s4">.</span><span class="s1">params </span><span class="s4">=== </span><span class="s3">(</span><span class="s1">this</span><span class="s4">.</span><span class="s1">fi </span><span class="s4">&amp; </span><span class="s1">this</span><span class="s4">.</span><span class="s1">params</span><span class="s3">)) </span><span class="s4">|| </span><span class="s1">this</span><span class="s4">.</span><span class="s1">fi </span><span class="s4">=== </span><span class="s6">0</span><span class="s3">)</span><span class="s4">;</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+<span class="s1">export </span><span class="s2">{</span><span class="s1">ClassFilter</span><span class="s4">, </span><span class="s1">NotClassFilter</span><span class="s4">, </span><span class="s1">SuiteAndItNameFilter</span><span class="s4">, </span><span class="s1">TestTypesFilter</span><span class="s2">}</span><span class="s4">;</span>
+</pre>
+</body>
+</html>
