@@ -8,6 +8,7 @@
     "pages/mine",
     "pages/change",
     "pages/Share_info",
-    "pages/scrolls"
+    "pages/scrolls",
+    "pages/Page123"
   ]
 }
