@@ -81,7 +81,7 @@ struct Index {
                 .strokeWidth(0.5)
                 .color('#182431')
                 .opacity(0.05)
-            }.width('80%')
+            }.width('100%')
           }.tabBar(this.TabBuilder(3,$r('app.media.mine_active'),$r('app.media.mine_normal'),'我的'))//我的按钮
         }
         .vertical(false)
