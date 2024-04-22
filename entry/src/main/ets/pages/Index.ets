@@ -8,7 +8,7 @@ import  Manage_money from '../view/Manage_money'
 import  Schedual from '../view/Schedual'
 import  Mine from '../view/Mine'
 
-@Entry
+
 @Component
 //构建首页布局
 struct Index {
