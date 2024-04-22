@@ -1,6 +1,6 @@
 
 
-@Entry
+
 @Component//定义一个组件，传入下列5个参数，组件内容会自动改变。
 export struct Card{
   @State Title : string ='股票'
