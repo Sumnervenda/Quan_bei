@@ -89,7 +89,7 @@ struct Index {
         .onChange((index: number) => {
           this.currentIndex = index
         })
-        .width('80%')
+        .width('100%')
         .height('94.5%')
         .backgroundColor('#ffffffff')
         .margin({ top:0 })
