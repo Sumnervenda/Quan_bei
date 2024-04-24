@@ -8,7 +8,7 @@ import  Manage_money from '../view/Manage_money'
 import  Schedual from '../view/Schedual'
 import  Mine from '../view/Mine'
 
-@Entry
+
 @Component
 //构建首页布局
 struct Index {
@@ -57,7 +57,7 @@ struct Index {
                 .strokeWidth(1)
                 .color('#ff004699')
 
-            }.width('80%')
+            }.width('100%')
           }.tabBar(this.TabBuilder(1,$r('app.media.money_active'),$r('app.media.money_normal'),'理财'))//理财按钮
 
           TabContent() {
