@@ -14,7 +14,7 @@ struct Index {
         .justifyContent(FlexAlign.Start)
 
         Row() {
-          Image($r('app.media.statistic')).width('100%').height('100%').objectFit(ImageFit.Cover)
+          Image($r('app.media.main_logo')).width('100%').height('100%').objectFit(ImageFit.Cover)
         }
         .width('100%')
         .layoutWeight(1)
