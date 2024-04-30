@@ -8,6 +8,9 @@
     "pages/mine",
     "pages/change",
     "pages/Share_info",
-    "pages/scrolls"
+    "pages/scrolls",
+    "pages/input_component_test",
+    "pages/Licai homepage",
+    "pages/main_page_test"
   ]
 }

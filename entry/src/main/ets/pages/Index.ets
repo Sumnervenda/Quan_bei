@@ -7,6 +7,7 @@ import  Home from '../view/Home'
 import  Manage_money from '../view/Manage_money'
 import  Schedual from '../view/Schedual'
 import  Mine from '../view/Mine'
+import analysis from './analysis';
 
 @Entry
 @Component
@@ -34,8 +35,6 @@ struct Index {
 
   build() {
       Column() {
-        Image('assets/Status_Bar.png')
-          .width('100%')
 
         //导航栏
         Tabs({ barPosition: BarPosition.End, controller: this.controller }){
@@ -63,7 +62,7 @@ struct Index {
           TabContent() {
             //点规划按钮要跳出的view，Schedual页
             Column() {
-              Schedual()
+              analysis()
 
               Divider()
                 .strokeWidth(0.5)
@@ -90,12 +89,14 @@ struct Index {
           this.currentIndex = index
         })
         .width('100%')
-        .height('94.5%')
+        .height('100%')
         .backgroundColor('#ffffffff')
         .margin({ top:0 })
+
       }
       .height("100%")
       .width('100%')
+
 
   }
 

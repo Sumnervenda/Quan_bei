@@ -20,6 +20,7 @@ export default struct Manage_money  {
             .width(this.widthSize)
             .searchButton('SEARCH')
             .align(Alignment.End)
+            .margin({top:30})
         }
         .align(Alignment.TopStart)
         .alignItems(VerticalAlign.Center)

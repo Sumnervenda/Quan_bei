@@ -12,8 +12,7 @@ struct Share_info {
   build() {
     Column() {
       //上面的电量、wifi等tabbar
-      Image('assets/Status_Bar.png')
-        .width('100%')
+
       //退出箭头
       Row() {
         Image('assets/Arrow_left_light.png')
@@ -32,6 +31,7 @@ struct Share_info {
             left: 14
           })
       }
+      .margin({top:20})
       .width('85%')
       .height(60)
 
@@ -159,7 +159,7 @@ struct Share_info {
         }.width(44)
         .height(44)
         .borderRadius(8)
-        .position({x:"4%",y:"28%"})
+        .position({x:"4%",y:"24.5%"})
         .shadow({ radius: 40, color: 0xE0E0E0, offsetX: -3, offsetY: 10 })
 
         Button({type:ButtonType.Normal}){
@@ -168,7 +168,7 @@ struct Share_info {
         }.width(44)
         .height(44)
         .borderRadius(8)
-        .position({x:"84%",y:"28%"})
+        .position({x:"84%",y:"24.5%"})
         .shadow({ radius: 40, color: 0xE0E0E0, offsetX: -3, offsetY: 10 })
       }
     }

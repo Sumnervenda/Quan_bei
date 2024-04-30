@@ -1,23 +1,8 @@
-/*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
- * Licensed under the Apache License,Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-import systemDateTime from '@ohos.systemDateTime';
 
 
 @Component
 @CustomDialog
-export default struct add_Target {
+export default struct AddTargetDialog {
   @State spend_type : string = ''
   @State deal_name: string = '';
   now_time:Date = new Date();
@@ -29,7 +14,7 @@ export default struct add_Target {
   @State active_backgroundColor :string ='#006aff'
   @State active_fontColor : string = '#ffffff'
   @State date_picker : string = '4月15日'
-  img_url : Resource = $r('app.media.xintuo');
+  img_url : Resource = $r('app.media.app_icon');
   private controller?: CustomDialogController;
   onClickOk?: (value1: string,value2:string,value3:string,value4:string,value5:boolean) => void;
   value_spend: [{value:'饮食消费'}, {value:'娱乐消费'}, {value:'学习消费'}, {value:'生活消费'}, {value:'租金消费'}, {value:'交通运输'}, {value:'服装消费'}]
@@ -37,6 +22,8 @@ export default struct add_Target {
 
   build() {
     Column() {
+
+      Blank().height("5%")
       Row() {
         Button("支出")
           .backgroundColor(this.flag === true ? this.active_backgroundColor : this.normal_backgroundColor)
@@ -76,7 +63,7 @@ export default struct add_Target {
               .onSelect((index:number,value:string)=>{
                 this.spend_type=value
               })
-              .width(161)
+              .width(140)
               .height(40)
               .value('支出类型')
               .selected(0)
@@ -101,7 +88,7 @@ export default struct add_Target {
               })
               .value('收入类型')
               .selected(0)
-              .width(161)
+              .width(140)
               .height(40)
               .border({
                 width: 1.5
@@ -122,7 +109,7 @@ export default struct add_Target {
           Blank()
             .height(10)
           Row() {
-            Image($r("app.media.money_icon"))
+            Image($r("app.media.app_icon"))
               .width(16)
               .margin({
                 left: 5
@@ -135,7 +122,7 @@ export default struct add_Target {
               .onChange((value: string) => {
                 this.spend_money = value;
               })
-              .width(140)
+              .width('100%')
               .height(40)
 
           }
@@ -149,7 +136,7 @@ export default struct add_Target {
         .width('45%')
         .alignItems(HorizontalAlign.Start)
       }
-      .width('100%')
+      .width('86%')
       .margin({
         top:20
       })
@@ -163,7 +150,7 @@ export default struct add_Target {
           .borderRadius(8)
           .borderColor('#d8d8d8')
           .height(40)
-          .width(162)
+          .width('45%')
           .margin({
             top:20
           })
@@ -178,7 +165,7 @@ export default struct add_Target {
           .type(ButtonType.Normal)
           .margin({
             top:20,
-            left:36
+            left:30
           })
           .onClick(() => {
             DatePickerDialog.show({
@@ -201,32 +188,33 @@ export default struct add_Target {
             })
           })
       }
-      .width('100%')
+      .width('86%')
 
 
       Column() {
 
-      Text('备注')
+        Text('备注')
 
         Blank()
           .height(10)
 
-      TextInput({ placeholder: "填写收支说明" })
-        .placeholderColor(Color.Grey)
-        .border({
-          width: 1.5
-        })
-        .borderColor('#d8d8d8')
-        .borderRadius(8)
-        .backgroundColor('#00ffffff')
-        .height(40)
-        .onChange((value: string) => {
-          this.deal_name = value;
-        })
-    }
+        TextInput({ placeholder: "填写收支说明" })
+          .placeholderColor(Color.Grey)
+          .border({
+            width: 1.5
+          })
+          .borderColor('#d8d8d8')
+          .borderRadius(8)
+          .backgroundColor('#00ffffff')
+          .height(40)
+          .onChange((value: string) => {
+            this.deal_name = value;
+          })
+      }
       .margin({
         top:10
       })
+      .width('86%')
       .alignItems(HorizontalAlign.Start)
 
       Row() {
@@ -254,10 +242,13 @@ export default struct add_Target {
       .margin({
         top:40
       })
-
       .justifyContent(FlexAlign.SpaceBetween)
+
+      Blank().height("8%")
     }
     .width("100%")
+    .backgroundColor('#fffefefe')
+    .borderRadius(12)
   }
 }
 
