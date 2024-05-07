@@ -1,6 +1,7 @@
 import router from '@ohos.router'
 import {Card_new} from '../Component/Card_new'
 
+@Entry
 @Component
 export default struct Manage_money  {
   @State message: string = '这是Home'
@@ -51,7 +52,7 @@ export default struct Manage_money  {
           Column({space:6}){
             Card_new({
               Title:'股票',
-              img_url:$r('app.media.icon')
+              img_url:$r('app.media.gupiao_')
             })
               .onClick(()=>{router.pushUrl({
               url:'pages/Share_info'
@@ -59,27 +60,27 @@ export default struct Manage_money  {
             })
             Card_new({
               Title:'外汇',
-              img_url:$r('app.media.icon')
+              img_url:$r('app.media.waihui_')
             })
           }
           Column({space:6}){
             Card_new({
               Title:'期货',
-              img_url:$r('app.media.icon')
+              img_url:$r('app.media.qihuo_')
             })
             Card_new({
               Title:'信托',
-              img_url:$r('app.media.icon')
+              img_url:$r('app.media.xintuo_')
             })
           }
           Column({space:6}){
             Card_new({
               Title:'黄金',
-              img_url:$r('app.media.icon')
+              img_url:$r('app.media.huangjin_')
             })
             Card_new({
               Title:'区块链',
-              img_url:$r('app.media.icon')
+              img_url:$r('app.media.qukuailian_')
             })
           }
         }
@@ -113,29 +114,29 @@ export default struct Manage_money  {
         Row(){
           Column({space:6}){
             Card_new({
-              Title:'股票',
-              img_url:$r('app.media.icon')
+              Title:'储蓄',
+              img_url:$r('app.media.chuxu_')
             })
 
             Card_new({
-              Title:'外汇',
-              img_url:$r('app.media.icon')
+              Title:'券商',
+              img_url:$r('app.media.quanshang_')
             })
           }
           Column({space:6}){
             Card_new({
-              Title:'期货',
-              img_url:$r('app.media.icon')
+              Title:'国债',
+              img_url:$r('app.media.guozhai_')
             })
             Card_new({
-              Title:'信托',
-              img_url:$r('app.media.icon')
+              Title:'保险',
+              img_url:$r('app.media.baoxian_')
             })
           }
           Column({space:6}){
             Card_new({
-              Title:'黄金',
-              img_url:$r('app.media.icon')
+              Title:'基金',
+              img_url:$r('app.media.jijin_')
             })
             Row()
               .width(96)
