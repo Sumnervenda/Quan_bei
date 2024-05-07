@@ -74,7 +74,7 @@ struct Index {
           TabContent() {
             //点我的按钮要跳出的view，mine页
             Column() {
-              Mine()
+              // Mine()
 
               Divider()
                 .strokeWidth(0.5)
