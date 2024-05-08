@@ -151,11 +151,11 @@ export default struct Manage_money  {
         .width('85%')
         .justifyContent(FlexAlign.SpaceBetween)
            //这是分割线
-        Divider()
-          .strokeWidth(2)
-          .color('#ff000000')
-          .opacity(0.15)
-          .position({x:'0%',y:'99.9%'})
+        // Divider()
+        //   .strokeWidth(2)
+        //   .color('#ff000000')
+        //   .opacity(0.15)
+        //   .position({x:'0%',y:'99.9%'})
       }
       .width('100%')
       .height('100%')

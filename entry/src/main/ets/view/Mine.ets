@@ -1,5 +1,5 @@
 import router from '@ohos.router'
-@Entry
+
 @Component
 export default struct Mine {
   @State message: string = '这是Home'
@@ -12,6 +12,8 @@ export default struct Mine {
   build() {
     Column(){
       Text('我的')
+        .width('92%')
+        .align(Alignment.Start)
         .margin({
           left: 20,
           top:20
@@ -175,5 +177,7 @@ export default struct Mine {
       .shadow({ radius: 40, color: 0xE0E0E0, offsetX: -3, offsetY: 10 })
       .position({x:"6%",y:"86%"})
     }
+    .width('100%')
+    .height('100%')
   }
 }

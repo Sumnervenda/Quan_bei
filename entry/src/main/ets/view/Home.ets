@@ -262,7 +262,7 @@ export default  struct Home {
     }
     .width(CommonConstants.FULL_WIDTH)
     .height(CommonConstants.FULL_HEIGHT)
-    .backgroundColor($r('app.color.index_background'))
+    .backgroundColor('#fffcfcfc')
   }
 
   @Builder

@@ -74,15 +74,22 @@ struct Index {
           TabContent() {
             //点我的按钮要跳出的view，mine页
             Column() {
-              // Mine()
+              Mine()
 
               Divider()
                 .strokeWidth(0.5)
                 .color('#182431')
                 .opacity(0.05)
-            }.width('90%')
+            }.width('100%')
           }.tabBar(this.TabBuilder(3,$r('app.media.mine_active'),$r('app.media.mine_normal'),'我的'))//我的按钮
         }
+        // .shadow({
+        //   radius:10,
+        //   color: "#000000",
+        //   offsetX:0,
+        //   offsetY:-8,
+        //
+        // })
         .vertical(false)
         .barHeight(72)
         .onChange((index: number) => {
