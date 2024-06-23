@@ -1,5 +1,5 @@
 import router from '@ohos.router'
-
+@Entry
 @Component
 export default struct Mine {
   @State message: string = '这是Home'
@@ -128,7 +128,7 @@ export default struct Mine {
 
         Image($r('app.media.row_right'))
           .height('40%')
-          .margin({left:160})
+          .margin({left:180})
       }
       .width('88%')
       .height('8%')
@@ -147,7 +147,7 @@ export default struct Mine {
 
           Image($r('app.media.row_right'))
             .height('40%')
-            .margin({left:140})
+            .margin({left:160})
         }
       }
       .width('88%')
@@ -167,7 +167,7 @@ export default struct Mine {
 
           Image($r('app.media.row_right'))
             .height('40%')
-            .margin({left:200})
+            .margin({left:220})
         }
       }
       .width('88%')

@@ -11,6 +11,12 @@
     "pages/scrolls",
     "pages/input_component_test",
     "pages/Licai homepage",
-    "pages/main_page_test"
+    "pages/main_page_test",
+    "pages/yindao_one",
+    "pages/yindao_two",
+    "pages/yindao_three",
+    "pages/yindao_four",
+    "pages/sign_up",
+    "pages/sign_in"
   ]
 }
