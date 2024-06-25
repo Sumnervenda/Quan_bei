@@ -9,9 +9,12 @@ import  Schedual from '../view/Schedual'
 import  Mine from '../view/Mine'
 import analysis from './analysis';
 
+
+
 @Entry
 @Component
 //构建首页布局
+
 struct Index {
   @State fontColor: string = '#182431'
   @State selectedFontColor: string = '#007DFF'

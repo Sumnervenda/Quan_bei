@@ -14,9 +14,12 @@
  */
 
 // import TargetListItem from './TargetListItem';
-
 import DataModel, { TaskItemBean } from '../viewmodel/DataModel';
 import {Piece_of_data} from '../Component/piece_of_data';
+import  AddTargetDialog  from '../view/AddTargetDialog';
+import promptAction from '@ohos.promptAction';
+import Logger from '../common/Logger';
+import CommonConstants from '../common/constant/CommonConstant'
 
 @Component
 export default struct TargetList {
@@ -24,18 +27,54 @@ export default struct TargetList {
   @State isEditMode: boolean = false;
   @State selectArray: Array<boolean> = [];
   @State clickIndex: number = -1;
+  @State index: number = -1;
   @State selectAll: boolean = false;
-  @Link targetData: Array<TaskItemBean>;
+  dialogController: CustomDialogController = new CustomDialogController({
+    builder: AddTargetDialog({
+      onClickOk: (value1: string,value2:string,value3:string,value4:string,value5:boolean): void => this.saveTask(value1,value2,value3,value4,value5)
+    }),
+    alignment: DialogAlignment.Bottom,
+    offset: {
+      dx: 0,
+      dy: 0
+    },
+    customStyle: true,
+    autoCancel: false
+  });
+  @Link targetData: Array<TaskItemBean> ;
+
   onAddClick?: () => void;
+  saveTask(value1: string,value2:string,value3:string,value4:string,value5:boolean) {
+    if (value1 === '') {
+      promptAction.showToast({
+        message: "消费类型不能为空",
+        duration: 2000,
+        bottom: 64
+      });
+      return;
+    }
+
+    DataModel.addData(new TaskItemBean(0,value1,value2,value3,value4,value5));
+    this.targetData = DataModel.getData();
+    this.overAllProgressChanged = !this.overAllProgressChanged;
+    this.dialogController.close();
+  }
+
 
   build() {
     Stack() {
       Column() {
         Row() {
+
           Text("我的收支")
             .fontSize(24)
             .fontWeight(FontWeight.Bold)
             .fontColor('#ff1a1a1a')
+
+          Button("获取数据")
+            .onClick(()=>{
+              this.targetData=DataModel.initData();
+            })
           Blank()
           if (this.targetData.length > 0) {
             if (this.isEditMode) {
@@ -134,6 +173,7 @@ export default struct TargetList {
             if (this.onAddClick !== undefined) {
               this.onAddClick()
             }
+            this.dialogController;
           })
       }
     }.height('100%')

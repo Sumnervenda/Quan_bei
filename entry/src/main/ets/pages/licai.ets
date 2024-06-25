@@ -12,6 +12,10 @@ struct Home {
   build() {
     Row() {
       Column() {
+        Text('11111')
+          .width('80%')
+          .height('50%')
+          .textAlign(TextAlign.End)
         Image('assets/Status_Bar.png')
           .width("100%")
         Row() {
@@ -21,6 +25,7 @@ struct Home {
             .width(this.widthSize)
             .searchButton('SEARCH')
             .align(Alignment.End)
+
         }
         .align(Alignment.TopStart)
         .alignItems(VerticalAlign.Center)

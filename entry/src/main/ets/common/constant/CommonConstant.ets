@@ -16,7 +16,38 @@
 /**
  * Style constants that can be used by all modules
  */
-export class CommonConstants {
+import relationalStore from '@ohos.data.relationalStore';
+
+export default class CommonConstants {
+
+  static readonly STORE_CONFIG: relationalStore.StoreConfig = {
+    name: 'database.db',
+    securityLevel: relationalStore.SecurityLevel.S1
+  };
+  /**
+   * Account table config.
+   */
+
+  /**
+   * Search text of Search component.
+   */
+  static readonly SEARCH_TEXT = '搜索';
+  /**
+   * toast text of prompt component.
+   */
+  static readonly TOAST_TEXT_1 = '账目类型不能为空';
+  static readonly TOAST_TEXT_2 = '账目金额不为正整数';
+
+  static readonly EDIT_POSITION_X = '80%';
+  static readonly EDIT_POSITION_Y = '90%';
+  static readonly DELETE_POSITION_X = '50%';
+  static readonly DELETE_POSITION_Y = '90%';
+  /**
+   * Log tag.
+   */
+  static readonly RDB_TAG = '[Debug.Rdb]';
+  static readonly TABLE_TAG = '[Debug.AccountTable]';
+  static readonly INDEX_TAG = '[Debug.Index]';
 
   /**
    * Full width.

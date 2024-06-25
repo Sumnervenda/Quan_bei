@@ -139,6 +139,7 @@ export struct Piece_of_data{
               .margin({ right: 16 })
               .onChange((isCheck: boolean) => {
                 this.selectArr[this.index] = isCheck;
+                console.log("该复选框的状态是:"+this.selectArr[this.index]+"该复选框的编号是"+this.index)
               })
           }
           .justifyContent(FlexAlign.End)

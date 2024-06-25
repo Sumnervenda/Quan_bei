@@ -1,5 +1,4 @@
 import router from '@ohos.router'
-@Entry
 @Component
 export default struct Mine {
   @State message: string = '这是Home'
@@ -23,18 +22,18 @@ export default struct Mine {
 
       //何坤坤
       Row(){
-          Image($r('app.media.bule_head'))
-            .height('80%')
+        Image($r('app.media.bule_head'))
+          .height('80%')
           .margin({top:2,left:20})
 
-          Text('何坤坤')
-            .fontSize(22)
-            .margin({top:4,left:12})
-            .fontWeight(FontWeight.Medium)
+        Text('何坤坤')
+          .fontSize(22)
+          .margin({top:4,left:12})
+          .fontWeight(FontWeight.Medium)
 
-         Image($r('app.media.row_right'))
-           .height('40%')
-           .margin({top:2,left:100})
+        Image($r('app.media.row_right'))
+          .height('40%')
+          .margin({top:2,left:100})
 
       }.width('88%')
       .height('10%')
@@ -42,6 +41,11 @@ export default struct Mine {
       .backgroundColor('#FFF')
       .shadow({ radius: 40, color: 0xE0E0E0, offsetX: -3, offsetY: 10 })
       .position({x:"6%",y:"10%"})
+      .onClick(() => {
+        router.pushUrl({
+          url:'pages/UserInfoPage'
+        })
+      })
 
       //总资产
       Column(){
@@ -76,6 +80,11 @@ export default struct Mine {
       .backgroundColor('#FFF')
       .shadow({ radius: 40, color: 0xE0E0E0, offsetX: -3, offsetY: 10 })
       .position({x:"6%",y:"22%"})
+      .onClick(() => {
+        router.pushUrl({
+          url: 'pages/MyAssetPage'
+        })
+      })
 
       //实名认证、支付设置
       Column(){
@@ -122,13 +131,13 @@ export default struct Mine {
       //隐私管理
       Row(){
         Text('隐私管理')
-            .fontSize(20)
-            .margin({top:2,left:20})
-            .fontWeight(FontWeight.Medium)
+          .fontSize(20)
+          .margin({top:2,left:20})
+          .fontWeight(FontWeight.Medium)
 
         Image($r('app.media.row_right'))
           .height('40%')
-          .margin({left:180})
+          .margin({left:160})
       }
       .width('88%')
       .height('8%')
@@ -147,7 +156,7 @@ export default struct Mine {
 
           Image($r('app.media.row_right'))
             .height('40%')
-            .margin({left:160})
+            .margin({left:140})
         }
       }
       .width('88%')
@@ -156,6 +165,11 @@ export default struct Mine {
       .backgroundColor('#FFF')
       .shadow({ radius: 40, color: 0xE0E0E0, offsetX: -3, offsetY: 10 })
       .position({x:"6%",y:"76%"})
+      .onClick(() => {
+        router.pushUrl({
+          url:'pages/AccountSafePage'
+        })
+      })
 
       //关于
       Row(){
@@ -167,7 +181,7 @@ export default struct Mine {
 
           Image($r('app.media.row_right'))
             .height('40%')
-            .margin({left:220})
+            .margin({left:200})
         }
       }
       .width('88%')

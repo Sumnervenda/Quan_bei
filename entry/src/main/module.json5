@@ -16,7 +16,7 @@
         "name": "EntryAbility",
         "srcEntry": "./ets/entryability/EntryAbility.ts",
         "description": "$string:EntryAbility_desc",
-        "icon": "$media:main_logo",
+        "icon": "$media:logo_start",
         "label": "$string:EntryAbility_label",
         "startWindowIcon": "$media:main_logo",
         "startWindowBackground": "$color:start_window_background",
@@ -32,6 +32,20 @@
           }
         ]
       }
+
+    ],
+    "requestPermissions": [
+      {
+        "name" : "ohos.permission.INTERNET",
+        "reason": "$string:app_name",
+        "usedScene": {
+          "abilities": [
+            "FormAbility"
+          ],
+          "when":"always"
+        }
+      },
+
     ]
   }
 }

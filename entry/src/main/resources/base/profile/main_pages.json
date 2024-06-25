@@ -17,6 +17,12 @@
     "pages/yindao_three",
     "pages/yindao_four",
     "pages/sign_up",
-    "pages/sign_in"
+    "pages/sign_in",
+    "pages/request",
+    "pages/AccountSafePage",
+    "pages/MyAssetPage",
+    "pages/SuccessPage",
+    "pages/UserInfoPage",
+    "pages/gold_query"
   ]
 }

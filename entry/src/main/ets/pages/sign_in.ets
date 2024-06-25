@@ -30,12 +30,14 @@ struct Sign_up {
           .width('30%')
           .height('6%')
           .fontSize(20)
-          .position({ x: "35%", y: "70%" })
+          .margin({
+            top:400
+          })
           .shadow({ radius: 20, color: 0xE0E0E0, offsetX: 10, offsetY: 10 })
           .onClick(() => {
-            router.pushUrl({ url: 'pages/index' })
+            router.pushUrl({ url: 'pages/Index' })
           })
-      }
+      }.width("100%")
     }
     .height('100%')
   }

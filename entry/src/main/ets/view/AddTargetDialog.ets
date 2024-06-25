@@ -1,3 +1,5 @@
+import http from '@ohos.net.http';
+import {UserModel} from 'ets/viewmodel/userModel'
 
 
 @Component
@@ -8,7 +10,8 @@ export default struct AddTargetDialog {
   now_time:Date = new Date();
   @State spend_money:string = '';
   @State week_name: string = '';
-  @State flag : boolean = true
+  @State flag : boolean = true//支出为true 收入为false
+  @State spend_or_income : number = 1  //支出为1，收入为0
   @State normal_backgroundColor : string = '#d8d8d8'
   @State normal_fontColor : string = '#717171'
   @State active_backgroundColor :string ='#006aff'
@@ -119,8 +122,9 @@ export default struct AddTargetDialog {
               .placeholderColor(Color.Grey)
               .backgroundColor('#00ffffff')
               .borderRadius(4)
-              .onChange((value: string) => {
+              .onChange((value:string) => {
                 this.spend_money = value;
+
               })
               .width('100%')
               .height(40)
@@ -233,6 +237,59 @@ export default struct AddTargetDialog {
             if (this.onClickOk !== undefined) {
               // this.onClickOk(this.deal_name,this.now_time,this.spend_money,this.week_name);
               this.onClickOk(this.spend_type,this.spend_money,this.date_picker,this.deal_name,this.flag)
+
+
+              //服务器请求代码，插入数据
+              // if(this.flag){
+              // this.spend_or_income=1
+              // }else{
+              // this.spend_or_income=0
+              // }
+              // let user=new UserModel("create",this.spend_or_income,this.date_picker,this.spend_type,this.deal_name,Number(this.spend_money))
+              // let paramdata=Object.keys(user).map(key =>
+              // encodeURIComponent(key) + '=' + encodeURIComponent(user[key])
+              // ).join('&');
+              //
+              // let httpRequest = http.createHttp();
+              // httpRequest.request(
+              //   "https://hkf.cccxwm.chat/insert.php",
+              //   {
+              //     method:http.RequestMethod.POST,
+              //     header: {
+              //       "Content-Type": "application/x-www-form-urlencoded"
+              //       // "Content-Type": "application/JSON"
+              //     },
+              //     // extraData: { 'action':'read', 'id':'1', 'accountType':'1', 'date_now':'2024-6-25', 'typeText':'交通运输', 'accountPrompt':'123', 'amount':'123' }
+              //
+              //     // extraData:user
+              //
+              //     extraData:paramdata
+              //
+              //   },(err, data: http.HttpResponse) => {
+              //   if (!err) {
+              //     // data.result为HTTP响应内容，可根据业务需要进行解析
+              //     console.log('Result:' + JSON.stringify(data.result));
+              //     console.log('code:' + JSON.stringify(data.responseCode));
+              //     console.log('type:' + JSON.stringify(data.resultType));
+              //     // data.header为HTTP响应头，可根据业务需要进行解析
+              //     console.log('header:' + JSON.stringify(data.header));
+              //     console.log('cookies:' + JSON.stringify(data.cookies)); // 自API version 8开始支持cookie
+              //     // 取消订阅HTTP响应头事件
+              //
+              //     httpRequest.off('headersReceive');
+              //     // 当该请求使用完毕时，开发者务必调用destroy方法主动销毁该JavaScript Object。
+              //     httpRequest.destroy();
+              //   } else {
+              //     console.log('error:' + JSON.stringify(err));
+              //     // 取消订阅HTTP响应头事件
+              //     httpRequest.off('headersReceive');
+              //     // 当该请求使用完毕时，开发者务必调用destroy方法主动销毁该JavaScript Object。
+              //     httpRequest.destroy();
+              //   }
+              // }
+              // );
+
+
             }
           })
           .backgroundColor(this.active_backgroundColor)

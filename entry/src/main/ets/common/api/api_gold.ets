@@ -2,7 +2,6 @@
 import http from '@ohos.net.http';
 import request from '@ohos.request';
 // 每一个httpRequest对应一个HTTP请求任务，不可复用
-
 const  api_key = "goldapi-bc9slvw018h6-io"
 const symbol = "XAU"
 const  curr = "CNY"

@@ -77,6 +77,10 @@ export default struct Manage_money  {
             Card_new({
               Title:'黄金',
               img_url:$r('app.media.huangjin_')
+            }).onClick(()=>{
+              router.pushUrl({
+                url:'pages/gold_query'
+              })
             })
             Card_new({
               Title:'区块链',

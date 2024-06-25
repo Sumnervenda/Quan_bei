@@ -14,12 +14,14 @@
  */
 
 import Logger from '../common/Logger';
-
+import http from '@ohos.net.http';
 const TAG = '[DataModel]';
-
+import UIAbility from '@ohos.app.ability.UIAbility';
 /**
  * Saving and manipulating data displayed on the page.
  */
+
+
 export class DataModel {
 
   /**
@@ -27,10 +29,75 @@ export class DataModel {
    */
   private targetData: Array<TaskItemBean> = [];
 
+
+
+  initData():Array<TaskItemBean> {
+
+    const stringdata2={
+      action:"read_all",
+      id:"15",
+      accountType:"1",
+      date_now:"2024-6-25",
+      typeText:"交通运输",
+      accountPrompt:"123",
+      amount:"123"
+    }
+    const formBody = Object.keys(stringdata2).map(key =>
+    encodeURIComponent(key) + '=' + encodeURIComponent(stringdata2[key])
+    ).join('&');
+    let httpRequest = http.createHttp();
+    httpRequest.request(
+      "https://hkf.cccxwm.chat/insert.php",
+      {
+        method:http.RequestMethod.POST,
+        header: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        extraData:formBody
+
+      },(err, data: http.HttpResponse) => {
+      if (!err) {
+          let resultArray = JSON.parse(data.result.toString());
+        let length=resultArray.length;
+        for(let i=0;i<length;i++){
+          let piecedata=new TaskItemBean(1," "," "," "," ",true)
+          piecedata.id=resultArray[i].id;
+          console.log("初始化录入的主键id为"+resultArray[i].id.toString())
+          if(resultArray[i].accountType==1){
+            piecedata.flag=true;
+          }else{
+            piecedata.flag=false;
+          }
+          piecedata.date_picker=resultArray[i].date_now;
+          piecedata.spend_type=resultArray[i].typeText;
+          piecedata.spend_money=resultArray[i].amount.toString();
+          piecedata.deal_name=resultArray[i].accountPrompt;
+          this.targetData.push(piecedata)
+        }
+
+        httpRequest.off('headersReceive');
+        // 当该请求使用完毕时，开发者务必调用destroy方法主动销毁该JavaScript Object。
+        httpRequest.destroy();
+      } else {
+        console.log('error:' + JSON.stringify(err));
+        // 取消订阅HTTP响应头事件
+        httpRequest.off('headersReceive');
+        // 当该请求使用完毕时，开发者务必调用destroy方法主动销毁该JavaScript Object。
+        httpRequest.destroy();
+      }
+    }
+    );
+    // console.log("222333"+this.targetData[2].date_picker.toString())
+
+    return this.targetData;
+  }
+
+
   /**
    * Get the latest data.
    */
   getData(): Array<TaskItemBean> {
+
     return this.targetData;
   }
 
@@ -44,9 +111,51 @@ export class DataModel {
       Logger.error(TAG, 'Failed to delete data because selectArr is ' + selectArr);
     }
     let dataLen = this.targetData.length - 1;
+
     for (let i = dataLen; i >= 0; i--) {
       if (selectArr[i]) {
         this.targetData.splice(i, 1);
+        let indexid=this.targetData[i].id;
+        const stringdata2={
+          action:"delete",
+          id:String(indexid),
+          accountType:"1",
+          date_now:"2024-6-25",
+          typeText:"交通运输",
+          accountPrompt:"123",
+          amount:"123"
+        }
+        console.log("主键id是"+indexid.toString())
+        const formBody = Object.keys(stringdata2).map(key =>
+        encodeURIComponent(key) + '=' + encodeURIComponent(stringdata2[key])
+        ).join('&');
+        let httpRequest = http.createHttp();
+        httpRequest.request(
+          "https://hkf.cccxwm.chat/insert.php",
+          {
+            method:http.RequestMethod.POST,
+            header: {
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            extraData:formBody
+
+          },(err, data: http.HttpResponse) => {
+          if (!err) {
+        console.log("result"+JSON.stringify(data.result))
+
+            httpRequest.off('headersReceive');
+            // 当该请求使用完毕时，开发者务必调用destroy方法主动销毁该JavaScript Object。
+            httpRequest.destroy();
+          } else {
+            console.log('error:' + JSON.stringify(err));
+            // 取消订阅HTTP响应头事件
+            httpRequest.off('headersReceive');
+            // 当该请求使用完毕时，开发者务必调用destroy方法主动销毁该JavaScript Object。
+            httpRequest.destroy();
+          }
+        }
+        );
+
       }
     }
   }
@@ -57,10 +166,75 @@ export class DataModel {
    * @param Data of the RecordItemBean type to be added.
    */
   addData(data: TaskItemBean) {
-    if (!data) {
+
       Logger.error(TAG, 'addData error because data is: ' + data);
-      return;
+      let type=1;
+      if(data.flag){
+        type=1;
+      }else{
+        type=0;
+      }
+      const stringdata2={
+        action:"create",
+        accountType:type,
+        date_now:data.date_picker,
+        typeText:data.spend_type,
+        accountPrompt:data.deal_name,
+        amount:Number(data.spend_money)
+      }
+      const stringdata3={
+        action:"read_all",
+        accountType:type,
+        date_now:data.date_picker,
+        typeText:data.spend_type,
+        accountPrompt:data.deal_name,
+        amount:Number(data.spend_money)
+      }
+      const formBody = Object.keys(stringdata2).map(key =>
+      encodeURIComponent(key) + '=' + encodeURIComponent(stringdata2[key])
+      ).join('&');
+      const formBody2 = Object.keys(stringdata3).map(key =>
+      encodeURIComponent(key) + '=' + encodeURIComponent(stringdata3[key])
+      ).join('&');
+      let httpRequest = http.createHttp();
+      httpRequest.request(
+        "https://hkf.cccxwm.chat/insert.php",
+        {
+          method:http.RequestMethod.POST,
+          header: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          extraData:formBody
+
+        },(err, result: http.HttpResponse) => {
+        if (!err) {
+      console.log("result"+JSON.stringify(result.result));
     }
+
+  });
+
+      let httpRequest2 = http.createHttp();
+      httpRequest2.request(
+        "https://hkf.cccxwm.chat/insert.php",
+        {
+          method:http.RequestMethod.POST,
+          header: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          extraData:formBody2
+
+        },(err, result: http.HttpResponse) => {
+        if (!err) {
+          console.log("result"+JSON.stringify(result.result));
+          let resultArray = JSON.parse(result.result.toString());
+          let length=resultArray.length;
+          data.id=resultArray[length-1].id;
+          console.log("成功录入data的id："+data.id.toString())
+          console.log("数据库的主键id："+resultArray[length-1].id.toString())
+        }
+
+      });
+
     this.targetData.push(data);
   }
 
@@ -101,6 +275,7 @@ export class TaskItemBean {
   /**
    * Progress value of task item.
    */
+  id:number
   spend_type: string;
   spend_money :string;
   date_picker: string;
@@ -119,7 +294,8 @@ export class TaskItemBean {
    * @param progressValue progress value.
    * @param updateDate update time.
    */
-  constructor(spend_type: string,spend_money :string,date_picker: string, deal_name : string, flag :boolean) {
+  constructor(id:number,spend_type: string,spend_money :string,date_picker: string, deal_name : string, flag :boolean) {
+    this.id=id;
     this.spend_type = spend_type;
     this.spend_money = spend_money;
     this.date_picker = date_picker;
@@ -127,3 +303,4 @@ export class TaskItemBean {
     this.flag = flag
   }
 }
+
