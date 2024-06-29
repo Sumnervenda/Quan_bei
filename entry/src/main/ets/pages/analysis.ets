@@ -91,6 +91,7 @@ export default  struct analysis {
             Blank()
             Button("刷新").height(24)
               .onClick(()=>{
+                this.suggest=""
                 let httpRequest = http.createHttp();
                 httpRequest.request(
                   "https://hkf.cccxwm.chat/select_all.php",
@@ -104,8 +105,8 @@ export default  struct analysis {
                   if (!err) {
                     console.log("汇总结果result"+JSON.stringify(data.result))
                     let resultArray= JSON.parse(data.result.toString());
-                    console.log("汇总结果result"+resultArray[0])
-                    console.log("汇总结果result"+resultArray[0].total_amount)
+                    console.log("汇总结果result"+resultArray[0]);
+                    console.log("汇总结果result"+resultArray[0].total_amount);
                     for(let i=0;i<7;i++){
                       this.type.push(resultArray[i].typeText);
                       this.amount.push(Number(resultArray[i].total_amount));
@@ -165,7 +166,7 @@ export default  struct analysis {
 
           Row() {
             Stack() {
-              Gauge({ value: 40, min: 0, max: 100 })
+              Gauge({ value: 0, min: 0, max: 100 })
                 // .colors([['#4E97FF', this.amount[0]],
                 //   ['#026AFF',this.amount[1]],
                 //   ['#86B9FF', this.amount[2]],

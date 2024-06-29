@@ -114,8 +114,8 @@ export class DataModel {
 
     for (let i = dataLen; i >= 0; i--) {
       if (selectArr[i]) {
-        this.targetData.splice(i, 1);
         let indexid=this.targetData[i].id;
+        this.targetData.splice(i, 1);
         const stringdata2={
           action:"delete",
           id:String(indexid),
